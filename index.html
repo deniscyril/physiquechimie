@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Physique-chimie Seconde — Activités interactives</title>
+<style>
+:root {
+  --bg:      #f3f4fd;
+  --card:    #ffffff;
+  --border:  #dde0f0;
+  --text:    #1e1e2e;
+  --muted:   #6b7280;
+  --primary: #5448c8;
+  --primary-d: #3e34a8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Georgia', serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+#app {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 48px 20px 80px;
+}
+
+header { margin-bottom: 48px; }
+.site-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+.site-sub {
+  color: var(--muted);
+  font-size: 0.97rem;
+}
+
+.section-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  font-family: sans-serif;
+  color: var(--muted);
+  margin-bottom: 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.apps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.app-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.15s, border-color 0.15s, transform 0.1s;
+}
+.app-card:hover {
+  box-shadow: 0 4px 18px rgba(84,72,200,0.13);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+.app-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+  width: 48px;
+  text-align: center;
+}
+.app-info { flex: 1; }
+.app-tag {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  font-family: sans-serif;
+  color: var(--primary);
+  margin-bottom: 3px;
+}
+.app-name {
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.app-desc { font-size: 0.87rem; color: var(--muted); }
+.app-arrow { font-size: 1.2rem; color: #ccc; flex-shrink: 0; }
+.app-card:hover .app-arrow { color: var(--primary); }
+
+footer {
+  font-size: 0.82rem;
+  color: #bbb;
+  text-align: center;
+  margin-top: 60px;
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <header>
+    <p class="site-title">⚗️ Physique-chimie Seconde</p>
+    <p class="site-sub">Activités interactives — entraînement individuel sur ordinateur ou mobile</p>
+  </header>
+
+  <p class="section-title">Applications disponibles</p>
+
+  <div class="apps">
+
+    <a class="app-card" href="isoler-variable/">
+      <div class="app-icon">🔢</div>
+      <div class="app-info">
+        <div class="app-tag">Mathématiques appliquées</div>
+        <div class="app-name">Isoler une variable</div>
+        <div class="app-desc">S'entraîner à isoler une grandeur dans une relation littérale — 3 phases progressives</div>
+      </div>
+      <div class="app-arrow">→</div>
+    </a>
+
+    <!-- Futures apps à décommenter quand elles seront prêtes -->
+    <!--
+    <a class="app-card" href="vecteurs-forces/">
+      <div class="app-icon">↗️</div>
+      <div class="app-info">
+        <div class="app-tag">Mécanique</div>
+        <div class="app-name">Vecteurs et forces</div>
+        <div class="app-desc">À venir</div>
+      </div>
+      <div class="app-arrow">→</div>
+    </a>
+    -->
+
+  </div>
+
+  <footer>Activités sans connexion requise · Aucune donnée collectée</footer>
+
+</div>
+</body>
+</html>

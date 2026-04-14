@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isoler une variable — Physique Seconde</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+  startup: { ready() { MathJax.startup.defaultReady(); } }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+/* ── PALETTE
+   Fond : blanc cassé très légèrement bleu
+   Primaire : violet-indigo #5448c8
+   Phase 1 (Modelage)        : violet   #7c3aed
+   Phase 2 (Guidée)          : cyan     #0891b2
+   Phase 3 (Autonome)        : émeraude #059669
+   Geste rapide              : ambre    #d97706
+   Algèbre                   : indigo   #4f6dc8
+─────────────────────────────────────────────── */
+:root {
+  --bg:        #f3f4fd;
+  --card:      #ffffff;
+  --border:    #dde0f0;
+  --text:      #1e1e2e;
+  --muted:     #6b7280;
+  --primary:   #5448c8;
+  --primary-d: #3e34a8;
+  --p1:        #7c3aed;
+  --p2:        #0891b2;
+  --p3:        #059669;
+  --amber:     #d97706;
+  --amber-bg:  #fffbeb;
+  --amber-bd:  #fcd34d;
+  --alg:       #4f6dc8;
+  --alg-bg:    #eef1ff;
+  --alg-bd:    #a5b4fc;
+  --ok:        #16a34a;
+  --ok-bg:     #dcfce7;
+  --ok-bd:     #86efac;
+  --err:       #dc2626;
+  --err-bg:    #fef2f2;
+  --err-bd:    #fca5a5;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Georgia', serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.6;
+}
+#app {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+h1 {
+  font-size: 1.5rem;
+  font-weight: normal;
+  color: var(--text);
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 10px;
+  margin-bottom: 28px;
+}
+
+/* ── Phase badge ── */
+.phase-label {
+  display: inline-block;
+  color: white;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 14px;
+  font-family: sans-serif;
+  font-weight: 600;
+}
+#phase1 .phase-label { background: var(--p1); }
+#phase2 .phase-label { background: var(--p2); }
+#phase3 .phase-label { background: var(--p3); }
+
+/* ── Back button ── */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-family: inherit;
+  padding: 6px 14px;
+  cursor: pointer;
+  margin-bottom: 22px;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.btn-back:hover { background: #e8eaff; border-color: var(--primary); color: var(--primary); }
+
+/* ── HOME PAGE ── */
+.home-title {
+  font-size: 1.7rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+.home-subtitle {
+  color: var(--muted);
+  font-size: 0.97rem;
+  margin-bottom: 36px;
+  max-width: 560px;
+  line-height: 1.6;
+}
+.phase-cards { display: flex; flex-direction: column; gap: 14px; }
+.phase-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s, transform 0.1s;
+}
+.phase-card:hover {
+  box-shadow: 0 4px 16px rgba(84,72,200,0.13);
+  transform: translateY(-1px);
+}
+.phase-card.p1:hover { border-color: var(--p1); }
+.phase-card.p2:hover { border-color: var(--p2); }
+.phase-card.p3:hover { border-color: var(--p3); }
+.phase-card.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+.phase-card-num {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 700;
+  margin-bottom: 4px;
+  font-family: sans-serif;
+}
+.p1 .phase-card-num { color: var(--p1); }
+.p2 .phase-card-num { color: var(--p2); }
+.p3 .phase-card-num { color: var(--p3); }
+.phase-card-title { font-size: 1.05rem; font-weight: bold; color: var(--text); margin-bottom: 3px; }
+.phase-card-desc  { font-size: 0.87rem; color: var(--muted); }
+.phase-card-arrow { font-size: 1.3rem; color: #ccc; flex-shrink: 0; }
+.phase-card:hover .phase-card-arrow { color: var(--primary); }
+
+/* ── TECHNIQUE CARDS ── */
+.technique {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+.technique-header {
+  background: linear-gradient(135deg, #ede9fe 0%, #dbeafe 100%);
+  padding: 12px 18px;
+  font-weight: bold;
+  font-size: 1rem;
+  border-bottom: 1.5px solid var(--border);
+  color: var(--primary-d);
+}
+.technique-body { padding: 18px; }
+
+.objectif-line {
+  background: #f0f0ff;
+  border: 1.5px solid #c4b5fd;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 0.97rem;
+  color: #3b2b8a;
+}
+.objectif-line em { font-style: normal; font-weight: bold; color: var(--p1); }
+
+.bloc {
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+.bloc:last-child { margin-bottom: 0; }
+.bloc-alg   { background: var(--alg-bg); border-left: 4px solid var(--alg-bd); }
+.bloc-geste { background: var(--amber-bg); border-left: 4px solid var(--amber-bd); }
+.bloc-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-family: sans-serif;
+}
+.bloc-alg   .bloc-title { color: var(--alg); }
+.bloc-geste .bloc-title { color: var(--amber); }
+
+.step { display: flex; gap: 10px; margin-bottom: 6px; align-items: baseline; }
+.step-arrow { color: var(--muted); flex-shrink: 0; font-size: 0.95rem; }
+
+.result-line { font-weight: bold; font-size: 1.05rem; margin-top: 10px; }
+
+.erreur-box {
+  background: var(--err-bg);
+  border: 1.5px solid var(--err-bd);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 14px;
+  font-size: 0.91rem;
+}
+.erreur-box strong { color: var(--err); }
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-block;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-family: inherit;
+  font-weight: 600;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-d); }
+.btn-hint {
+  background: var(--amber-bg);
+  color: #92400e;
+  border: 1.5px solid var(--amber-bd);
+  font-size: 0.88rem;
+  padding: 7px 16px;
+  font-weight: normal;
+}
+.btn-hint:hover { background: #fef3c7; }
+
+/* ── EXERCISES ── */
+.exercise-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  transition: box-shadow 0.15s;
+}
+.exercise-card:focus-within { box-shadow: 0 0 0 3px rgba(84,72,200,0.12); }
+.exercise-num {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-family: sans-serif;
+  font-weight: 700;
+}
+.exercise-question { font-size: 1.05rem; margin-bottom: 14px; line-height: 1.8; }
+.exercise-question strong { color: var(--primary); }
+
+.input-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+.answer-input {
+  font-size: 16px;
+  font-family: 'Courier New', monospace;
+  padding: 8px 12px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  width: 220px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  background: #fafbff;
+}
+.answer-input:focus    { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(84,72,200,0.12); }
+.answer-input.correct  { border-color: var(--ok);  background: var(--ok-bg); }
+.answer-input.incorrect{ border-color: var(--err); background: var(--err-bg); }
+
+.hint-box {
+  background: var(--amber-bg);
+  border: 1.5px solid var(--amber-bd);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  font-size: 0.93rem;
+  color: #78350f;
+  display: none;
+}
+.hint-box.visible { display: block; }
+
+.feedback-box {
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 10px;
+  font-size: 0.93rem;
+  display: none;
+}
+.feedback-box.visible  { display: block; }
+.feedback-correct  { background: var(--ok-bg);  border: 1.5px solid var(--ok-bd);  color: #14532d; }
+.feedback-incorrect{ background: var(--err-bg); border: 1.5px solid var(--err-bd); color: #7f1d1d; }
+.feedback-step { margin-bottom: 4px; }
+
+.nav-bottom { margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+.info-box {
+  background: #eef1ff;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 8px;
+  padding: 11px 14px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  color: #312e81;
+}
+
+.hidden { display: none; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ============================================================ -->
+  <!-- ACCUEIL                                                       -->
+  <!-- ============================================================ -->
+  <div id="accueil">
+    <p class="home-title">⚗️ Isoler une variable</p>
+    <p class="home-subtitle">
+      Pour bien calculer en physique-chimie, tu dois savoir isoler une variable présente dans une formule. <br>
+      Ici tu vas apprendre à calculer vite et bien !
+    </p>
+
+    <div class="phase-cards">
+      <div class="phase-card p1" onclick="showPhase('phase1')">
+        <div class="phase-card-info">
+          <div class="phase-card-num">Phase 1</div>
+          <div class="phase-card-title">💡 Ce qu'il faut savoir</div>
+          <div class="phase-card-desc">Découvrir les 3 techniques avec justification algébrique et geste rapide</div>
+        </div>
+        <div class="phase-card-arrow">→</div>
+      </div>
+
+      <div class="phase-card p2" onclick="showPhase('phase2')">
+        <div class="phase-card-info">
+          <div class="phase-card-num">Phase 2</div>
+          <div class="phase-card-title">✏️ Pratique guidée</div>
+          <div class="phase-card-desc">5 exercices avec indices disponibles — pas de score</div>
+        </div>
+        <div class="phase-card-arrow">→</div>
+      </div>
+
+      <div class="phase-card p3" onclick="showPhase('phase3')">
+        <div class="phase-card-info">
+          <div class="phase-card-num">Phase 3</div>
+          <div class="phase-card-title">🏆 Pratique autonome</div>
+          <div class="phase-card-desc">8 exercices sans aide — score affiché à la fin</div>
+        </div>
+        <div class="phase-card-arrow">→</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PHASE 1 : MODELAGE                                           -->
+  <!-- ============================================================ -->
+  <div id="phase1" class="hidden">
+    <button class="btn-back" onclick="showPhase('accueil')">← Accueil</button>
+    <div class="phase-label">Phase 1 — Modelage</div>
+    <h1>Les trois techniques</h1>
+
+    <p style="margin-bottom:24px; color:#555;">
+      Lisez les trois techniques dans l'ordre. Pour chaque technique, retenez
+      d'abord le geste rapide, puis vérifiez pourquoi il est algébriquement
+      correct.
+    </p>
+
+    <!-- TECHNIQUE 1 -->
+    <div class="technique">
+      <div class="technique-header">Technique 1 — Isoler le numérateur</div>
+      <div class="technique-body">
+        <div class="objectif-line">
+          Objectif : isoler <em>d</em> dans \(\displaystyle v = \frac{d}{t}\)
+        </div>
+
+        <div class="bloc bloc-geste">
+          <div class="bloc-title">⚡ Le geste rapide</div>
+          <p>On multiplie en diagonale \(v\) par \(t\).</p>
+          <div class="result-line">\( d = v \times t \)</div>
+        </div>
+
+        <div class="bloc bloc-alg">
+          <div class="bloc-title">🔍 Pourquoi ça marche</div>
+          <div class="step">
+            <span class="step-arrow">→</span>
+            <span>On multiplie les deux membres par \(t\) :</span>
+          </div>
+          <div class="step">
+            <span class="step-arrow"></span>
+            <span>\( v \times t = \dfrac{d}{t} \times t \)</span>
+          </div>
+          <div class="step">
+            <span class="step-arrow">→</span>
+            <span>Le \(t\) au dénominateur se simplifie :</span>
+          </div>
+          <div class="step">
+            <span class="step-arrow"></span>
+            <span>\( v \times t = d \)</span>
+          </div>
+          <div class="result-line">\( d = v \times t \)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TECHNIQUE 2 -->
+    <div class="technique">
+      <div class="technique-header">Technique 2 — Isoler le dénominateur</div>
+      <div class="technique-body">
+        <div class="objectif-line">
+          Objectif : isoler <em>t</em> dans \(\displaystyle v = \frac{d}{t}\)
+        </div>
+
+        <div class="bloc bloc-geste">
+          <div class="bloc-title">⚡ Le geste rapide</div>
+          <p>On échange \(t\) et \(v\).</p>
+          <div class="result-line">\( t = \dfrac{d}{v} \)</div>
+        </div>
+
+        <div class="bloc bloc-alg">
+          <div class="bloc-title">🔍 Pourquoi ça marche</div>
+          <div class="step">
+            <span class="step-arrow">→</span>
+            <span>On multiplie les deux membres par \(t\) :</span>
+          </div>
+          <div class="step">
+            <span class="step-arrow"></span>
+            <span>\( v \times t = d \)</span>
+          </div>
+          <div class="step">
+            <span class="step-arrow">→</span>
+            <span>On divise les deux membres par \(v\) :</span>
+          </div>
+          <div class="step">
+            <span class="step-arrow"></span>
+            <span>\( t = \dfrac{d}{v} \)</span>
+          </div>
+          <div class="result-line">\( t = \dfrac{d}{v} \)</div>
+        </div>
+
+        <div class="erreur-box">
+          ⚠️ <strong>Erreur fréquente à connaître :</strong><br>
+          Réponse fausse courante : \( t = \dfrac{v}{d} \)<br>
+          <span style="color:#555;">
+            On a échangé \(t\) avec \(d\) (le numérateur) au lieu de l'échanger
+            avec \(v\) (le membre de gauche). La règle algébrique confirme :
+            après multiplication par \(t\), on obtient \(v \times t = d\),
+            donc en divisant par \(v\) on trouve \(t = d/v\), pas \(v/d\).
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- TECHNIQUE 3 -->
+    <div class="technique">
+      <div class="technique-header">Technique 3 — Isoler un facteur dans un produit</div>
+      <div class="technique-body">
+        <div class="objectif-line">
+          Objectif : isoler <em>v</em> dans \( d = v \times t \)
+        </div>
+
+        <div class="bloc bloc-geste">
+          <div class="bloc-title">⚡ Le geste rapide</div>
+          <p>On passe \(t\) de l'autre côté en le basculant au dénominateur.</p>
+          <div class="result-line">\( v = \dfrac{d}{t} \)</div>
+        </div>
+
+        <div class="bloc bloc-alg">
+          <div class="bloc-title">🔍 Pourquoi ça marche</div>
+          <div class="step">
+            <span class="step-arrow">→</span>
+            <span>On divise les deux membres par \(t\) :</span>
+          </div>
+          <div class="step">
+            <span class="step-arrow"></span>
+            <span>\( \dfrac{d}{t} = \dfrac{v \times t}{t} \)</span>
+          </div>
+          <div class="step">
+            <span class="step-arrow">→</span>
+            <span>Le \(t\) se simplifie :</span>
+          </div>
+          <div class="step">
+            <span class="step-arrow"></span>
+            <span>\( \dfrac{d}{t} = v \)</span>
+          </div>
+          <div class="result-line">\( v = \dfrac{d}{t} \)</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-bottom">
+      <button class="btn-back" onclick="showPhase('accueil')">← Accueil</button>
+      <button class="btn btn-primary" onclick="showPhase('phase2')">Phase 2 — Exercices guidés →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PHASE 2 : PRATIQUE GUIDÉE                                    -->
+  <!-- ============================================================ -->
+  <div id="phase2" class="hidden">
+    <button class="btn-back" onclick="showPhase('accueil')">← Accueil</button>
+    <div class="phase-label">Phase 2 — Pratique guidée</div>
+    <h1>Exercices guidés</h1>
+
+    <div class="info-box">
+      Saisissez la relation isolée sous forme littérale, par exemple :
+      <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;">t = d/v</code>
+      ou <code style="background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px;">m = rho*V</code>.
+      Symboles acceptés : lettres, chiffres, <code>*</code> <code>×</code> <code>/</code> <code>÷</code>.
+      <br>La lettre grecque <strong>ρ</strong> peut être saisie <code>rho</code> ou <code>p</code>.
+    </div>
+
+    <!-- Exercise 1 -->
+    <div class="exercise-card" id="ex1">
+      <div class="exercise-num">Exercice 1 / 5</div>
+      <div class="exercise-question">
+        Relation : \( v = \dfrac{d}{t} \)<br>
+        Isoler : <strong>\(t\)</strong>
+      </div>
+      <div class="hint-box" id="hint1">
+        💡 <strong>Indice :</strong> On échange \(t\) et \(v\).
+      </div>
+      <div class="input-row">
+        <input type="text" inputmode="text" class="answer-input" id="input1"
+               placeholder="t = …" autocomplete="off" autocorrect="off" spellcheck="false"
+               onkeydown="if(event.key==='Enter') checkEx(1)">
+        <button class="btn btn-primary" onclick="checkEx(1)">Vérifier</button>
+        <button class="btn btn-hint" onclick="showHint(1)">Indice</button>
+      </div>
+      <div class="feedback-box" id="fb1"></div>
+    </div>
+
+    <!-- Exercise 2 -->
+    <div class="exercise-card" id="ex2">
+      <div class="exercise-num">Exercice 2 / 5</div>
+      <div class="exercise-question">
+        Relation : \( \rho = \dfrac{m}{V} \)<br>
+        Isoler : <strong>\(m\)</strong>
+      </div>
+      <div class="hint-box" id="hint2">
+        💡 <strong>Indice :</strong> On multiplie en diagonale \(\rho\) par \(V\).
+      </div>
+      <div class="input-row">
+        <input type="text" inputmode="text" class="answer-input" id="input2"
+               placeholder="m = …" autocomplete="off" autocorrect="off" spellcheck="false"
+               onkeydown="if(event.key==='Enter') checkEx(2)">
+        <button class="btn btn-primary" onclick="checkEx(2)">Vérifier</button>
+        <button class="btn btn-hint" onclick="showHint(2)">Indice</button>
+      </div>
+      <div class="feedback-box" id="fb2"></div>
+    </div>
+
+    <!-- Exercise 3 -->
+    <div class="exercise-card" id="ex3">
+      <div class="exercise-num">Exercice 3 / 5</div>
+      <div class="exercise-question">
+        Relation : \( \rho = \dfrac{m}{V} \)<br>
+        Isoler : <strong>\(V\)</strong>
+      </div>
+      <div class="hint-box" id="hint3">
+        💡 <strong>Indice :</strong> On échange \(V\) et \(\rho\).
+      </div>
+      <div class="input-row">
+        <input type="text" inputmode="text" class="answer-input" id="input3"
+               placeholder="V = …" autocomplete="off" autocorrect="off" spellcheck="false"
+               onkeydown="if(event.key==='Enter') checkEx(3)">
+        <button class="btn btn-primary" onclick="checkEx(3)">Vérifier</button>
+        <button class="btn btn-hint" onclick="showHint(3)">Indice</button>
+      </div>
+      <div class="feedback-box" id="fb3"></div>
+    </div>
+
+    <!-- Exercise 4 -->
+    <div class="exercise-card" id="ex4">
+      <div class="exercise-num">Exercice 4 / 5</div>
+      <div class="exercise-question">
+        Relation : \( P = m \times g \)<br>
+        Isoler : <strong>\(m\)</strong>
+      </div>
+      <div class="hint-box" id="hint4">
+        💡 <strong>Indice :</strong> On passe \(g\) de l'autre côté en le basculant au dénominateur.
+      </div>
+      <div class="input-row">
+        <input type="text" inputmode="text" class="answer-input" id="input4"
+               placeholder="m = …" autocomplete="off" autocorrect="off" spellcheck="false"
+               onkeydown="if(event.key==='Enter') checkEx(4)">
+        <button class="btn btn-primary" onclick="checkEx(4)">Vérifier</button>
+        <button class="btn btn-hint" onclick="showHint(4)">Indice</button>
+      </div>
+      <div class="feedback-box" id="fb4"></div>
+    </div>
+
+    <!-- Exercise 5 -->
+    <div class="exercise-card" id="ex5">
+      <div class="exercise-num">Exercice 5 / 5</div>
+      <div class="exercise-question">
+        Relation : \( C = \dfrac{m}{V} \)<br>
+        Isoler : <strong>\(V\)</strong>
+      </div>
+      <div class="hint-box" id="hint5">
+        💡 <strong>Indice :</strong> On échange \(V\) et \(C\).
+      </div>
+      <div class="input-row">
+        <input type="text" inputmode="text" class="answer-input" id="input5"
+               placeholder="V = …" autocomplete="off" autocorrect="off" spellcheck="false"
+               onkeydown="if(event.key==='Enter') checkEx(5)">
+        <button class="btn btn-primary" onclick="checkEx(5)">Vérifier</button>
+        <button class="btn btn-hint" onclick="showHint(5)">Indice</button>
+      </div>
+      <div class="feedback-box" id="fb5"></div>
+    </div>
+
+    <div class="nav-bottom">
+      <button class="btn-back" onclick="showPhase('accueil')">← Accueil</button>
+      <button class="btn btn-primary hidden" id="phase3-btn"
+              onclick="showPhase('phase3')">Phase 3 — Pratique autonome →</button>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- PHASE 3 : PRATIQUE AUTONOME                                  -->
+  <!-- ============================================================ -->
+  <div id="phase3" class="hidden">
+    <button class="btn-back" onclick="showPhase('accueil')">← Accueil</button>
+    <div class="phase-label">Phase 3 — Pratique autonome</div>
+    <h1>Exercices autonomes</h1>
+
+    <div class="info-box">
+      Aucune aide disponible. Répondez aux 8 exercices puis cliquez sur
+      <strong>Terminer</strong> pour voir votre score.
+      <br>La lettre grecque <strong>ρ</strong> peut être saisie <code>rho</code> ou <code>p</code>.
+    </div>
+
+    <p style="margin:0 0 20px; font-size:0.88rem; color:#777; font-weight:bold; text-transform:uppercase; letter-spacing:0.05em;">
+      Niveau 1 — Relations à 3 termes
+    </p>
+
+    <!-- Ex P3-1 -->
+    <div class="exercise-card">
+      <div class="exercise-num">Exercice 1 / 8</div>
+      <div class="exercise-question">
+        Relation : \( F = m \times a \)<br>Isoler : <strong>\(a\)</strong>
+      </div>
+      <div class="input-row">
+        <input type="text" inputmode="text" class="answer-input" id="p3input1"
+               placeholder="a = …" autocomplete="off" autocorrect="off" spellcheck="false"
+               onkeydown="if(event.key==='Enter') document.getElementById('p3input2').focus()">
+      </div>
+      <div class="feedback-box" id="p3fb1"></div>
+    </div>
+
+    <!-- Ex P3-2 -->
+    <div class="exercise-card">
+      <div class="exercise-num">Exercice 2 / 8</div>
+      <div class="exercise-question">
+        Relation : \( F = m \times a \)<br>Isoler : <strong>\(m\)</strong>
+      </div>
+      <div class="input-row">
+        <input type="text" inputmode="text" class="answer-input" id="p3input2"
+               placeholder="m = …" autocomplete="off" autocorrect="off" spellcheck="false"
+               onkeydown="if(event.key==='Enter') document.getElementById('p3input3').focus()">
+      </div>
+      <div class="feedback-box" id="p3fb2"></div>
+    </div>
+
+    <!-- Ex P3-3 -->
+    <div class="exercise-card">
+      <div class="exercise-num">Exercice 3 / 8</div>
+      <div class="exercise-question">
+        Relation : \( C = \dfrac{m}{V} \)<br>Isoler : <strong>\(m\)</strong>
+      </div>
+      <div class="input-row">
+        <input type="text" inputmode="text" class="answer-input" id="p3input3"
+               placeholder="m = …" autocomplete="off" autocorrect="off" spellcheck="false"
+               onkeydown="if(event.key==='Enter') document.getElementById('p3input4').focus()">
+      </div>
+      <div class="feedback-box" id="p3fb3"></div>
+    </div>
+
+    <!-- Ex P3-4 -->
+    <div class="exercise-card">
+      <div class="exercise-num">Exercice 4 / 8</div>
+      <div class="exercise-question">
+        Relation : \( P = m \times g \)<br>Isoler : <strong>\(g\)</strong>
+      </div>
+      <div class="input-row">
+        <input type="text" inputmode="text" class="answer-input" id="p3input4"
+               placeholder="g = …" autocomplete="off" autocorrect="off" spellcheck="false"
+               onkeydown="if(event.key==='Enter') document.getElementById('p3input5').focus()">
+      </div>
+      <div class="feedback-box" id="p3fb4"></div>
+    </div>
+
+    <!-- Ex P3-5 -->
+    <div class="exercise-card">
+      <div class="exercise-num">Exercice 5 / 8</div>
+      <div class="exercise-question">
+        Relation : \( v = \dfrac{d}{t} \)<br>Isoler : <strong>\(d\)</strong>
+      </div>
+      <div class="input-row">
+        <input type="text" inputmode="text" class="answer-input" id="p3input5"
+               placeholder="d = …" autocomplete="off" autocorrect="off" spellcheck="false"
+               onkeydown="if(event.key==='Enter') document.getElementById('p3input6').focus()">
+      </div>
+      <div class="feedback-box" id="p3fb5"></div>
+    </div>
+
+    <!-- Ex P3-6 -->
+    <div class="exercise-card">
+      <div class="exercise-num">Exercice 6 / 8</div>
+      <div class="exercise-question">
+        Relation : \( m = \rho \times V \)<br>Isoler : <strong>\(\rho\)</strong>
+      </div>
+      <div class="input-row">
+        <input type="text" inputmode="text" class="answer-input" id="p3input6"
+               placeholder="ρ = … (ou rho = …)" autocomplete="off" autocorrect="off" spellcheck="false"
+               onkeydown="if(event.key==='Enter') document.getElementById('p3input7').focus()">
+      </div>
+      <div class="feedback-box" id="p3fb6"></div>
+    </div>
+
+    <p style="margin:24px 0 20px; font-size:0.88rem; color:#777; font-weight:bold; text-transform:uppercase; letter-spacing:0.05em;">
+      Niveau 2 — Relations à 4 termes
+    </p>
+
+    <!-- Ex P3-7 -->
+    <div class="exercise-card">
+      <div class="exercise-num">Exercice 7 / 8</div>
+      <div class="exercise-question">
+        Relation : \( P = \rho \times V \times g \)<br>Isoler : <strong>\(V\)</strong>
+      </div>
+      <div class="input-row">
+        <input type="text" inputmode="text" class="answer-input" id="p3input7"
+               placeholder="V = …" autocomplete="off" autocorrect="off" spellcheck="false"
+               onkeydown="if(event.key==='Enter') document.getElementById('p3input8').focus()">
+      </div>
+      <div class="feedback-box" id="p3fb7"></div>
+    </div>
+
+    <!-- Ex P3-8 -->
+    <div class="exercise-card">
+      <div class="exercise-num">Exercice 8 / 8</div>
+      <div class="exercise-question">
+        Relation : \( P = \rho \times V \times g \)<br>Isoler : <strong>\(\rho\)</strong>
+      </div>
+      <div class="input-row">
+        <input type="text" inputmode="text" class="answer-input" id="p3input8"
+               placeholder="ρ = … (ou rho = …)" autocomplete="off" autocorrect="off" spellcheck="false"
+               onkeydown="if(event.key==='Enter') finishPhase3()">
+      </div>
+      <div class="feedback-box" id="p3fb8"></div>
+    </div>
+
+    <!-- Score panel (hidden until Terminer) -->
+    <div id="score-panel" class="hidden" style="
+      background: white;
+      border: 2px solid #3a5a8a;
+      border-radius: 8px;
+      padding: 22px 24px;
+      margin-top: 8px;
+      margin-bottom: 24px;
+    ">
+      <div id="score-headline" style="font-size:1.25rem; font-weight:bold; margin-bottom:6px;"></div>
+      <div id="score-detail" style="font-size:0.92rem; color:#555;"></div>
+    </div>
+
+    <div class="nav-bottom">
+      <button class="btn-back" onclick="showPhase('accueil')">← Accueil</button>
+      <button class="btn btn-primary" onclick="finishPhase3()">Terminer — voir le score</button>
+      <button class="btn" id="restart-btn" style="background:#e0ddd6;color:#333;display:none;"
+              onclick="resetPhase3()">Recommencer la phase 3</button>
+    </div>
+  </div>
+
+</div><!-- #app -->
+
+<script>
+// ----------------------------------------------------------------
+// Navigation
+// ----------------------------------------------------------------
+function showPhase(id) {
+  ['accueil', 'phase1', 'phase2', 'phase3'].forEach(p => {
+    document.getElementById(p).classList.add('hidden');
+  });
+  const el = document.getElementById(id);
+  el.classList.remove('hidden');
+  window.scrollTo(0, 0);
+  if (window.MathJax) MathJax.typesetPromise([el]);
+}
+
+// ----------------------------------------------------------------
+// Hint display
+// ----------------------------------------------------------------
+function showHint(n) {
+  const h = document.getElementById('hint' + n);
+  h.classList.add('visible');
+  if (window.MathJax) MathJax.typesetPromise([h]);
+}
+
+// ----------------------------------------------------------------
+// Normalisation
+// ----------------------------------------------------------------
+function normalise(s) {
+  return s
+    .toLowerCase()
+    .replace(/\s+/g, '')
+    .replace(/[×\u00d7]/g, '*')
+    .replace(/[÷\u00f7]/g, '/');
+}
+
+// Map ρ → rho, and also accept p as alias for rho
+function normaliseGreek(s) {
+  return normalise(s)
+    .replace(/[ρ\u03c1]/g, 'rho');
+}
+
+// Sorted factor list for commutativity
+function productFactors(s) {
+  return s.replace(/[()]/g, '').split('*').filter(Boolean).sort();
+}
+
+// Parse an expression into {num: sorted[], den: sorted[]}
+// Handles: a*b, a/b, a/(b*c), a/b/c  — all treated equivalently
+function parseExpr(s) {
+  const clean = s.replace(/[()]/g, '');
+  const parts  = clean.split('/');
+  const num    = productFactors(parts[0]);
+  const den    = parts.length > 1
+    ? parts.slice(1).flatMap(p => productFactors(p)).sort()
+    : [];
+  return { num: num.join('*'), den: den.join('*') };
+}
+
+function sidesEqual(a, b) {
+  if (a === b) return true;
+  const pa = parseExpr(a), pb = parseExpr(b);
+  return pa.num === pb.num && pa.den === pb.den;
+}
+
+// ----------------------------------------------------------------
+// Exercise data
+// Correct answers stored in canonical normalised form (rho for ρ)
+// p is also accepted as alias for rho (added in correct arrays)
+// ----------------------------------------------------------------
+const exercises = {
+  1: {
+    correct: ['t=d/v'],
+    steps: [
+      'On multiplie les deux membres par \\(t\\) : \\(v \\times t = d\\)',
+      'On divise les deux membres par \\(v\\) : \\(t = \\dfrac{d}{v}\\)'
+    ]
+  },
+  2: {
+    // ρ alias: rho or p
+    correct: ['m=rho*v', 'm=v*rho', 'm=p*v', 'm=v*p'],
+    steps: [
+      'On multiplie les deux membres par \\(V\\) : \\(\\rho \\times V = m\\)',
+      'Donc \\(m = \\rho \\times V\\)'
+    ]
+  },
+  3: {
+    correct: ['v=m/rho', 'v=m/p'],
+    steps: [
+      'On multiplie les deux membres par \\(V\\) : \\(\\rho \\times V = m\\)',
+      'On divise les deux membres par \\(\\rho\\) : \\(V = \\dfrac{m}{\\rho}\\)'
+    ]
+  },
+  4: {
+    correct: ['m=p/g'],
+    steps: [
+      'On divise les deux membres par \\(g\\) : \\(\\dfrac{P}{g} = m\\)',
+      'Donc \\(m = \\dfrac{P}{g}\\)'
+    ]
+  },
+  5: {
+    correct: ['v=m/c'],
+    steps: [
+      'On multiplie les deux membres par \\(V\\) : \\(C \\times V = m\\)',
+      'On divise les deux membres par \\(C\\) : \\(V = \\dfrac{m}{C}\\)'
+    ]
+  }
+};
+
+// ----------------------------------------------------------------
+// Phase 3 exercise data
+// ----------------------------------------------------------------
+const p3exercises = {
+  1: {
+    correct: ['a=f/m'],
+    steps: [
+      'On divise les deux membres par \\(m\\) : \\(\\dfrac{F}{m} = a\\)',
+      'Donc \\(a = \\dfrac{F}{m}\\)'
+    ]
+  },
+  2: {
+    correct: ['m=f/a'],
+    steps: [
+      'On divise les deux membres par \\(a\\) : \\(\\dfrac{F}{a} = m\\)',
+      'Donc \\(m = \\dfrac{F}{a}\\)'
+    ]
+  },
+  3: {
+    correct: ['m=c*v', 'm=v*c'],
+    steps: [
+      'On multiplie les deux membres par \\(V\\) : \\(C \\times V = m\\)',
+      'Donc \\(m = C \\times V\\)'
+    ]
+  },
+  4: {
+    correct: ['g=p/m'],
+    steps: [
+      'On divise les deux membres par \\(m\\) : \\(\\dfrac{P}{m} = g\\)',
+      'Donc \\(g = \\dfrac{P}{m}\\)'
+    ]
+  },
+  5: {
+    correct: ['d=v*t', 'd=t*v'],
+    steps: [
+      'On multiplie les deux membres par \\(t\\) : \\(v \\times t = d\\)',
+      'Donc \\(d = v \\times t\\)'
+    ]
+  },
+  6: {
+    // relation: m = ρ × V  → isoler ρ   (rho or p)
+    correct: ['rho=m/v', 'p=m/v'],
+    steps: [
+      'On divise les deux membres par \\(V\\) : \\(\\dfrac{m}{V} = \\rho\\)',
+      'Donc \\(\\rho = \\dfrac{m}{V}\\)'
+    ]
+  },
+  7: {
+    // P = ρ × V × g  → isoler V  → V = P/(ρ×g)
+    correct: ['v=p/rho/g', 'v=p/g/rho', 'v=p/(rho*g)', 'v=p/(g*rho)'],
+    steps: [
+      'On divise les deux membres par \\(\\rho\\) : \\(\\dfrac{P}{\\rho} = V \\times g\\)',
+      'On divise les deux membres par \\(g\\) : \\(V = \\dfrac{P}{\\rho \\times g}\\)'
+    ]
+  },
+  8: {
+    // P = ρ × V × g  → isoler ρ  → ρ = P/(V×g)
+    correct: ['rho=p/v/g', 'rho=p/g/v', 'rho=p/(v*g)', 'rho=p/(g*v)',
+              'p=p/v/g',   'p=p/g/v',   'p=p/(v*g)',   'p=p/(g*v)'],
+    steps: [
+      'On divise les deux membres par \\(V\\) : \\(\\dfrac{P}{V} = \\rho \\times g\\)',
+      'On divise les deux membres par \\(g\\) : \\(\\rho = \\dfrac{P}{V \\times g}\\)'
+    ]
+  }
+};
+
+const doneExercises = new Set();
+
+// ----------------------------------------------------------------
+// Phase 3 logic
+// ----------------------------------------------------------------
+function evalP3Answer(raw, ex) {
+  if (!raw) return false;
+  let norm = normaliseGreek(raw);
+  if (!norm.includes('=')) return false;
+  const ei   = norm.indexOf('=');
+  const lhs  = norm.slice(0, ei);
+  const rhs  = norm.slice(ei + 1);
+  for (const c of ex.correct) {
+    const nc  = normalise(c);
+    const ci  = nc.indexOf('=');
+    const clhs = nc.slice(0, ci);
+    const crhs = nc.slice(ci + 1);
+    if (lhs === clhs && sidesEqual(rhs, crhs)) return true;
+  }
+  return false;
+}
+
+function finishPhase3() {
+  let score = 0;
+  const total = 8;
+  const nodes = [];
+
+  for (let n = 1; n <= total; n++) {
+    const input = document.getElementById('p3input' + n);
+    const fb    = document.getElementById('p3fb'    + n);
+    const raw   = input.value.trim();
+    const ex    = p3exercises[n];
+    const ok    = evalP3Answer(raw, ex);
+
+    input.classList.remove('correct', 'incorrect');
+    fb.classList.remove('visible', 'feedback-correct', 'feedback-incorrect');
+
+    if (ok) {
+      score++;
+      input.classList.add('correct');
+      fb.classList.add('visible', 'feedback-correct');
+      fb.innerHTML = '✅ Bonne réponse !';
+    } else {
+      input.classList.add('incorrect');
+      fb.classList.add('visible', 'feedback-incorrect');
+      let html = (!raw ? '❌ Aucune réponse.' : '❌ Réponse incorrecte.')
+               + ' Correction étape par étape :<br><br>';
+      ex.steps.forEach((s, i) => {
+        html += `<div class="feedback-step"><strong>Étape ${i+1} :</strong> ${s}</div>`;
+      });
+      fb.innerHTML = html;
+    }
+    nodes.push(fb);
+  }
+
+  // Score panel
+  const panel = document.getElementById('score-panel');
+  const hl    = document.getElementById('score-headline');
+  const det   = document.getElementById('score-detail');
+  panel.classList.remove('hidden');
+
+  const pct = Math.round(score / total * 100);
+  let mention = '';
+  if (pct === 100) mention = ' 🎉 Parfait !';
+  else if (pct >= 75) mention = ' 👍 Très bien.';
+  else if (pct >= 50) mention = ' 💪 À retravailler.';
+  else mention = ' 📖 Revoyez les techniques.';
+
+  hl.textContent = `Score : ${score} / ${total}${mention}`;
+  det.textContent = score < total
+    ? 'Les corrections détaillées sont affichées sous chaque exercice incorrect.'
+    : 'Toutes les réponses sont correctes.';
+
+  panel.style.borderColor = score === total ? '#4a7a3a' : '#3a5a8a';
+  hl.style.color          = score === total ? '#2a5a10' : '#222';
+
+  document.getElementById('restart-btn').style.display = 'inline-block';
+
+  // Render MathJax in all feedback boxes + score panel
+  if (window.MathJax) MathJax.typesetPromise([panel, ...nodes]);
+  panel.scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetPhase3() {
+  for (let n = 1; n <= 8; n++) {
+    const input = document.getElementById('p3input' + n);
+    const fb    = document.getElementById('p3fb'    + n);
+    input.value = '';
+    input.classList.remove('correct', 'incorrect');
+    fb.classList.remove('visible', 'feedback-correct', 'feedback-incorrect');
+    fb.innerHTML = '';
+  }
+  document.getElementById('score-panel').classList.add('hidden');
+  document.getElementById('restart-btn').style.display = 'none';
+  window.scrollTo(0, 0);
+}
+
+// ----------------------------------------------------------------
+// Phase 2 logic
+// ----------------------------------------------------------------
+function checkEx(n) {
+  const input = document.getElementById('input' + n);
+  const fb    = document.getElementById('fb' + n);
+  const raw   = input.value.trim();
+  if (!raw) return;
+
+  const ex = exercises[n];
+
+  // Normalise input: greek chars + operators
+  let norm = normaliseGreek(raw);
+  // For ex 5, Cm → cm (already lowercase after normalise)
+  // For ex 2/3, V → v (already lowercase)
+
+  if (!norm.includes('=')) {
+    fb.classList.remove('visible', 'feedback-correct', 'feedback-incorrect');
+    fb.classList.add('visible', 'feedback-incorrect');
+    fb.innerHTML = '✗ Format invalide. Écris une égalité, par exemple : <code>t = d/v</code>';
+    input.classList.add('incorrect');
+    return;
+  }
+
+  const eqIdx = norm.indexOf('=');
+  const lhs = norm.slice(0, eqIdx);
+  const rhs = norm.slice(eqIdx + 1);
+
+  let ok = false;
+  for (const c of ex.correct) {
+    const nc   = normalise(c); // correct already uses rho/p, no greek chars
+    const ci   = nc.indexOf('=');
+    const clhs = nc.slice(0, ci);
+    const crhs = nc.slice(ci + 1);
+    if (lhs === clhs && sidesEqual(rhs, crhs)) { ok = true; break; }
+  }
+
+  input.classList.remove('correct', 'incorrect');
+  fb.classList.remove('visible', 'feedback-correct', 'feedback-incorrect');
+
+  if (ok) {
+    input.classList.add('correct');
+    fb.classList.add('visible', 'feedback-correct');
+    fb.innerHTML = '✅ Bonne réponse !';
+    doneExercises.add(n);
+    if (doneExercises.size === 5) {
+      const btn = document.getElementById('phase3-btn');
+      btn.classList.remove('hidden');
+      btn.scrollIntoView({ behavior: 'smooth' });
+    }
+  } else {
+    input.classList.add('incorrect');
+    fb.classList.add('visible', 'feedback-incorrect');
+    let html = '❌ Réponse incorrecte. Correction étape par étape :<br><br>';
+    ex.steps.forEach((s, i) => {
+      html += `<div class="feedback-step"><strong>Étape ${i+1} :</strong> ${s}</div>`;
+    });
+    fb.innerHTML = html;
+    if (window.MathJax) MathJax.typesetPromise([fb]);
+  }
+}
+</script>
+</body>
+</html>
