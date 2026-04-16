@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantités de matière — Seconde</title>
+<script>
+MathJax = { tex: { inlineMath: [['$','$'],['\\(','\\)']] }, startup: { ready() { MathJax.startup.defaultReady(); } } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+/* ── Palette ── */
+:root {
+  --bg1: #eff6ff;   /* blue-50  */
+  --bg2: #e0e7ff;   /* indigo-100 */
+  --text: #1e1b4b;  /* indigo-950 */
+  --muted: #6b7280;
+  --card: #ffffff;
+
+  --blue:   #3b82f6;
+  --blue-d: #1d4ed8;
+  --blue-bg:#dbeafe;
+
+  --violet:   #8b5cf6;
+  --violet-d: #6d28d9;
+  --violet-bg:#ede9fe;
+
+  --amber:   #f59e0b;
+  --amber-d: #b45309;
+  --amber-bg:#fef3c7;
+
+  --ok:   #dcfce7; --ok-b:  #16a34a;
+  --err:  #fee2e2; --err-b: #dc2626;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, var(--bg1) 0%, var(--bg2) 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+#app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 18px 80px;
+}
+
+/* ── Écrans ── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── Header ── */
+.site-header { text-align: center; margin-bottom: 36px; }
+.site-title {
+  font-size: 2rem; font-weight: 800; color: #1e1b4b;
+  letter-spacing: -0.5px; margin-bottom: 4px;
+}
+.site-sub { color: var(--muted); font-size: 0.93rem; }
+
+/* ── Cartes de menu ── */
+.phase-cards { display: flex; flex-direction: column; gap: 14px; }
+
+.phase-card {
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(30,27,75,0.08);
+  border-left: 7px solid transparent;
+  padding: 20px 22px;
+  display: flex; align-items: center; gap: 16px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  text-decoration: none; color: inherit;
+}
+.phase-card:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(30,27,75,0.14); }
+.phase-card.locked { opacity: 0.55; cursor: not-allowed; pointer-events: none; }
+.phase-card.p1 { border-color: var(--blue); }
+.phase-card.p2 { border-color: var(--violet); }
+.phase-card.p3 { border-color: var(--amber); }
+.phase-card.p4 { border-color: transparent; background: linear-gradient(135deg, #f97316, #ef4444); color: #fff; }
+.phase-card.p4 .pc-tag, .phase-card.p4 .pc-desc { color: rgba(255,255,255,0.8); }
+.phase-card.p4.locked { background: #e5e7eb; color: #6b7280; }
+.phase-card.p4.locked .pc-name { color: #9ca3af; }
+
+.pc-icon { font-size: 1.8rem; flex-shrink: 0; width: 44px; text-align: center; }
+.pc-info { flex: 1; }
+.pc-tag {
+  font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.09em;
+  font-weight: 700; color: var(--muted); margin-bottom: 2px;
+}
+.phase-card.p1 .pc-tag { color: var(--blue-d); }
+.phase-card.p2 .pc-tag { color: var(--violet-d); }
+.phase-card.p3 .pc-tag { color: var(--amber-d); }
+.pc-name { font-size: 1.02rem; font-weight: 700; margin-bottom: 1px; }
+.pc-desc { font-size: 0.84rem; color: var(--muted); }
+.pc-arrow { font-size: 1.1rem; color: #d1d5db; flex-shrink: 0; }
+.phase-card:hover .pc-arrow { color: inherit; }
+
+/* ── Nav back ── */
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: none; cursor: pointer;
+  color: var(--blue-d); font-size: 0.9rem; font-weight: 600;
+  padding: 0; margin-bottom: 28px;
+  font-family: inherit;
+}
+.back-btn:hover { text-decoration: underline; }
+
+/* ── Phase header ── */
+.phase-header { margin-bottom: 24px; }
+.phase-badge {
+  display: inline-block;
+  font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.09em; padding: 3px 10px; border-radius: 20px;
+  margin-bottom: 6px;
+}
+.badge-blue   { background: var(--blue-bg); color: var(--blue-d); }
+.badge-violet { background: var(--violet-bg); color: var(--violet-d); }
+.badge-amber  { background: var(--amber-bg); color: var(--amber-d); }
+.badge-red    { background: #fee2e2; color: #b91c1c; }
+.phase-title  { font-size: 1.25rem; font-weight: 800; color: var(--text); }
+
+/* ── Cards de contenu ── */
+.card {
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(30,27,75,0.07);
+  border: 1.5px solid #e0e7ff;
+  padding: 22px 24px;
+  margin-bottom: 18px;
+}
+.card-title {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em;
+  font-weight: 700; color: var(--blue-d);
+  margin-bottom: 14px; padding-bottom: 8px;
+  border-bottom: 1.5px solid var(--blue-bg);
+}
+
+/* ── Formule ── */
+.formula-box {
+  background: linear-gradient(135deg, var(--blue-bg), var(--violet-bg));
+  border: 2px solid var(--blue);
+  border-radius: 12px; padding: 18px 22px;
+  text-align: center; font-size: 1.1rem;
+  margin: 14px 0;
+}
+.def-grid {
+  display: grid; grid-template-columns: auto 1fr;
+  gap: 5px 14px; margin-top: 12px; font-size: 0.92rem;
+}
+.def-sym { font-weight: 700; color: var(--blue-d); }
+
+/* ── Exemples ── */
+.example {
+  border-left: 4px solid var(--blue);
+  padding: 14px 18px;
+  background: var(--blue-bg);
+  border-radius: 0 12px 12px 0;
+  margin: 16px 0;
+}
+.example.violet-ex {
+  border-left-color: var(--violet);
+  background: var(--violet-bg);
+}
+.example-title { font-weight: 700; margin-bottom: 8px; font-size: 0.93rem; }
+.example.violet-ex .example-title { color: var(--violet-d); }
+.example-title { color: var(--blue-d); }
+.example-enonce { margin-bottom: 12px; font-style: italic; font-size: 0.93rem; }
+.step { display: flex; gap: 10px; margin-bottom: 7px; font-size: 0.92rem; }
+.step-num {
+  width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 2px;
+  font-size: 0.68rem; font-weight: 700; color: #fff;
+  background: var(--blue);
+}
+.violet-ex .step-num { background: var(--violet); }
+
+/* ── Pratique guidée ── */
+.exo-enonce {
+  background: #f8faff; border: 1px solid #c7d2fe;
+  border-radius: 10px; padding: 14px 18px; margin-bottom: 18px;
+  font-size: 0.93rem;
+}
+.guided-step { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 14px; font-size: 0.92rem; }
+.guided-label { color: var(--muted); font-size: 0.8rem; min-width: 150px; padding-top: 4px; }
+.guided-content { flex: 1; }
+
+select.blank {
+  appearance: none; -webkit-appearance: none;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M0 0l6 8 6-8z' fill='%233b82f6'/%3E%3C/svg%3E") no-repeat right 10px center;
+  border: 2px solid var(--blue); border-radius: 8px;
+  padding: 6px 32px 6px 10px; font-size: 16px; color: var(--text);
+  cursor: pointer; font-family: inherit;
+}
+select.blank:focus { outline: none; box-shadow: 0 0 0 3px rgba(59,130,246,0.25); }
+select.blank.correct { border-color: var(--ok-b); background-color: var(--ok); }
+select.blank.wrong   { border-color: var(--err-b); background-color: var(--err); }
+
+/* ── Saisie scientifique ── */
+.sci-wrap { display: inline-flex; align-items: flex-start; gap: 2px; vertical-align: middle; }
+.sci-base { font-size: 1.25rem; font-weight: 800; color: #1e3a8a; line-height: 1; }
+.sci-m {
+  width: 66px; font-size: 16px; font-weight: 700;
+  border: 2px solid var(--blue); border-radius: 7px;
+  padding: 5px 8px; background: #fff; color: var(--text); font-family: inherit;
+}
+.sci-e {
+  width: 46px; font-size: 13px; font-weight: 700;
+  border: 2px solid var(--blue); border-radius: 6px;
+  padding: 4px 6px; background: #fff; color: #1e3a8a;
+  margin-top: -10px; font-family: inherit;
+}
+.sci-m:focus, .sci-e:focus { outline: none; box-shadow: 0 0 0 3px rgba(59,130,246,0.25); }
+.sci-m.ok, .sci-e.ok { border-color: var(--ok-b); background: var(--ok); }
+.sci-m.ko, .sci-e.ko { border-color: var(--err-b); background: var(--err); }
+
+input.short-ans {
+  width: 90px; font-size: 16px; font-weight: 700;
+  border: 2px solid var(--blue); border-radius: 7px;
+  padding: 6px 10px; background: #fff; color: var(--text); font-family: inherit;
+}
+input.short-ans:focus { outline: none; box-shadow: 0 0 0 3px rgba(59,130,246,0.25); }
+input.short-ans.ok { border-color: var(--ok-b); background: var(--ok); }
+input.short-ans.ko { border-color: var(--err-b); background: var(--err); }
+
+/* ── Feedback ── */
+.feedback { border-radius: 10px; padding: 14px 18px; margin-top: 12px; font-size: 0.92rem; display: none; }
+.feedback.ok  { background: var(--ok);  border: 1.5px solid var(--ok-b);  display: block; }
+.feedback.ko  { background: var(--err); border: 1.5px solid var(--err-b); display: block; }
+.fb-title { font-weight: 700; margin-bottom: 6px; }
+.corr-step { margin-bottom: 4px; }
+
+/* ── Quiz ── */
+.checkbox-list { display: flex; flex-direction: column; gap: 8px; }
+.cb-item {
+  display: flex; align-items: center; gap: 10px;
+  background: #f8faff; border: 1.5px solid #c7d2fe;
+  border-radius: 9px; padding: 10px 14px; cursor: pointer;
+  transition: border-color 0.15s; font-size: 0.92rem;
+}
+.cb-item:hover { border-color: var(--blue); }
+.cb-item input { width: 17px; height: 17px; accent-color: var(--blue); cursor: pointer; }
+.cb-item.ok { background: var(--ok);  border-color: var(--ok-b); }
+.cb-item.ko { background: var(--err); border-color: var(--err-b); }
+
+/* ── Boutons ── */
+.btn {
+  background: var(--blue); color: #fff;
+  border: none; border-radius: 10px;
+  padding: 10px 22px; font-size: 0.97rem; font-weight: 700;
+  font-family: inherit; cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn:hover { background: var(--blue-d); transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn-ghost {
+  background: transparent; color: var(--blue);
+  border: 2px solid var(--blue); border-radius: 10px;
+  padding: 8px 20px; font-size: 0.97rem; font-weight: 700;
+  font-family: inherit; cursor: pointer;
+  transition: background 0.15s;
+  text-decoration: none; display: inline-block;
+}
+.btn-ghost:hover { background: var(--blue-bg); }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+
+/* ── Pratique autonome ── */
+.progress-wrap { background: #e0e7ff; border-radius: 6px; height: 7px; margin-bottom: 20px; overflow: hidden; }
+.progress-bar  { background: linear-gradient(90deg, var(--blue), var(--violet)); height: 100%; border-radius: 6px; transition: width 0.4s; }
+.auto-enonce {
+  background: #f8faff; border: 1.5px solid #c7d2fe;
+  border-radius: 12px; padding: 18px 20px; margin-bottom: 20px;
+}
+.answer-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.answer-label { font-size: 0.9rem; color: var(--muted); }
+
+/* ── Score ── */
+.score-box { text-align: center; padding: 32px 20px; }
+.score-num  { font-size: 3.5rem; font-weight: 800; color: var(--blue); }
+.score-pct  { font-size: 0.95rem; color: var(--muted); margin-bottom: 6px; }
+.score-msg  { font-size: 1rem; margin-bottom: 28px; }
+
+/* ── Lock badge on card ── */
+.lock-badge {
+  background: #e5e7eb; color: #9ca3af;
+  font-size: 0.7rem; font-weight: 700; font-family: inherit;
+  text-transform: uppercase; letter-spacing: 0.07em;
+  padding: 2px 8px; border-radius: 12px;
+}
+
+footer { font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 56px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════════════════════════════════════
+       ACCUEIL
+  ══════════════════════════════════════════ -->
+  <div id="home" class="screen active">
+    <div class="site-header">
+      <div class="site-title">⚗️ Quantités de matière</div>
+      <div class="site-sub">Physique-chimie — Seconde · Relation $n = N \,/\, N_A$</div>
+    </div>
+
+    <div class="phase-cards">
+
+      <div class="phase-card p1" onclick="goScreen('phase1')">
+        <div class="pc-icon">📖</div>
+        <div class="pc-info">
+          <div class="pc-tag">Phase 1</div>
+          <div class="pc-name">Cours — La relation fondamentale</div>
+          <div class="pc-desc">Définitions, formules et deux exemples rédigés</div>
+        </div>
+        <div class="pc-arrow">→</div>
+      </div>
+
+      <div class="phase-card p2" onclick="goScreen('phase2')">
+        <div class="pc-icon">✏️</div>
+        <div class="pc-info">
+          <div class="pc-tag">Phase 2</div>
+          <div class="pc-name">Pratique guidée</div>
+          <div class="pc-desc">Deux exercices avec menus à choix — réponse construite étape par étape</div>
+        </div>
+        <div class="pc-arrow">→</div>
+      </div>
+
+      <div class="phase-card p3" onclick="goScreen('phase3')">
+        <div class="pc-icon">🧩</div>
+        <div class="pc-info">
+          <div class="pc-tag">Phase 3</div>
+          <div class="pc-name">Quiz de vérification</div>
+          <div class="pc-desc">3 questions à valider pour débloquer la phase 4</div>
+        </div>
+        <div class="pc-arrow">→</div>
+      </div>
+
+      <div class="phase-card p4 locked" id="card-p4" onclick="goScreen('phase4')">
+        <div class="pc-icon">🏆</div>
+        <div class="pc-info">
+          <div class="pc-tag">Phase 4</div>
+          <div class="pc-name">Pratique autonome</div>
+          <div class="pc-desc" id="p4-desc">5 questions sans aide — valide le quiz pour débloquer</div>
+        </div>
+        <div class="pc-arrow" id="p4-arrow">🔒</div>
+      </div>
+
+    </div>
+
+    <footer>Aucune donnée collectée</footer>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PHASE 1 — COURS
+  ══════════════════════════════════════════ -->
+  <div id="phase1" class="screen">
+    <button class="back-btn" onclick="goScreen('home')">← Retour au menu</button>
+
+    <div class="phase-header">
+      <div class="phase-badge badge-blue">Phase 1</div>
+      <div class="phase-title">Cours — La relation fondamentale</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Les trois grandeurs</div>
+      <div class="formula-box">
+        $$ n = \frac{N}{N_A} \quad \Longleftrightarrow \quad N = n \times N_A \quad \Longleftrightarrow \quad N_A = \frac{N}{n} $$
+      </div>
+      <div class="def-grid">
+        <span class="def-sym">n</span><span>quantité de matière, en <strong>mole</strong> (mol)</span>
+        <span class="def-sym">N</span><span>nombre d'entités (atomes, molécules, ions…) — sans unité</span>
+        <span class="def-sym">N<sub>A</sub></span><span>constante d'Avogadro = <strong>6,0 × 10²³ mol⁻¹</strong></span>
+      </div>
+    </div>
+
+    <div class="example">
+      <div class="example-title">Exemple 1 — Calculer n à partir de N</div>
+      <div class="example-enonce">Dans un verre d'eau, il y a 8,0 × 10²³ molécules d'eau. Calcule la quantité de matière en molécules d'eau.</div>
+      <div class="step"><div class="step-num">1</div><div>Expression littérale : $n = \dfrac{N}{N_A}$</div></div>
+      <div class="step"><div class="step-num">2</div><div>Application numérique : $n = \dfrac{8{,}0 \times 10^{23}}{6{,}0 \times 10^{23}}$</div></div>
+      <div class="step"><div class="step-num">3</div><div>Résultat : $\boxed{n = 1{,}3 \text{ mol}}$</div></div>
+    </div>
+
+    <div class="example violet-ex">
+      <div class="example-title">Exemple 2 — Calculer N à partir de n</div>
+      <div class="example-enonce">Un comprimé d'aspirine contient 2,5 × 10⁻³ mol de molécules d'aspirine. Calcule le nombre de molécules dans ce comprimé.</div>
+      <div class="step"><div class="step-num">1</div><div>Expression littérale : $N = n \times N_A$</div></div>
+      <div class="step"><div class="step-num">2</div><div>Application numérique : $N = 2{,}5 \times 10^{-3} \times 6{,}0 \times 10^{23}$</div></div>
+      <div class="step"><div class="step-num">3</div><div>Résultat : $\boxed{N = 1{,}5 \times 10^{21} \text{ molécules}}$</div></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" onclick="goScreen('phase2')">Passer à la pratique guidée →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PHASE 2 — PRATIQUE GUIDÉE
+  ══════════════════════════════════════════ -->
+  <div id="phase2" class="screen">
+    <button class="back-btn" onclick="goScreen('home')">← Retour au menu</button>
+
+    <div class="phase-header">
+      <div class="phase-badge badge-violet">Phase 2</div>
+      <div class="phase-title">Pratique guidée</div>
+    </div>
+
+    <!-- G1 : n → N -->
+    <div class="card">
+      <div class="card-title">Exercice 1 — Calculer N à partir de n</div>
+      <div class="exo-enonce">
+        Un clou en fer contient <strong>0,050 mol</strong> d'atomes de fer.
+        Calcule le nombre d'atomes de fer dans ce clou.
+      </div>
+
+      <div class="guided-step">
+        <div class="guided-label">① Expression littérale</div>
+        <div class="guided-content">
+          $N =$&nbsp;<select class="blank" id="g1s1" onchange="g1Step1()">
+            <option value="">— choisir —</option>
+            <option value="ok">n × Nₐ</option>
+            <option value="ko1">n ÷ Nₐ</option>
+            <option value="ko2">Nₐ ÷ n</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="g1r2">
+        <div class="guided-label">② Application numérique</div>
+        <div class="guided-content">
+          $N =$&nbsp;<select class="blank" id="g1s2" onchange="g1Step2()">
+            <option value="">— choisir —</option>
+            <option value="ok">0,050 × 6,0 × 10²³</option>
+            <option value="ko1">0,050 ÷ 6,0 × 10²³</option>
+            <option value="ko2">6,0 × 10²³ ÷ 0,050</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="g1r3">
+        <div class="guided-label">③ Résultat (2 chiffres sig.)</div>
+        <div class="guided-content">
+          $N =$&nbsp;<span class="sci-wrap">
+            <input class="sci-m" id="g1m" type="text" inputmode="decimal" placeholder="x,x" autocomplete="off">
+            <span class="sci-base">&nbsp;× 10</span>
+            <input class="sci-e" id="g1e" type="text" inputmode="decimal" placeholder="n" autocomplete="off">
+          </span>&nbsp;atomes
+        </div>
+      </div>
+      <div class="btn-row" id="g1-btn" style="display:none;">
+        <button class="btn" onclick="g1Result()">Vérifier</button>
+      </div>
+      <div id="g1-fb"></div>
+    </div>
+
+    <!-- G2 : N → n -->
+    <div class="card" id="g2-card" style="opacity:.45;pointer-events:none;">
+      <div class="card-title">Exercice 2 — Calculer n à partir de N</div>
+      <div class="exo-enonce">
+        Un échantillon de fer contient <strong>1,2 × 10²⁵</strong> atomes de fer.
+        Calcule la quantité de matière correspondante.
+      </div>
+
+      <div class="guided-step">
+        <div class="guided-label">① Expression littérale</div>
+        <div class="guided-content">
+          $n =$&nbsp;<select class="blank" id="g2s1" onchange="g2Step1()">
+            <option value="">— choisir —</option>
+            <option value="ok">N ÷ Nₐ</option>
+            <option value="ko1">N × Nₐ</option>
+            <option value="ko2">Nₐ ÷ N</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="g2r2">
+        <div class="guided-label">② Application numérique</div>
+        <div class="guided-content">
+          $n =$&nbsp;<select class="blank" id="g2s2" onchange="g2Step2()">
+            <option value="">— choisir —</option>
+            <option value="ok">1,2 × 10²⁵ ÷ 6,0 × 10²³</option>
+            <option value="ko1">1,2 × 10²⁵ × 6,0 × 10²³</option>
+            <option value="ko2">6,0 × 10²³ ÷ 1,2 × 10²⁵</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="g2r3">
+        <div class="guided-label">③ Résultat (2 chiffres sig.)</div>
+        <div class="guided-content">
+          $n =$&nbsp;<input class="short-ans" id="g2r" type="text" inputmode="decimal" placeholder="ex : 20" autocomplete="off">
+          &nbsp;mol&nbsp;<span style="font-size:.8rem;color:var(--muted);">(20 ou 2,0×10¹ acceptés)</span>
+        </div>
+      </div>
+      <div class="btn-row" id="g2-btn" style="display:none;">
+        <button class="btn" onclick="g2Result()">Vérifier</button>
+      </div>
+      <div id="g2-fb"></div>
+    </div>
+
+    <div class="btn-row" id="p2-next" style="display:none;">
+      <button class="btn" onclick="goScreen('phase3')">Passer au quiz →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PHASE 3 — QUIZ
+  ══════════════════════════════════════════ -->
+  <div id="phase3" class="screen">
+    <button class="back-btn" onclick="goScreen('home')">← Retour au menu</button>
+
+    <div class="phase-header">
+      <div class="phase-badge badge-amber">Phase 3</div>
+      <div class="phase-title">Quiz de vérification</div>
+    </div>
+    <p style="font-size:.9rem;color:var(--muted);margin-bottom:20px;">
+      Réponds correctement aux 3 questions pour débloquer la pratique autonome.
+    </p>
+
+    <!-- Q1 -->
+    <div class="card" id="qq1">
+      <div class="card-title">Question 1 — Formules correctes</div>
+      <p style="margin-bottom:12px;font-size:.93rem;">Coche toutes les formules justes :</p>
+      <div class="checkbox-list" id="q1list">
+        <label class="cb-item"><input type="checkbox" value="c1">&nbsp;$n = N \div N_A$</label>
+        <label class="cb-item"><input type="checkbox" value="c2">&nbsp;$N = n \times N_A$</label>
+        <label class="cb-item"><input type="checkbox" value="c3">&nbsp;$N_A = N \div n$</label>
+        <label class="cb-item"><input type="checkbox" value="w1">&nbsp;$n = N \times N_A$</label>
+        <label class="cb-item"><input type="checkbox" value="w2">&nbsp;$N = n \div N_A$</label>
+      </div>
+      <div class="btn-row"><button class="btn" id="q1-btn" onclick="checkQ1()">Valider</button></div>
+      <div id="q1-fb"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="card" id="qq2" style="opacity:.45;pointer-events:none;">
+      <div class="card-title">Question 2 — Constante d'Avogadro</div>
+      <p style="margin-bottom:12px;font-size:.93rem;">Quelle est sa valeur à 2 chiffres significatifs ?</p>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:.95rem;">
+        $N_A =$&nbsp;<span class="sci-wrap">
+          <input class="sci-m" id="q2m" type="text" inputmode="decimal" placeholder="x,x" autocomplete="off">
+          <span class="sci-base">&nbsp;× 10</span>
+          <input class="sci-e" id="q2e" type="text" inputmode="decimal" placeholder="n" autocomplete="off">
+        </span>&nbsp;mol⁻¹
+      </div>
+      <div class="btn-row"><button class="btn" id="q2-btn" onclick="checkQ2()">Valider</button></div>
+      <div id="q2-fb"></div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="card" id="qq3" style="opacity:.45;pointer-events:none;">
+      <div class="card-title">Question 3 — Unité de quantité de matière</div>
+      <p style="margin-bottom:12px;font-size:.93rem;">Quel est le symbole de l'unité de la quantité de matière ?</p>
+      <input class="short-ans" id="q3r" type="text" inputmode="text" placeholder="…" autocomplete="off" style="width:90px;">
+      <div class="btn-row"><button class="btn" id="q3-btn" onclick="checkQ3()">Valider</button></div>
+      <div id="q3-fb"></div>
+    </div>
+
+    <div id="quiz-ok" style="display:none;">
+      <div class="card" style="border-color:var(--ok-b);background:var(--ok);text-align:center;padding:24px;">
+        <div style="font-size:1.5rem;margin-bottom:8px;">✅</div>
+        <div style="font-weight:800;font-size:1.05rem;color:#15803d;">Quiz validé !</div>
+        <div style="font-size:.9rem;color:#166534;margin:6px 0 18px;">La pratique autonome est maintenant débloquée.</div>
+        <button class="btn" onclick="goScreen('phase4')">Démarrer la pratique autonome →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PHASE 4 — PRATIQUE AUTONOME
+  ══════════════════════════════════════════ -->
+  <div id="phase4" class="screen">
+    <button class="back-btn" onclick="goScreen('home')">← Retour au menu</button>
+
+    <div class="phase-header">
+      <div class="phase-badge badge-red">Phase 4</div>
+      <div class="phase-title">Pratique autonome</div>
+    </div>
+
+    <div id="auto-wrap"></div>
+  </div>
+
+</div><!-- #app -->
+
+<script>
+// ══════════════════════════════════════════════════
+// Navigation
+// ══════════════════════════════════════════════════
+let quizPassed = false;
+
+function goScreen(id) {
+  if (id === 'phase4' && !quizPassed) return;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (id === 'phase4') initAuto();
+  if (window.MathJax) MathJax.typesetPromise([document.getElementById(id)]);
+}
+
+function unlockP4() {
+  quizPassed = true;
+  const card = document.getElementById('card-p4');
+  card.classList.remove('locked');
+  document.getElementById('p4-desc').textContent = '5 questions sans aide · Score final';
+  document.getElementById('p4-arrow').textContent = '→';
+}
+
+// ══════════════════════════════════════════════════
+// Utilitaires
+// ══════════════════════════════════════════════════
+function n(s) { return String(s).trim().toLowerCase().replace(',', '.').replace(/\s/g,''); }
+
+function checkSci(mVal, eVal, mTgt, eTgt) {
+  const mv = parseFloat(n(mVal)), ev = parseInt(n(eVal));
+  if (isNaN(mv) || isNaN(ev)) return false;
+  return ev === eTgt && Math.abs(mv - mTgt) <= 0.1 + 1e-9;
+}
+
+function checkNum(val, tgt) {
+  const v = parseFloat(n(val));
+  if (isNaN(v)) return false;
+  return Math.abs(v - tgt) <= Math.abs(tgt) * 0.055 + 1e-12;
+}
+
+function fb(id, ok, html) {
+  const el = document.getElementById(id);
+  el.innerHTML = `<div class="feedback ${ok?'ok':'ko'}">${html}</div>`;
+  if (window.MathJax) MathJax.typesetPromise([el]);
+}
+
+function unlock(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.opacity = '1';
+  el.style.pointerEvents = 'auto';
+}
+
+function shakeReset(sel) {
+  sel.className = 'blank ko';
+  setTimeout(() => { sel.className = 'blank'; sel.value = ''; }, 800);
+}
+
+// ── Rows verrouillées ──
+document.querySelectorAll('.locked-row').forEach(el => {
+  el.style.opacity = '.35';
+  el.style.pointerEvents = 'none';
+});
+
+// ══════════════════════════════════════════════════
+// PHASE 2 — G1 (n → N)
+// ══════════════════════════════════════════════════
+function g1Step1() {
+  const s = document.getElementById('g1s1');
+  if (!s.value) return;
+  if (s.value === 'ok') {
+    s.className = 'blank ok'; s.disabled = true;
+    unlock('g1r2');
+  } else shakeReset(s);
+}
+function g1Step2() {
+  const s = document.getElementById('g1s2');
+  if (!s.value) return;
+  if (s.value === 'ok') {
+    s.className = 'blank ok'; s.disabled = true;
+    unlock('g1r3');
+    document.getElementById('g1-btn').style.display = 'flex';
+  } else shakeReset(s);
+}
+function g1Result() {
+  const m = document.getElementById('g1m').value, e = document.getElementById('g1e').value;
+  const ok = checkSci(m, e, 3.0, 22);
+  document.getElementById('g1m').className = 'sci-m ' + (ok?'ok':'ko');
+  document.getElementById('g1e').className = 'sci-e ' + (ok?'ok':'ko');
+  if (ok) {
+    fb('g1-fb', true, '<div class="fb-title">✓ Bonne réponse !</div>$N = 3{,}0 \\times 10^{22}$ atomes');
+    document.getElementById('g1-btn').style.display = 'none';
+    unlock('g2-card');
+    if (window.MathJax) MathJax.typesetPromise([document.getElementById('g2-card')]);
+  } else {
+    fb('g1-fb', false,
+      '<div class="fb-title">✗ Pas tout à fait.</div>' +
+      '<div class="corr-step">$N = n \\times N_A = 0{,}050 \\times 6{,}0 \\times 10^{23}$</div>' +
+      '<div class="corr-step">$N = 3{,}0 \\times 10^{22}$ atomes</div>');
+    setTimeout(() => {
+      document.getElementById('g1m').className='sci-m';
+      document.getElementById('g1e').className='sci-e';
+    }, 1200);
+  }
+}
+
+// ══════════════════════════════════════════════════
+// PHASE 2 — G2 (N → n)
+// ══════════════════════════════════════════════════
+function g2Step1() {
+  const s = document.getElementById('g2s1');
+  if (!s.value) return;
+  if (s.value === 'ok') {
+    s.className = 'blank ok'; s.disabled = true;
+    unlock('g2r2');
+  } else shakeReset(s);
+}
+function g2Step2() {
+  const s = document.getElementById('g2s2');
+  if (!s.value) return;
+  if (s.value === 'ok') {
+    s.className = 'blank ok'; s.disabled = true;
+    unlock('g2r3');
+    document.getElementById('g2-btn').style.display = 'flex';
+  } else shakeReset(s);
+}
+function g2Result() {
+  const r = document.getElementById('g2r').value;
+  const ok = checkNum(r, 20);
+  document.getElementById('g2r').className = 'short-ans ' + (ok?'ok':'ko');
+  if (ok) {
+    fb('g2-fb', true, '<div class="fb-title">✓ Bonne réponse !</div>$n = 20$ mol');
+    document.getElementById('g2-btn').style.display = 'none';
+    document.getElementById('p2-next').style.display = 'flex';
+  } else {
+    fb('g2-fb', false,
+      '<div class="fb-title">✗ Pas tout à fait.</div>' +
+      '<div class="corr-step">$n = N \\div N_A = \\dfrac{1{,}2 \\times 10^{25}}{6{,}0 \\times 10^{23}}$</div>' +
+      '<div class="corr-step">$n = \\dfrac{1{,}2}{6{,}0} \\times 10^{25-23} = 0{,}20 \\times 10^{2} = 20$ mol</div>');
+    setTimeout(() => { document.getElementById('g2r').className='short-ans'; }, 1200);
+  }
+}
+
+// ══════════════════════════════════════════════════
+// PHASE 3 — Quiz
+// ══════════════════════════════════════════════════
+const CORRECT_Q1 = new Set(['c1','c2','c3']);
+
+function checkQ1() {
+  const items = [...document.querySelectorAll('#q1list input')];
+  const checked = new Set(items.filter(i => i.checked).map(i => i.value));
+  const ok = checked.size === CORRECT_Q1.size && [...CORRECT_Q1].every(v => checked.has(v));
+  items.forEach(inp => {
+    const lbl = inp.closest('.cb-item');
+    lbl.classList.remove('ok','ko');
+    if (CORRECT_Q1.has(inp.value)) lbl.classList.add('ok');
+    else if (inp.checked) lbl.classList.add('ko');
+  });
+  if (ok) {
+    fb('q1-fb', true, '<div class="fb-title">✓ Les 3 formules sont bien équivalentes.</div>');
+    document.getElementById('q1-btn').disabled = true;
+    unlock('qq2');
+    if (window.MathJax) MathJax.typesetPromise([document.getElementById('qq2')]);
+  } else {
+    fb('q1-fb', false, '<div class="fb-title">✗ Pas tout à fait — les cases correctes sont surlignées en vert.</div>');
+    setTimeout(() => {
+      items.forEach(i => i.closest('.cb-item').classList.remove('ok','ko'));
+      document.getElementById('q1-fb').innerHTML = '';
+    }, 1800);
+  }
+}
+
+function checkQ2() {
+  const m = document.getElementById('q2m').value, e = document.getElementById('q2e').value;
+  const mNorm = n(m); // après remplacement virgule→point
+  const validMantisse = mNorm === '6.0';
+  const ok = validMantisse && checkSci(m, e, 6.0, 23);
+  document.getElementById('q2m').className = 'sci-m ' + (ok?'ok':'ko');
+  document.getElementById('q2e').className = 'sci-e ' + (ok?'ok':'ko');
+  if (ok) {
+    fb('q2-fb', true, '<div class="fb-title">✓ $N_A = 6{,}0 \\times 10^{23}$ mol⁻¹ — à retenir !</div>');
+    document.getElementById('q2-btn').disabled = true;
+    unlock('qq3');
+    if (window.MathJax) MathJax.typesetPromise([document.getElementById('qq3')]);
+  } else {
+    const msg = !validMantisse && mNorm === '6'
+      ? '<div class="fb-title">✗ Pas assez précis.</div><div>Écris <strong>6,0</strong> et non 6 — on exige 2 chiffres significatifs.</div>'
+      : '<div class="fb-title">✗ Incorrect.</div><div>$N_A = 6{,}0 \\times 10^{23}$ mol⁻¹</div>';
+    fb('q2-fb', false, msg);
+    setTimeout(() => {
+      document.getElementById('q2m').className='sci-m';
+      document.getElementById('q2e').className='sci-e';
+      document.getElementById('q2-fb').innerHTML='';
+    }, 2000);
+  }
+}
+
+function checkQ3() {
+  const ok = n(document.getElementById('q3r').value) === 'mol';
+  document.getElementById('q3r').className = 'short-ans ' + (ok?'ok':'ko');
+  if (ok) {
+    fb('q3-fb', true, '<div class="fb-title">✓ Le symbole est bien <strong>mol</strong>.</div>');
+    document.getElementById('q3-btn').disabled = true;
+    unlockP4();
+    document.getElementById('quiz-ok').style.display = 'block';
+    window.scrollTo({ top: document.getElementById('quiz-ok').offsetTop - 20, behavior: 'smooth' });
+  } else {
+    fb('q3-fb', false, '<div class="fb-title">✗ Incorrect — le symbole est <strong>mol</strong> (minuscules).</div>');
+    setTimeout(() => {
+      document.getElementById('q3r').className='short-ans';
+      document.getElementById('q3-fb').innerHTML='';
+    }, 2000);
+  }
+}
+
+// ══════════════════════════════════════════════════
+// PHASE 4 — Pratique autonome
+// ══════════════════════════════════════════════════
+const AQ = [
+  {
+    enonce: "Un échantillon de sel de cuisine contient <strong>3,6 × 10²⁴</strong> ions chlorure Cl⁻. Calcule, à 2 chiffres significatifs, la quantité de matière d'ions chlorure.",
+    plain:true, target:6.0, unite:'mol',
+    corr:['n = N \\div N_A','n = \\dfrac{3{,}6\\times10^{24}}{6{,}0\\times10^{23}}','n = 6{,}0 \\text{ mol}'],
+    hint(m){ return 'Rappel : $n = N \\div N_A$.'; }
+  },
+  {
+    enonce: "Un médicament contient <strong>0,25 mol</strong> de molécules de paracétamol. Calcule, à 2 chiffres significatifs, le nombre de molécules de paracétamol.",
+    mt:1.5, et:23, unite:'molécules',
+    corr:['N = n \\times N_A','N = 0{,}25 \\times 6{,}0\\times10^{23}','N = 1{,}5\\times10^{23} \\text{ molécules}'],
+    hint(m,e){ return parseInt(n(e))<0 ? 'Tu as divisé au lieu de multiplier.' : 'Rappel : $N = n \\times N_A$.'; }
+  },
+  {
+    enonce: "Un globule rouge contient environ <strong>2,8 × 10⁸</strong> molécules d'hémoglobine. Calcule, à 2 chiffres significatifs, la quantité de matière d'hémoglobine dans un globule rouge.",
+    mt:4.7, et:-16, unite:'mol',
+    corr:['n = N \\div N_A','n = \\dfrac{2{,}8\\times10^8}{6{,}0\\times10^{23}}','n \\approx 4{,}7\\times10^{-16} \\text{ mol}'],
+    hint(m,e){ return parseInt(n(e))>0 ? 'L\'exposant est négatif : c\'est une très petite quantité.' : 'Rappel : $n = N \\div N_A$.'; }
+  },
+  {
+    enonce: "Un ballon contient <strong>0,040 mol</strong> de diazote N₂. On donne $N_A = 6{,}02 \\times 10^{23}$ mol⁻¹. Calcule, à 2 chiffres significatifs, le nombre de molécules de diazote.",
+    mt:2.4, et:22, unite:'molécules',
+    corr:['N = n \\times N_A','N = 0{,}040 \\times 6{,}02\\times10^{23}','N = 2{,}4\\times10^{22} \\text{ molécules}'],
+    hint(m,e){ return 'Rappel : $N = n \\times N_A = 0{,}040 \\times 6{,}02\\times10^{23}$.'; }
+  },
+  {
+    enonce: "Un fil de cuivre contient <strong>4,5 × 10²²</strong> atomes de cuivre. Calcule, à 2 chiffres significatifs, la quantité de matière de cuivre dans ce fil.",
+    mt:7.5, et:-2, unite:'mol',
+    corr:['n = N \\div N_A','n = \\dfrac{4{,}5\\times10^{22}}{6{,}0\\times10^{23}}','n = 7{,}5\\times10^{-2} \\text{ mol} = 0{,}075 \\text{ mol}'],
+    hint(m,e){ return parseInt(n(e))>0 ? 'Le résultat est < 1 mol : l\'exposant est négatif.' : 'Rappel : $\\frac{4{,}5}{6{,}0}=0{,}75$ et $10^{22-23}=10^{-1}$, donc $7{,}5\\times10^{-2}$.'; }
+  }
+];
+
+let aIdx = 0, aScore = 0;
+
+function initAuto() { aIdx = 0; aScore = 0; renderAQ(); }
+
+function renderAQ() {
+  const wrap = document.getElementById('auto-wrap');
+  if (aIdx >= AQ.length) { renderScore(); return; }
+  const q = AQ[aIdx];
+  const answerField = q.plain
+    ? `<input class="short-ans" id="am" type="text" inputmode="decimal" placeholder="x,x" autocomplete="off">`
+    : `<span class="sci-wrap">
+        <input class="sci-m" id="am" type="text" inputmode="decimal" placeholder="x,x" autocomplete="off">
+        <span class="sci-base">&nbsp;× 10</span>
+        <input class="sci-e" id="ae" type="text" inputmode="decimal" placeholder="n" autocomplete="off">
+       </span>`;
+  wrap.innerHTML = `
+    <div class="progress-wrap"><div class="progress-bar" style="width:${aIdx/AQ.length*100}%"></div></div>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:14px;">Question ${aIdx+1} / ${AQ.length}</p>
+    <div class="auto-enonce">${q.enonce}</div>
+    <div class="answer-row">
+      <span class="answer-label">Réponse :</span>
+      ${answerField}
+      <span style="font-size:.93rem;">${q.unite}</span>
+    </div>
+    <div class="btn-row"><button class="btn" id="a-btn" onclick="checkAQ()">Vérifier</button></div>
+    <div id="a-fb"></div>
+  `;
+  if (window.MathJax) MathJax.typesetPromise([wrap]);
+}
+
+function checkAQ() {
+  const q = AQ[aIdx];
+  const m = document.getElementById('am').value;
+  const corrHTML = q.corr.map((s,i) => `<div class="corr-step">${i+1}. $${s}$</div>`).join('');
+  const nextBtn = `<div class="btn-row"><button class="btn" onclick="aIdx++;renderAQ()">Question suivante →</button></div>`;
+
+  let ok;
+  if (q.plain) {
+    ok = checkNum(m, q.target);
+    document.getElementById('am').className = 'short-ans ' + (ok?'ok':'ko');
+    if (ok) {
+      aScore++;
+      fb('a-fb', true, '<div class="fb-title">✓ Bonne réponse !</div>' + corrHTML);
+    } else {
+      fb('a-fb', false, `<div class="fb-title">✗ Réponse incorrecte</div><div style="margin-bottom:8px;">${q.hint(m)}</div>${corrHTML}`);
+    }
+  } else {
+    const e = document.getElementById('ae').value;
+    ok = checkSci(m, e, q.mt, q.et);
+    document.getElementById('am').className = 'sci-m ' + (ok?'ok':'ko');
+    document.getElementById('ae').className = 'sci-e ' + (ok?'ok':'ko');
+    if (ok) {
+      aScore++;
+      fb('a-fb', true, '<div class="fb-title">✓ Bonne réponse !</div>' + corrHTML);
+    } else {
+      fb('a-fb', false, `<div class="fb-title">✗ Réponse incorrecte</div><div style="margin-bottom:8px;">${q.hint(m,e)}</div>${corrHTML}`);
+    }
+  }
+
+  document.getElementById('a-btn').disabled = true;
+  const fbEl = document.getElementById('a-fb');
+  fbEl.innerHTML += aIdx < AQ.length - 1 ? nextBtn
+    : `<div class="btn-row"><button class="btn" onclick="aIdx++;renderAQ()">Voir le bilan →</button></div>`;
+  if (window.MathJax) MathJax.typesetPromise([fbEl]);
+}
+
+function renderScore() {
+  const total = AQ.length;
+  let msg;
+  if (aScore === total)       msg = 'Maîtrise totale 🥇';
+  else if (aScore >= total * 0.8) msg = 'Très bien !';
+  else if (aScore >= total * 0.6) msg = 'Bon travail !';
+  else if (aScore >= total * 0.4) msg = 'Pas mal ! Relis les corrections.';
+  else                            msg = 'Continue à t\'entraîner — relis le cours.';
+  document.getElementById('auto-wrap').innerHTML = `
+    <div class="card score-box">
+      <div class="score-num">${aScore} / ${AQ.length}</div>
+      <div class="score-pct">${Math.round(aScore/AQ.length*100)} % de réussite</div>
+      <div class="score-msg">${msg}</div>
+      <div class="btn-row" style="justify-content:center;">
+        <button class="btn" onclick="initAuto()">Recommencer la phase 4</button>
+        <button class="btn-ghost" onclick="goScreen('home')">← Menu principal</button>
+      </div>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
