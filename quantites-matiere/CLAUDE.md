@@ -1,8 +1,9 @@
-# Projet : Quantités de matière — Physique-chimie Seconde
+# Projet : Quantités de matière — Physique-chimie Seconde & Première
 
 ## Contexte
-Application web destinée à des élèves de Seconde en physique-chimie.
+Application web destinée à des élèves de Seconde et de Première en physique-chimie.
 Utilisée individuellement sur ordinateur ou mobile (iPhone et Android).
+La page d'accueil est divisée en deux sections : "Classe de Seconde" et "Classe de Première".
 
 ## Objectif pédagogique
 Calculer une quantité de matière ou un nombre d'entités à partir de la relation
@@ -160,6 +161,66 @@ Réponse : n = 0,075 mol (ou 7,5 × 10⁻² mol)
   identiques au format de l'activité puissances-de-10
 - Accepter la virgule ou le point comme séparateur décimal
 - Insensible aux espaces
+
+---
+
+---
+
+# Activité Première — Masse molaire et concentration molaire
+
+## Phase 1 — Cours (Première)
+
+### Bloc 1 — Masse molaire des atomes
+Définition : la masse molaire M d'un atome est la masse d'une mole de ces atomes, en g/mol.
+
+Valeurs à connaître (tableau) :
+| Atome | M (g/mol) |
+|-------|-----------|
+| H     | 1,0       |
+| C     | 12        |
+| N     | 14        |
+| O     | 16        |
+Les autres valeurs sont toujours données dans l'énoncé.
+
+### Bloc 2 — Masse molaire des molécules
+Règle : M(molécule) = somme des masses molaires de tous les atomes présents.
+
+Exemple 1 — Eau H₂O :
+  M(H₂O) = 2×M(H) + M(O) = 2×1,0 + 16 = 18 g/mol
+
+Exemple 2 — Dioxyde de carbone CO₂ :
+  M(CO₂) = M(C) + 2×M(O) = 12 + 2×16 = 44 g/mol
+
+### Bloc 3 — Solides ioniques et ions
+Même règle. Pour les ions : ignorer la charge, sommer uniquement les masses molaires des atomes.
+
+Exemple 1 — NaCl (on donne M(Na) = 23 g/mol, M(Cl) = 35,5 g/mol) :
+  M(NaCl) = 23 + 35,5 = 58,5 g/mol
+
+Exemple 2 — Ion sulfate SO₄²⁻ (on donne M(S) = 32 g/mol) :
+  M(SO₄²⁻) = M(S) + 4×M(O) = 32 + 4×16 = 96 g/mol
+  Note explicite : "La charge 2− ne modifie pas le calcul."
+
+### Bloc 4 — Concentration molaire
+Relation : c = n / V
+- c : concentration molaire, en mol/L
+- n : quantité de matière de soluté, en mol
+- V : volume de la SOLUTION (pas du solvant), en litre (L)
+
+Lien avec la masse : n = m/M, donc c = m / (M × V)
+
+Exemple — Glucose C₆H₁₂O₆ (on donne M = 180 g/mol) :
+  On dissout 10 g de glucose. Le volume de solution obtenu est 200 mL.
+  Calcule la concentration molaire.
+
+Erreur fréquente à signaler EXPLICITEMENT :
+  V = 200 mL → il faut convertir : V = 200 / 1000 = 0,200 L
+  (erreur classique : oublier la conversion mL → L)
+
+Réponse rédigée en 3 étapes :
+1. Calcul de n : n = m/M = 10 / 180 = 5,6×10⁻² mol
+2. Conversion du volume : V = 200 mL = 0,200 L
+3. Calcul de c : c = n/V = 5,6×10⁻² / 0,200 = 0,28 mol/L
 
 ---
 

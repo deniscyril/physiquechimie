@@ -101,6 +101,44 @@ body {
 .pc-arrow { font-size: 1.1rem; color: #d1d5db; flex-shrink: 0; }
 .phase-card:hover .pc-arrow { color: inherit; }
 
+/* ── Section labels accueil ── */
+.section-label {
+  font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.1em; font-family: inherit;
+  padding: 5px 12px; border-radius: 20px;
+  display: inline-block; margin-bottom: 12px; margin-top: 28px;
+}
+.section-label:first-child { margin-top: 0; }
+.label-seconde  { background: var(--blue-bg);   color: var(--blue-d); }
+.label-premiere { background: var(--amber-bg);  color: var(--amber-d); }
+
+/* ── Badge et exemple Première (orange) ── */
+.badge-amber-dark { background: var(--amber-bg); color: var(--amber-d); }
+.example.amber-ex { border-left-color: var(--amber); background: var(--amber-bg); }
+.example.amber-ex .example-title { color: var(--amber-d); }
+.example.amber-ex .step-num { background: var(--amber); }
+
+/* ── Tableau masse molaire ── */
+.molar-table {
+  width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.93rem;
+}
+.molar-table th {
+  background: var(--blue-bg); color: var(--blue-d);
+  font-weight: 700; padding: 8px 14px; text-align: left;
+  border-bottom: 2px solid var(--blue);
+}
+.molar-table td { padding: 7px 14px; border-bottom: 1px solid #f3f4f6; }
+.molar-table tr:last-child td { border-bottom: none; }
+.molar-table td:first-child { font-weight: 700; color: var(--amber-d); }
+
+/* ── Alerte erreur fréquente ── */
+.alert-box {
+  background: #fff7ed; border: 2px solid var(--amber);
+  border-radius: 10px; padding: 12px 16px; margin: 12px 0;
+  font-size: 0.9rem;
+}
+.alert-box strong { color: var(--amber-d); }
+
 /* ── Nav back ── */
 .back-btn {
   display: inline-flex; align-items: center; gap: 6px;
@@ -149,6 +187,12 @@ body {
   text-align: center; font-size: 1.1rem;
   margin: 14px 0;
 }
+.formula-row {
+  display: flex; flex-wrap: wrap;
+  justify-content: center; align-items: center;
+  gap: 10px 14px;
+}
+.formula-sep { color: var(--blue-d); font-size: 1rem; flex-shrink: 0; }
 .def-grid {
   display: grid; grid-template-columns: auto 1fr;
   gap: 5px 14px; margin-top: 12px; font-size: 0.92rem;
@@ -307,16 +351,18 @@ footer { font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 56px; }
   <div id="home" class="screen active">
     <div class="site-header">
       <div class="site-title">⚗️ Quantités de matière</div>
-      <div class="site-sub">Physique-chimie — Seconde · Relation $n = N \,/\, N_A$</div>
+      <div class="site-sub">Physique-chimie · Seconde &amp; Première</div>
     </div>
 
+    <!-- ── Seconde ── -->
+    <div class="section-label label-seconde">Classe de Seconde</div>
     <div class="phase-cards">
 
       <div class="phase-card p1" onclick="goScreen('phase1')">
         <div class="pc-icon">📖</div>
         <div class="pc-info">
           <div class="pc-tag">Phase 1</div>
-          <div class="pc-name">Cours — La relation fondamentale</div>
+          <div class="pc-name">Cours — n = N / Nₐ</div>
           <div class="pc-desc">Définitions, formules et deux exemples rédigés</div>
         </div>
         <div class="pc-arrow">→</div>
@@ -354,6 +400,32 @@ footer { font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 56px; }
 
     </div>
 
+    <!-- ── Première ── -->
+    <div class="section-label label-premiere">Classe de Première</div>
+    <div class="phase-cards">
+
+      <div class="phase-card p1" onclick="goScreen('phase1-premiere')">
+        <div class="pc-icon">📖</div>
+        <div class="pc-info">
+          <div class="pc-tag">Phase 1</div>
+          <div class="pc-name">Cours — Masse molaire &amp; concentration</div>
+          <div class="pc-desc">Masses molaires des atomes, molécules, ions · Concentration molaire</div>
+        </div>
+        <div class="pc-arrow">→</div>
+      </div>
+
+      <div class="phase-card p2" onclick="goScreen('phase2-premiere')">
+        <div class="pc-icon">✏️</div>
+        <div class="pc-info">
+          <div class="pc-tag">Phase 2</div>
+          <div class="pc-name">Pratique guidée</div>
+          <div class="pc-desc">4 exercices progressifs — masse molaire, m = n×M, concentration</div>
+        </div>
+        <div class="pc-arrow">→</div>
+      </div>
+
+    </div>
+
     <footer>Aucune donnée collectée</footer>
   </div>
 
@@ -371,7 +443,13 @@ footer { font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 56px; }
     <div class="card">
       <div class="card-title">Les trois grandeurs</div>
       <div class="formula-box">
-        $$ n = \frac{N}{N_A} \quad \Longleftrightarrow \quad N = n \times N_A \quad \Longleftrightarrow \quad N_A = \frac{N}{n} $$
+        <div class="formula-row">
+          <span>$\displaystyle n = \frac{N}{N_A}$</span>
+          <span class="formula-sep">⟺</span>
+          <span>$\displaystyle N = n \times N_A$</span>
+          <span class="formula-sep">⟺</span>
+          <span>$\displaystyle N_A = \frac{N}{n}$</span>
+        </div>
       </div>
       <div class="def-grid">
         <span class="def-sym">n</span><span>quantité de matière, en <strong>mole</strong> (mol)</span>
@@ -398,6 +476,113 @@ footer { font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 56px; }
 
     <div class="btn-row">
       <button class="btn" onclick="goScreen('phase2')">Passer à la pratique guidée →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PHASE 1 — COURS PREMIÈRE
+  ══════════════════════════════════════════ -->
+  <div id="phase1-premiere" class="screen">
+    <button class="back-btn" onclick="goScreen('home')">← Retour au menu</button>
+
+    <div class="phase-header">
+      <div class="phase-badge badge-blue">Première · Phase 1</div>
+      <div class="phase-title">Cours — Masse molaire et concentration</div>
+    </div>
+
+    <!-- Bloc 1 : masse molaire des atomes -->
+    <div class="card">
+      <div class="card-title">Bloc 1 — Masse molaire des atomes</div>
+      <p style="margin-bottom:12px;">La <strong>masse molaire</strong> $M$ d'un atome est la masse d'une mole de ces atomes, exprimée en <strong>g/mol</strong>.</p>
+      <p style="margin-bottom:12px;font-size:.9rem;color:var(--muted);">Les masses molaires suivantes sont à <strong>connaître par cœur</strong> :</p>
+      <table class="molar-table">
+        <tr><th>Atome</th><th>Symbole</th><th>M (g/mol)</th></tr>
+        <tr><td>Hydrogène</td><td>H</td><td>1,0</td></tr>
+        <tr><td>Carbone</td><td>C</td><td>12</td></tr>
+        <tr><td>Azote</td><td>N</td><td>14</td></tr>
+        <tr><td>Oxygène</td><td>O</td><td>16</td></tr>
+      </table>
+      <p style="font-size:.88rem;color:var(--muted);">Pour tous les autres atomes, la masse molaire est toujours donnée dans l'énoncé.</p>
+    </div>
+
+    <!-- Bloc 2 : masse molaire des molécules -->
+    <div class="card">
+      <div class="card-title">Bloc 2 — Masse molaire des molécules</div>
+      <div class="formula-box">
+        $M(\text{molécule}) = \text{somme des masses molaires de tous les atomes}$
+      </div>
+
+      <div class="example">
+        <div class="example-title">Exemple 1 — Eau H₂O</div>
+        <div class="step"><div class="step-num">1</div><div>Identifier les atomes : 2 atomes H et 1 atome O</div></div>
+        <div class="step"><div class="step-num">2</div><div>$M(\text{H}_2\text{O}) = 2 \times M(\text{H}) + M(\text{O})$</div></div>
+        <div class="step"><div class="step-num">3</div><div>$M(\text{H}_2\text{O}) = 2 \times 1{,}0 + 16 = \boxed{18 \text{ g/mol}}$</div></div>
+      </div>
+
+      <div class="example violet-ex">
+        <div class="example-title">Exemple 2 — Dioxyde de carbone CO₂</div>
+        <div class="step"><div class="step-num">1</div><div>Identifier les atomes : 1 atome C et 2 atomes O</div></div>
+        <div class="step"><div class="step-num">2</div><div>$M(\text{CO}_2) = M(\text{C}) + 2 \times M(\text{O})$</div></div>
+        <div class="step"><div class="step-num">3</div><div>$M(\text{CO}_2) = 12 + 2 \times 16 = \boxed{44 \text{ g/mol}}$</div></div>
+      </div>
+    </div>
+
+    <!-- Bloc 3 : solides ioniques et ions -->
+    <div class="card">
+      <div class="card-title">Bloc 3 — Solides ioniques et ions</div>
+      <p style="margin-bottom:12px;">La <strong>même règle</strong> s'applique. Pour les <strong>ions</strong>, on ignore la charge électrique — seuls les atomes comptent.</p>
+
+      <div class="example">
+        <div class="example-title">Exemple 1 — Chlorure de sodium NaCl</div>
+        <div class="example-enonce">On donne : $M(\text{Na}) = 23$ g/mol, $M(\text{Cl}) = 35{,}5$ g/mol</div>
+        <div class="step"><div class="step-num">1</div><div>$M(\text{NaCl}) = M(\text{Na}) + M(\text{Cl})$</div></div>
+        <div class="step"><div class="step-num">2</div><div>$M(\text{NaCl}) = 23 + 35{,}5 = \boxed{58{,}5 \text{ g/mol}}$</div></div>
+      </div>
+
+      <div class="example violet-ex">
+        <div class="example-title">Exemple 2 — Ion sulfate SO₄²⁻</div>
+        <div class="example-enonce">On donne : $M(\text{S}) = 32$ g/mol</div>
+        <div class="step"><div class="step-num">1</div><div>$M(\text{SO}_4^{2-}) = M(\text{S}) + 4 \times M(\text{O})$</div></div>
+        <div class="step"><div class="step-num">2</div><div>$M(\text{SO}_4^{2-}) = 32 + 4 \times 16 = \boxed{96 \text{ g/mol}}$</div></div>
+      </div>
+      <p style="font-size:.88rem;color:var(--muted);margin-top:6px;">La charge 2− ne change rien au calcul.</p>
+    </div>
+
+    <!-- Bloc 4 : concentration molaire -->
+    <div class="card">
+      <div class="card-title">Bloc 4 — Concentration molaire</div>
+      <div class="formula-box">
+        <div class="formula-row">
+          <span>$\displaystyle c = \frac{n}{V}$</span>
+          <span class="formula-sep">soit</span>
+          <span>$\displaystyle c = \frac{m}{M \times V}$</span>
+        </div>
+      </div>
+      <div class="def-grid" style="margin-top:12px;">
+        <span class="def-sym">c</span><span>concentration molaire, en <strong>mol/L</strong></span>
+        <span class="def-sym">n</span><span>quantité de matière de soluté, en mol</span>
+        <span class="def-sym">V</span><span>volume de la <strong>solution</strong> (pas du solvant), en <strong>litre (L)</strong></span>
+        <span class="def-sym">m</span><span>masse de soluté, en g</span>
+        <span class="def-sym">M</span><span>masse molaire du soluté, en g/mol</span>
+      </div>
+
+      <div class="alert-box">
+        <strong>⚠ Erreur fréquente — conversion du volume</strong><br>
+        Le volume doit être en <strong>litres</strong>. Si l'énoncé donne des millilitres :<br>
+        $V(\text{L}) = \dfrac{V(\text{mL})}{1000}$ &nbsp;·&nbsp; Exemple : 200 mL = 0,200 L
+      </div>
+
+      <div class="example" style="margin-top:16px;">
+        <div class="example-title">Exemple — Glucose C₆H₁₂O₆ ($M = 180$ g/mol)</div>
+        <div class="example-enonce">On dissout 10 g de glucose. Le volume de solution obtenu est 200 mL. Calcule la concentration molaire de cette solution.</div>
+        <div class="step"><div class="step-num">1</div><div>Calculer $n$ : $n = \dfrac{m}{M} = \dfrac{10}{180} = 5{,}6 \times 10^{-2}$ mol</div></div>
+        <div class="step"><div class="step-num">2</div><div>Convertir le volume : $V = 200 \text{ mL} = \dfrac{200}{1000} = 0{,}200 \text{ L}$</div></div>
+        <div class="step"><div class="step-num">3</div><div>Calculer $c$ : $c = \dfrac{n}{V} = \dfrac{5{,}6 \times 10^{-2}}{0{,}200} = \boxed{0{,}28 \text{ mol/L}}$</div></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" onclick="goScreen('phase2-premiere')">Passer à la pratique guidée →</button>
     </div>
   </div>
 
@@ -491,8 +676,8 @@ footer { font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 56px; }
       <div class="guided-step locked-row" id="g2r3">
         <div class="guided-label">③ Résultat (2 chiffres sig.)</div>
         <div class="guided-content">
-          $n =$&nbsp;<input class="short-ans" id="g2r" type="text" inputmode="decimal" placeholder="ex : 20" autocomplete="off">
-          &nbsp;mol&nbsp;<span style="font-size:.8rem;color:var(--muted);">(20 ou 2,0×10¹ acceptés)</span>
+          $n =$&nbsp;<input class="short-ans" id="g2r" type="text" inputmode="decimal" placeholder="…" autocomplete="off">
+          &nbsp;mol
         </div>
       </div>
       <div class="btn-row" id="g2-btn" style="display:none;">
@@ -566,6 +751,231 @@ footer { font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 56px; }
         <div style="font-size:.9rem;color:#166534;margin:6px 0 18px;">La pratique autonome est maintenant débloquée.</div>
         <button class="btn" onclick="goScreen('phase4')">Démarrer la pratique autonome →</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       PHASE 2 — PRATIQUE GUIDÉE PREMIÈRE
+  ══════════════════════════════════════════ -->
+  <div id="phase2-premiere" class="screen">
+    <button class="back-btn" onclick="goScreen('home')">← Retour au menu</button>
+
+    <div class="phase-header">
+      <div class="phase-badge badge-violet">Première · Phase 2</div>
+      <div class="phase-title">Pratique guidée</div>
+    </div>
+
+    <!-- ── Exercice 1 : masse molaire NH₃ ── -->
+    <div class="card">
+      <div class="card-title">Exercice 1 — Masse molaire de l'ammoniac NH₃</div>
+      <div class="exo-enonce">Calcule la masse molaire de l'ammoniac NH₃.<br>
+        <span style="font-size:.85rem;color:var(--muted);">Les valeurs de M(H) et M(N) sont à connaître.</span>
+      </div>
+
+      <div class="guided-step">
+        <div class="guided-label">① Atomes présents</div>
+        <div class="guided-content">
+          <select class="blank" id="pe1_s1" onchange="pe1s1()">
+            <option value="">— choisir —</option>
+            <option value="ok">1 atome N et 3 atomes H</option>
+            <option value="ko1">3 atomes N et 1 atome H</option>
+            <option value="ko2">1 atome N et 1 atome H</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="pe1_r2">
+        <div class="guided-label">② Expression littérale</div>
+        <div class="guided-content">
+          $M(\text{NH}_3) =$&nbsp;<select class="blank" id="pe1_s2" onchange="pe1s2()">
+            <option value="">— choisir —</option>
+            <option value="ok">$M(\text{N}) + 3 \times M(\text{H})$</option>
+            <option value="ko1">$3 \times M(\text{N}) + M(\text{H})$</option>
+            <option value="ko2">$M(\text{N}) \times M(\text{H}) \times 3$</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="pe1_r3">
+        <div class="guided-label">③ Application numérique</div>
+        <div class="guided-content">
+          $M(\text{NH}_3) =$&nbsp;<select class="blank" id="pe1_s3" onchange="pe1s3()">
+            <option value="">— choisir —</option>
+            <option value="ok">$14 + 3 \times 1{,}0$</option>
+            <option value="ko1">$3 \times 14 + 1{,}0$</option>
+            <option value="ko2">$14 \times 3 \times 1{,}0$</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="pe1_r4">
+        <div class="guided-label">④ Résultat</div>
+        <div class="guided-content">
+          $M(\text{NH}_3) =$&nbsp;<input class="short-ans" id="pe1_r" type="text" inputmode="decimal" placeholder="…" autocomplete="off">&nbsp;g/mol
+        </div>
+      </div>
+      <div class="btn-row" id="pe1_btn" style="display:none;">
+        <button class="btn" onclick="pe1res()">Vérifier</button>
+      </div>
+      <div id="pe1_fb"></div>
+    </div>
+
+    <!-- ── Exercice 2 : masse molaire CO₃²⁻ ── -->
+    <div class="card locked-row" id="pe2_card">
+      <div class="card-title">Exercice 2 — Masse molaire de l'ion carbonate CO₃²⁻</div>
+      <div class="exo-enonce">Calcule la masse molaire de l'ion carbonate CO₃²⁻.<br>
+        <span style="font-size:.85rem;color:var(--muted);">On donne : M(C) = 12 g/mol · M(O) = 16 g/mol</span>
+      </div>
+
+      <div class="guided-step">
+        <div class="guided-label">① La charge modifie-t-elle M ?</div>
+        <div class="guided-content">
+          <select class="blank" id="pe2_s1" onchange="pe2s1()">
+            <option value="">— choisir —</option>
+            <option value="ok">Non — on ignore la charge</option>
+            <option value="ko1">Oui — on soustrait 2 unités</option>
+            <option value="ko2">Oui — on ajoute la masse des électrons</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="pe2_r2">
+        <div class="guided-label">② Expression littérale</div>
+        <div class="guided-content">
+          $M(\text{CO}_3^{2-}) =$&nbsp;<select class="blank" id="pe2_s2" onchange="pe2s2()">
+            <option value="">— choisir —</option>
+            <option value="ok">$M(\text{C}) + 3 \times M(\text{O})$</option>
+            <option value="ko1">$M(\text{C}) + 2 \times M(\text{O})$</option>
+            <option value="ko2">$M(\text{C}) \times 3 \times M(\text{O})$</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="pe2_r3">
+        <div class="guided-label">③ Application numérique</div>
+        <div class="guided-content">
+          $M(\text{CO}_3^{2-}) =$&nbsp;<select class="blank" id="pe2_s3" onchange="pe2s3()">
+            <option value="">— choisir —</option>
+            <option value="ok">$12 + 3 \times 16$</option>
+            <option value="ko1">$12 + 2 \times 16$</option>
+            <option value="ko2">$3 \times 12 + 16$</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="pe2_r4">
+        <div class="guided-label">④ Résultat</div>
+        <div class="guided-content">
+          $M(\text{CO}_3^{2-}) =$&nbsp;<input class="short-ans" id="pe2_r" type="text" inputmode="decimal" placeholder="…" autocomplete="off">&nbsp;g/mol
+        </div>
+      </div>
+      <div class="btn-row" id="pe2_btn" style="display:none;">
+        <button class="btn" onclick="pe2res()">Vérifier</button>
+      </div>
+      <div id="pe2_fb"></div>
+    </div>
+
+    <!-- ── Exercice 3 : m = n × M, glucose ── -->
+    <div class="card locked-row" id="pe3_card">
+      <div class="card-title">Exercice 3 — Préparer un échantillon de glucose</div>
+      <div class="exo-enonce">Un chimiste veut préparer <strong>0,25 mol</strong> de glucose C₆H₁₂O₆.<br>
+        On donne : $M(\text{glucose}) = 180$ g/mol.<br>
+        <strong>Quelle masse doit-il peser ?</strong>
+      </div>
+
+      <div class="guided-step">
+        <div class="guided-label">① Formule de m</div>
+        <div class="guided-content">
+          $m =$&nbsp;<select class="blank" id="pe3_s1" onchange="pe3s1()">
+            <option value="">— choisir —</option>
+            <option value="ok">$n \times M$</option>
+            <option value="ko1">$n \div M$</option>
+            <option value="ko2">$M \div n$</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="pe3_r2">
+        <div class="guided-label">② Application numérique</div>
+        <div class="guided-content">
+          $m =$&nbsp;<select class="blank" id="pe3_s2" onchange="pe3s2()">
+            <option value="">— choisir —</option>
+            <option value="ok">$0{,}25 \times 180$</option>
+            <option value="ko1">$0{,}25 \div 180$</option>
+            <option value="ko2">$180 \div 0{,}25$</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="pe3_r3">
+        <div class="guided-label">③ Résultat</div>
+        <div class="guided-content">
+          $m =$&nbsp;<input class="short-ans" id="pe3_r" type="text" inputmode="decimal" placeholder="…" autocomplete="off">&nbsp;g
+        </div>
+      </div>
+      <div class="btn-row" id="pe3_btn" style="display:none;">
+        <button class="btn" onclick="pe3res()">Vérifier</button>
+      </div>
+      <div id="pe3_fb"></div>
+    </div>
+
+    <!-- ── Exercice 4 : concentration NaOH ── -->
+    <div class="card locked-row" id="pe4_card">
+      <div class="card-title">Exercice 4 — Concentration d'une solution de soude</div>
+      <div class="exo-enonce">On dissout <strong>4,0 g</strong> de soude NaOH dans de l'eau.<br>
+        Le volume de solution obtenu est <strong>500 mL</strong>.<br>
+        On donne : $M(\text{NaOH}) = 40$ g/mol.<br>
+        <strong>Calcule la concentration molaire de cette solution.</strong>
+      </div>
+
+      <div class="guided-step">
+        <div class="guided-label">① Convertir le volume</div>
+        <div class="guided-content">
+          <select class="blank" id="pe4_s1" onchange="pe4s1()">
+            <option value="">— choisir —</option>
+            <option value="ok">500 mL = 0,500 L</option>
+            <option value="ko1">500 mL = 500 L</option>
+            <option value="ko2">500 mL = 0,050 L</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="pe4_r2">
+        <div class="guided-label">② Formule de n</div>
+        <div class="guided-content">
+          $n =$&nbsp;<select class="blank" id="pe4_s2" onchange="pe4s2()">
+            <option value="">— choisir —</option>
+            <option value="ok">$m \div M$</option>
+            <option value="ko1">$m \times M$</option>
+            <option value="ko2">$M \div m$</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="pe4_r3">
+        <div class="guided-label">③ Calcul de n</div>
+        <div class="guided-content">
+          $n =$&nbsp;<input class="short-ans" id="pe4_r1" type="text" inputmode="decimal" placeholder="…" autocomplete="off">&nbsp;mol
+        </div>
+      </div>
+      <div class="btn-row" id="pe4_btn1" style="display:none;">
+        <button class="btn" onclick="pe4res1()">Vérifier n</button>
+      </div>
+      <div class="guided-step locked-row" id="pe4_r4">
+        <div class="guided-label">④ Formule de c</div>
+        <div class="guided-content">
+          $c =$&nbsp;<select class="blank" id="pe4_s4" onchange="pe4s4()">
+            <option value="">— choisir —</option>
+            <option value="ok">$n \div V$</option>
+            <option value="ko1">$n \times V$</option>
+            <option value="ko2">$V \div n$</option>
+          </select>
+        </div>
+      </div>
+      <div class="guided-step locked-row" id="pe4_r5">
+        <div class="guided-label">⑤ Calcul de c</div>
+        <div class="guided-content">
+          $c =$&nbsp;<input class="short-ans" id="pe4_r2" type="text" inputmode="decimal" placeholder="…" autocomplete="off">&nbsp;mol/L
+        </div>
+      </div>
+      <div class="btn-row" id="pe4_btn2" style="display:none;">
+        <button class="btn" onclick="pe4res2()">Vérifier c</button>
+      </div>
+      <div id="pe4_fb"></div>
+    </div>
+
+    <div class="btn-row" id="p2p_next" style="display:none;">
+      <button class="btn-ghost" onclick="goScreen('home')">← Retour au menu</button>
     </div>
   </div>
 
@@ -921,6 +1331,190 @@ function renderScore() {
       </div>
     </div>
   `;
+}
+
+// ══════════════════════════════════════════════════
+// PHASE 2 PREMIÈRE — helpers
+// ══════════════════════════════════════════════════
+function pShake(sel) {
+  sel.className = 'blank ko';
+  setTimeout(() => { sel.className = 'blank'; sel.value = ''; }, 800);
+}
+function pUnlock(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.style.opacity = '1'; el.style.pointerEvents = 'auto';
+  if (window.MathJax) MathJax.typesetPromise([el]);
+}
+function pFb(id, ok, html) {
+  const el = document.getElementById(id);
+  el.innerHTML = `<div class="feedback ${ok?'ok':'ko'}">${html}</div>`;
+  if (window.MathJax) MathJax.typesetPromise([el]);
+}
+
+// ── Exercice P1 : masse molaire NH₃ ──
+function pe1s1() {
+  const s = document.getElementById('pe1_s1');
+  if (!s.value) return;
+  if (s.value === 'ok') { s.className='blank ok'; s.disabled=true; pUnlock('pe1_r2'); }
+  else { pFb('pe1_fb','',''); pShake(s);
+    pFb('pe1_fb', false, '<div class="fb-title">✗ Relis la formule NH₃</div>L\'indice 3 porte sur H. Il y a donc <strong>1 atome N</strong> et <strong>3 atomes H</strong>.'); }
+}
+function pe1s2() {
+  const s = document.getElementById('pe1_s2');
+  if (!s.value) return;
+  if (s.value === 'ok') { s.className='blank ok'; s.disabled=true; pUnlock('pe1_r3'); }
+  else { pShake(s);
+    pFb('pe1_fb', false, '<div class="fb-title">✗ Expression incorrecte</div>On additionne : 1 fois M(N) et 3 fois M(H), soit $M(\\text{N}) + 3 \\times M(\\text{H})$.'); }
+}
+function pe1s3() {
+  const s = document.getElementById('pe1_s3');
+  if (!s.value) return;
+  if (s.value === 'ok') { s.className='blank ok'; s.disabled=true; pUnlock('pe1_r4'); document.getElementById('pe1_btn').style.display='flex'; }
+  else {
+    const hint = s.value==='ko1' ? 'Tu as mis 3 devant N au lieu de H.' : 'On additionne, on ne multiplie pas les masses molaires entre elles.';
+    pShake(s); pFb('pe1_fb', false, `<div class="fb-title">✗ Application numérique incorrecte</div>${hint}`); }
+}
+function pe1res() {
+  const r = document.getElementById('pe1_r'); const ok = checkNum(r.value, 17);
+  r.className = 'short-ans ' + (ok?'ok':'ko');
+  if (ok) {
+    pFb('pe1_fb', true, '<div class="fb-title">✓ Bonne réponse !</div>$M(\\text{NH}_3) = 14 + 3 \\times 1{,}0 = 17$ g/mol');
+    document.getElementById('pe1_btn').style.display='none';
+    pUnlock('pe2_card'); if (window.MathJax) MathJax.typesetPromise([document.getElementById('pe2_card')]);
+  } else {
+    pFb('pe1_fb', false, '<div class="fb-title">✗ Résultat incorrect</div>$14 + 3 \\times 1{,}0 = 14 + 3{,}0 = 17$ g/mol');
+    setTimeout(()=>{ r.className='short-ans'; }, 1200);
+  }
+}
+
+// ── Exercice P2 : masse molaire CO₃²⁻ ──
+function pe2s1() {
+  const s = document.getElementById('pe2_s1');
+  if (!s.value) return;
+  if (s.value === 'ok') { s.className='blank ok'; s.disabled=true; pUnlock('pe2_r2'); }
+  else {
+    const hint = s.value==='ko1' ? 'La masse d\'un électron est d\'environ 9×10⁻²⁸ g, totalement négligeable. On ignore toujours la charge.' : hint='La masse des électrons est négligeable — la charge ne modifie pas M.';
+    pShake(s); pFb('pe2_fb', false, `<div class="fb-title">✗ Incorrect</div>${hint}`); }
+}
+function pe2s2() {
+  const s = document.getElementById('pe2_s2');
+  if (!s.value) return;
+  if (s.value === 'ok') { s.className='blank ok'; s.disabled=true; pUnlock('pe2_r3'); }
+  else {
+    const hint = s.value==='ko1' ? 'Relis la formule CO₃²⁻ : l\'indice est bien 3, pas 2.' : 'On additionne les masses molaires, on ne les multiplie pas.';
+    pShake(s); pFb('pe2_fb', false, `<div class="fb-title">✗ Expression incorrecte</div>${hint}`); }
+}
+function pe2s3() {
+  const s = document.getElementById('pe2_s3');
+  if (!s.value) return;
+  if (s.value === 'ok') { s.className='blank ok'; s.disabled=true; pUnlock('pe2_r4'); document.getElementById('pe2_btn').style.display='flex'; }
+  else {
+    const hint = s.value==='ko1' ? 'L\'indice de O est 3, pas 2.' : 'C est en position 1 dans la formule, son coefficient est 1.';
+    pShake(s); pFb('pe2_fb', false, `<div class="fb-title">✗ Application numérique incorrecte</div>${hint}`); }
+}
+function pe2res() {
+  const r = document.getElementById('pe2_r'); const ok = checkNum(r.value, 60);
+  r.className = 'short-ans ' + (ok?'ok':'ko');
+  if (ok) {
+    pFb('pe2_fb', true, '<div class="fb-title">✓ Bonne réponse !</div>$M(\\text{CO}_3^{2-}) = 12 + 3 \\times 16 = 60$ g/mol — la charge 2− n\'intervient pas.');
+    document.getElementById('pe2_btn').style.display='none';
+    pUnlock('pe3_card'); if (window.MathJax) MathJax.typesetPromise([document.getElementById('pe3_card')]);
+  } else {
+    pFb('pe2_fb', false, '<div class="fb-title">✗ Résultat incorrect</div>$12 + 3 \\times 16 = 12 + 48 = 60$ g/mol');
+    setTimeout(()=>{ r.className='short-ans'; }, 1200);
+  }
+}
+
+// ── Exercice P3 : m = n × M, glucose ──
+function pe3s1() {
+  const s = document.getElementById('pe3_s1');
+  if (!s.value) return;
+  if (s.value === 'ok') { s.className='blank ok'; s.disabled=true; pUnlock('pe3_r2'); }
+  else {
+    const hint = s.value==='ko1' ? 'C\'est la formule de n, pas de m. Il faut isoler m : $m = n \\times M$.' : 'Ici on cherche m, pas M. Isole m dans $n = m/M$ : tu obtiens $m = n \\times M$.';
+    pShake(s); pFb('pe3_fb', false, `<div class="fb-title">✗ Formule incorrecte</div>${hint}`); }
+}
+function pe3s2() {
+  const s = document.getElementById('pe3_s2');
+  if (!s.value) return;
+  if (s.value === 'ok') { s.className='blank ok'; s.disabled=true; pUnlock('pe3_r3'); document.getElementById('pe3_btn').style.display='flex'; }
+  else {
+    const hint = s.value==='ko1' ? 'Tu as divisé au lieu de multiplier : $m = n \\times M$, pas $n \\div M$.' : 'On cherche une masse, pas une quantité de matière : $m = n \\times M = 0{,}25 \\times 180$.';
+    pShake(s); pFb('pe3_fb', false, `<div class="fb-title">✗ Application incorrecte</div>${hint}`); }
+}
+function pe3res() {
+  const r = document.getElementById('pe3_r'); const ok = checkNum(r.value, 45);
+  r.className = 'short-ans ' + (ok?'ok':'ko');
+  if (ok) {
+    pFb('pe3_fb', true, '<div class="fb-title">✓ Bonne réponse !</div>$m = 0{,}25 \\times 180 = 45$ g');
+    document.getElementById('pe3_btn').style.display='none';
+    pUnlock('pe4_card'); if (window.MathJax) MathJax.typesetPromise([document.getElementById('pe4_card')]);
+  } else {
+    pFb('pe3_fb', false, '<div class="fb-title">✗ Résultat incorrect</div>$m = n \\times M = 0{,}25 \\times 180 = 45$ g');
+    setTimeout(()=>{ r.className='short-ans'; }, 1200);
+  }
+}
+
+// ── Exercice P4 : concentration NaOH ──
+function pe4s1() {
+  const s = document.getElementById('pe4_s1');
+  if (!s.value) return;
+  if (s.value === 'ok') { s.className='blank ok'; s.disabled=true; pUnlock('pe4_r2'); }
+  else {
+    const hint = s.value==='ko1' ? '<strong>Attention !</strong> 500 mL ≠ 500 L. Pour convertir des mL en L, on divise par 1000 : $500 \\div 1000 = 0{,}500$ L.' : 'Pour convertir : $V(\\text{L}) = V(\\text{mL}) \\div 1000 = 500 \\div 1000 = 0{,}500$ L, pas 0,050 L.';
+    pShake(s); pFb('pe4_fb', false, `<div class="fb-title">✗ Conversion incorrecte</div>${hint}<br><em>Cette conversion est indispensable pour obtenir c en mol/L.</em>`); }
+}
+function pe4s2() {
+  const s = document.getElementById('pe4_s2');
+  if (!s.value) return;
+  if (s.value === 'ok') { s.className='blank ok'; s.disabled=true; pUnlock('pe4_r3'); document.getElementById('pe4_btn1').style.display='flex'; }
+  else {
+    const hint = s.value==='ko1' ? 'C\'est la formule de m, pas de n. Pour trouver n : $n = m \\div M$.' : 'Ici M est au dénominateur : $n = m \\div M$.';
+    pShake(s); pFb('pe4_fb', false, `<div class="fb-title">✗ Formule incorrecte</div>${hint}`); }
+}
+function pe4res1() {
+  const r = document.getElementById('pe4_r1'); const ok = checkNum(r.value, 0.10);
+  r.className = 'short-ans ' + (ok?'ok':'ko');
+  if (ok) {
+    pFb('pe4_fb', true, '<div class="fb-title">✓ Correct !</div>$n = 4{,}0 \\div 40 = 0{,}10$ mol');
+    document.getElementById('pe4_btn1').style.display='none';
+    pUnlock('pe4_r4'); pUnlock('pe4_r5');
+    document.getElementById('pe4_btn2').style.display='flex';
+  } else {
+    const v = parseFloat(n(r.value));
+    const hint = Math.abs(v - 160) < 5 ? 'Tu as multiplié m par M au lieu de diviser.' : 'Rappel : $n = m \\div M = 4{,}0 \\div 40$.';
+    pFb('pe4_fb', false, `<div class="fb-title">✗ Résultat incorrect</div>${hint}`);
+    setTimeout(()=>{ r.className='short-ans'; }, 1200);
+  }
+}
+function pe4s4() {
+  const s = document.getElementById('pe4_s4');
+  if (!s.value) return;
+  if (s.value === 'ok') { s.className='blank ok'; s.disabled=true; }
+  else {
+    const hint = s.value==='ko1' ? 'c = n × V donnerait des mol²/L, ce n\'est pas une concentration.' : 'c = V ÷ n donnerait des L/mol, ce n\'est pas une concentration molaire.';
+    pShake(s); pFb('pe4_fb', false, `<div class="fb-title">✗ Formule incorrecte</div>${hint} Rappel : $c = n \\div V$.`); }
+}
+function pe4res2() {
+  const r = document.getElementById('pe4_r2'); const ok = checkNum(r.value, 0.20);
+  r.className = 'short-ans ' + (ok?'ok':'ko');
+  if (ok) {
+    pFb('pe4_fb', true,
+      '<div class="fb-title">✓ Bonne réponse !</div>' +
+      '<div class="corr-step">$V = 500 \\text{ mL} = 0{,}500 \\text{ L}$</div>' +
+      '<div class="corr-step">$n = 4{,}0 \\div 40 = 0{,}10 \\text{ mol}$</div>' +
+      '<div class="corr-step">$c = 0{,}10 \\div 0{,}500 = 0{,}20 \\text{ mol/L}$</div>');
+    document.getElementById('pe4_btn2').style.display='none';
+    document.getElementById('p2p_next').style.display='flex';
+  } else {
+    const v = parseFloat(n(r.value));
+    const hint = Math.abs(v - 0.0002) < 0.0001 || Math.abs(v - 200) < 5
+      ? '⚠ As-tu bien converti le volume en litres ? $V = 0{,}500$ L et non 500 L.'
+      : 'Rappel : $c = n \\div V = 0{,}10 \\div 0{,}500$.';
+    pFb('pe4_fb', false, `<div class="fb-title">✗ Résultat incorrect</div>${hint}`);
+    setTimeout(()=>{ r.className='short-ans'; }, 1200);
+  }
 }
 </script>
 </body>
