@@ -633,7 +633,7 @@ footer { font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 56px; }
           $N =$&nbsp;<span class="sci-wrap">
             <input class="sci-m" id="g1m" type="text" inputmode="decimal" placeholder="x,x" autocomplete="off">
             <span class="sci-base">&nbsp;× 10</span>
-            <input class="sci-e" id="g1e" type="text" inputmode="decimal" placeholder="n" autocomplete="off">
+            <input class="sci-e" id="g1e" type="text" inputmode="text" placeholder="n" autocomplete="off">
           </span>&nbsp;atomes
         </div>
       </div>
@@ -728,7 +728,7 @@ footer { font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 56px; }
         $N_A =$&nbsp;<span class="sci-wrap">
           <input class="sci-m" id="q2m" type="text" inputmode="decimal" placeholder="x,x" autocomplete="off">
           <span class="sci-base">&nbsp;× 10</span>
-          <input class="sci-e" id="q2e" type="text" inputmode="decimal" placeholder="n" autocomplete="off">
+          <input class="sci-e" id="q2e" type="text" inputmode="text" placeholder="n" autocomplete="off">
         </span>&nbsp;mol⁻¹
       </div>
       <div class="btn-row"><button class="btn" id="q2-btn" onclick="checkQ2()">Valider</button></div>
@@ -1021,7 +1021,7 @@ function unlockP4() {
 // ══════════════════════════════════════════════════
 // Utilitaires
 // ══════════════════════════════════════════════════
-function n(s) { return String(s).trim().toLowerCase().replace(',', '.').replace(/\s/g,''); }
+function n(s) { return String(s).trim().toLowerCase().replace(/,/g,'.').replace(/[x×]/g,'*').replace(/\s/g,''); }
 
 function checkSci(mVal, eVal, mTgt, eTgt) {
   const mv = parseFloat(n(mVal)), ev = parseInt(n(eVal));
@@ -1259,7 +1259,7 @@ function renderAQ() {
     : `<span class="sci-wrap">
         <input class="sci-m" id="am" type="text" inputmode="decimal" placeholder="x,x" autocomplete="off">
         <span class="sci-base">&nbsp;× 10</span>
-        <input class="sci-e" id="ae" type="text" inputmode="decimal" placeholder="n" autocomplete="off">
+        <input class="sci-e" id="ae" type="text" inputmode="text" placeholder="n" autocomplete="off">
        </span>`;
   wrap.innerHTML = `
     <div class="progress-wrap"><div class="progress-bar" style="width:${aIdx/AQ.length*100}%"></div></div>
