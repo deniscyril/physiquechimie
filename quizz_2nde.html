@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Physique-Chimie – Seconde</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<style>
+:root {
+  --primary: #2563eb;
+  --primary-dk: #1d4ed8;
+  --secondary: #7c3aed;
+  --success: #16a34a;
+  --error: #dc2626;
+  --warn: #d97706;
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --radius: 14px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+#app { max-width: 820px; margin: 0 auto; padding: 20px 16px 48px; }
+.screen { animation: fadeUp .28s ease; }
+.hidden { display: none !important; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+/* HEADER */
+.app-header { text-align: center; padding: 40px 0 36px; }
+.app-header h1 { font-size: 2.4rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.app-header .subtitle { color: var(--muted); font-size: 1.05rem; margin-top: 6px; }
+.bank-info { text-align: center; color: var(--muted); font-size: .8rem; margin-top: 28px; }
+
+/* MODE CARDS */
+.mode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.mode-card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius);
+  padding: 30px 20px; text-align: center; cursor: pointer; transition: all .2s ease; }
+.mode-card:hover { border-color: var(--primary); transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(37,99,235,.14); }
+.mode-icon { font-size: 2.6rem; margin-bottom: 14px; }
+.mode-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+.mode-desc { font-size: .85rem; color: var(--muted); line-height: 1.55; }
+
+/* NAV */
+.nav-bar { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+.nav-bar h2 { font-size: 1.2rem; font-weight: 700; }
+.btn-back { background: none; border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px 14px; cursor: pointer; font-size: .9rem; color: var(--text); transition: background .15s; }
+.btn-back:hover { background: var(--bg); }
+
+/* CHAPTER GRID */
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.ch-item { background: var(--card); border: 2px solid var(--border); border-radius: 10px;
+  padding: 14px 16px; cursor: pointer; transition: all .15s; position: relative; }
+.ch-item:hover { border-color: var(--primary); }
+.ch-item.selected { border-color: var(--primary); background: #eff6ff; }
+.ch-item.selected::after { content: '✓'; position: absolute; top: 8px; right: 10px;
+  color: var(--primary); font-weight: 800; font-size: .9rem; }
+.ch-name { font-size: .85rem; font-weight: 600; color: var(--text); }
+.ch-count { font-size: .72rem; color: var(--muted); margin-top: 5px; }
+.selection-bar { display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 0; border-top: 1px solid var(--border); gap: 12px; }
+.selection-info { font-size: .875rem; color: var(--muted); }
+
+/* BUTTONS */
+.btn-primary { background: var(--primary); color: #fff; border: none; border-radius: 10px;
+  padding: 12px 26px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all .15s; white-space: nowrap; }
+.btn-primary:hover:not(:disabled) { background: var(--primary-dk); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: .38; cursor: not-allowed; }
+.btn-secondary { background: #fff; color: var(--primary); border: 2px solid var(--primary); border-radius: 10px;
+  padding: 12px 26px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background .15s; }
+.btn-secondary:hover { background: #eff6ff; }
+
+/* QUIZ HEADER */
+.quiz-top { margin-bottom: 22px; }
+.quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.quiz-counter { font-size: .875rem; font-weight: 700; color: var(--muted); }
+.chapter-tag { font-size: .72rem; font-weight: 700; color: var(--primary);
+  background: #dbeafe; border-radius: 999px; padding: 3px 10px; }
+.progress-bar { height: 7px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 99px; transition: width .35s ease; }
+
+/* QUESTION CARD */
+.question-card { background: var(--card); border-radius: var(--radius);
+  padding: 28px; box-shadow: 0 2px 14px rgba(0,0,0,.07); margin-bottom: 18px; }
+.q-type-badge { display: inline-block; font-size: .68rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .06em; padding: 3px 9px; border-radius: 4px; margin-bottom: 14px; }
+.badge-single { background: #dbeafe; color: #1e40af; }
+.badge-multi  { background: #ede9fe; color: #5b21b6; }
+.q-text { font-size: 1.05rem; line-height: 1.75; font-weight: 500; margin-bottom: 22px; white-space: pre-wrap; }
+.answers-list { display: flex; flex-direction: column; gap: 9px; }
+.ans-item { display: flex; align-items: flex-start; gap: 12px; padding: 13px 16px;
+  border: 2px solid var(--border); border-radius: 10px; cursor: pointer;
+  transition: all .15s; user-select: none; }
+.ans-item:hover { border-color: var(--primary); background: #f8fafc; }
+.ans-item.selected { border-color: var(--primary); background: #eff6ff; }
+.ans-item input { margin-top: 3px; flex-shrink: 0; accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
+.ans-text { font-size: .95rem; line-height: 1.55; flex: 1; }
+.quiz-bottom { display: flex; justify-content: flex-end; }
+
+/* RESULTS */
+.results-title { font-size: 1.9rem; font-weight: 900; text-align: center; margin-bottom: 24px; }
+.score-block { text-align: center; margin-bottom: 36px; }
+.score-card { display: inline-flex; flex-direction: column; align-items: center;
+  background: var(--card); border-radius: 20px; padding: 30px 60px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.09); }
+.score-emoji { font-size: 2.4rem; margin-bottom: 10px; }
+.score-num { font-size: 3.8rem; font-weight: 900; line-height: 1; }
+.score-denom { font-size: 2rem; font-weight: 400; color: #94a3b8; }
+.score-pct { font-size: .95rem; color: var(--muted); margin-top: 10px; font-weight: 600; }
+.results-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
+.res-item { background: var(--card); border-radius: var(--radius);
+  padding: 20px 22px; border-left: 5px solid var(--border); }
+.res-ok   { border-left-color: var(--success); }
+.res-fail { border-left-color: var(--error); }
+.res-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+.res-chapter { font-size: .7rem; font-weight: 700; color: var(--primary);
+  background: #dbeafe; border-radius: 999px; padding: 2px 9px; display: inline-block; margin-bottom: 8px; }
+.res-q-text { font-size: .95rem; font-weight: 600; line-height: 1.55; flex: 1; white-space: pre-wrap; }
+.res-icon { font-size: 1.3rem; flex-shrink: 0; }
+.res-answers { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
+.res-ans { font-size: .82rem; padding: 5px 10px; border-radius: 6px;
+  display: flex; align-items: flex-start; gap: 6px; line-height: 1.45; }
+.ra-ok   { background: #f0fdf4; color: #15803d; }
+.ra-err  { background: #fef2f2; color: #dc2626; }
+.ra-miss { background: #fffbeb; color: #b45309; }
+.ra-icon { flex-shrink: 0; font-weight: 700; }
+.results-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.portal-link { display: inline-block; font-size: .8rem; color: var(--muted); text-decoration: none;
+  margin-bottom: 18px; font-family: 'Segoe UI', system-ui, sans-serif; }
+.portal-link:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ RAW QCM DATA (généré automatiquement) ═══════════ -->
+<script type="application/x-qcm" id="raw-01_corps_purs">
+#  QCM Corps purs et mélanges — Physique-Chimie Seconde
+#  Source : corps_purs_2025/source.txt
+
+* Les entités chimiques peuvent être ...
++ des atomes, des molécules, des ions ou des solides ioniques
+- uniquement des atomes ou des molécules
+- uniquement des ions
+- uniquement des ions ou des atomes
+
+* La masse volumique se calcule selon la formule
++ $\rho = m / V$
+- $\rho = m \times V$
+- $d=\rho / \rho_{eau}$
+- $\rho= \frac{V}{m}$
+
+** La masse volumique de l'eau à 20°C est 
++ 1,0 kg/L
++ 1,0 g/mL
+- 0,1 L/kg
+- 0,1 kg/L
+- 1000 g/ mL
+- 100 g/mL
+
+* La formule de l'ion potassium est
+- $SO_4^{2-}$
++ $K^+$
+- $C\ell^-$
+- $SO_4^{-}$
+
+* La formule de l'ion chlorure est
+- $SO_4^{2-}$
+- $K^+$
++ $C\ell^-$
+- $SO_4^{-}$
+
+* La masse d'une pièce de un centime d'euro est 2,30 g et son volume est 0,346 mL. Cette pièce est-elle en cuivre ? On donne la masse volumique de cuivre: 8,96 g/cm³
++ Non
+- Oui
+- On peut pas savoir, il manque une donnée importante
+
+* La masse volumique de l'éthanol est 0,78 g/mL. Le volume de 30 g d'éthanol vaut
++ 38,46 mL
+- 38,46 g
+- 23,4 g
+- 23,4 mL
+- 0,026 L
+- 0,026 kg
+
+* Un corps pur est :
++ une substance constituée d'une seule sorte d'entités chimiques (atomes, molécules ou ions)
+- un mélange de plusieurs substances en proportions égales
+- toute substance liquide ou solide
+- une substance qui ne réagit jamais chimiquement
+
+** Parmi les exemples suivants, lesquels sont des corps purs ?
++ L'eau distillée ($H_2O$) : une seule sorte de molécules
++ L'aluminium (Al) : un seul type d'atomes
+- Le jus d'orange : mélange de nombreuses substances
+- L'air : mélange de diazote, dioxygène et autres gaz
+
+* La densité $d$ d'une substance par rapport à l'eau est définie par :
++ $d = \dfrac{\rho}{\rho_{eau}}$ où $\rho_{eau} = 1,0$ g/mL
+- $d = \rho \times \rho_{eau}$
+- $d = \rho - \rho_{eau}$
+- $d = \dfrac{\rho_{eau}}{\rho}$
+
+** Un objet de masse $m = 50$ g et de volume $V = 40$ cm³ est placé dans l'eau ($\rho_{eau} = 1,0$ g/cm³). Que se passe-t-il ?
++ L'objet coule car sa masse volumique $\rho = 50/40 = 1,25$ g/cm³ est supérieure à celle de l'eau
+- L'objet flotte car sa masse est inférieure à celle d'un litre d'eau
+- L'objet flotte car son volume est inférieur à 1 L
+- L'objet coule uniquement si sa masse dépasse 100 g
+
+* La densité de l'huile est 0,9. Par rapport à l'eau ($\rho_{eau} = 1,0$ g/mL), l'huile :
++ flotte sur l'eau car sa densité est inférieure à 1
+- coule dans l'eau car sa densité est inférieure à 1
+- se mélange spontanément à l'eau car les deux sont des liquides
+- a la même masse volumique que l'eau
+</script>
+
+<script type="application/x-qcm" id="raw-02_solutions_aqueuses">
+#  QCM Solutions aqueuses — concentration et dilution — Physique-Chimie Seconde
+#  Source : mon_modele/simple-txt.txt
+
+* La concentration massique a pour unité:
++ g/L
+- L/g
+- C
+- m/V
+
+* Une dilution consiste à
++ ajouter du solvant pour baisser la concentration
+- ajouter du solvant pour augmenter la concentration
+- ajouter du solvant pour dissoudre le soluté
+- retirer du solvant pour augmenter la concentration
+
+** Retrouve les formules qui sont vraies
+
++ $C=\frac{m}{V}$
++ $V= \frac{m}{C}$
+- $m= \frac{V}{C}$
+- $m= \frac{C}{V}$
+- $V=m\times C$
+
+* On dissout 10 g de sel dans 2L d'eau la concentration vaut
++ 5 g/L
+- 20 g/L
+- 0,2 g/L
+- 12 g/L
+
+* On dissout 0,5 g de sel dans 100 mL d'eau la concentration vaut
++ 5 g/L
+- 0,5 g/L
+- 0,005 g/L
+- 50 g/L
+
+** On dispose dans un bécher de 0,5 L d'une solution d'eau salée à 10 g/L. On effectue une dilution  par 10 en ajoutant  de l'eau.
++ Le facteur de dilution vaut 10
+- Le facteur de dilution vaut 0,05
+- Le facteur de dilution vaut 5
+
++ Le volume de la solution diluée est: 5 L
+- Le volume de la solution diluée est: 10 L
+- Le volume de la solution diluée est: 0,05 L
+
+* Un solvant est :
++ la substance présente en plus grande quantité dans une solution, qui dissout le soluté
+- la substance dissoute dans la solution
+- uniquement l'eau dans une solution aqueuse
+- toujours un liquide ionique
+
+* La concentration massique d'une solution contenant 25 g de sucre dans 500 mL d'eau vaut :
++ 50 g/L : $C = 25 / 0,5 = 50$ g/L
+- 12,5 g/L
+- 0,05 g/L
+- 25 g/L
+
+* Lors d'une dilution par facteur $F$, la relation entre volumes et concentrations est :
++ $C_1 \times V_1 = C_2 \times V_2$ (la masse de soluté est conservée)
+- $C_2 = C_1 \times F$ (la concentration augmente d'un facteur F)
+- $V_2 = V_1 / F$ (le volume final est plus petit que le volume initial)
+- $C_1 + V_1 = C_2 + V_2$
+
+** On prépare une solution de glucose à 20 g/L en prélevant 50 mL d'une solution mère à 200 g/L. Quelles affirmations sont correctes ?
++ Le facteur de dilution vaut $F = 200/20 = 10$
++ Il faut compléter avec de l'eau jusqu'à un volume final de 500 mL
+- On obtient directement 50 mL de solution à 20 g/L sans ajout d'eau
+- Le facteur de dilution vaut 4
+
+* La solubilité d'un solide dans l'eau augmente généralement quand :
++ la température augmente (plus d'agitation thermique favorise la dissolution)
+- la température diminue
+- on ajoute d'autres solutés
+- on réduit la quantité de solvant
+
+* Dans une solution aqueuse, le solvant est :
++ l'eau (la substance qui dissout le soluté)
+- le sel ou le sucre dissous
+- la substance présente en plus faible quantité
+- la substance dont la masse molaire est la plus grande
+</script>
+
+<script type="application/x-qcm" id="raw-03_atome">
+#  QCM Structure de l'atome — Physique-Chimie Seconde
+#  Source : Atome_1/simple-txt.txt
+
+** Un nucléon est 
+
++ une particule du noyau de l'atome
+- une particule qui est autour du noyau
+- un proton ou un électron
++ un neutron ou un proton
+- un neutron ou un électron
+
+* Le numéro atomique est noté:
+
++ Z
+- A
+- X
+- N°
+
+* Dans l'atome de fer: $_{24}^{56}Fe$, il y a:
+
++ 24 protons, 32 neutrons et 24 électrons
+- 24 neutrons, 56 protons et 56 électrons
+- 24 protons, 56 neutrons et 24 électrons
+- 56 électrons, 24 neutrons et 56 protons
+
+* Dans cette question, la masse d'une nucléon vaut $10^{-27}$ kg. Une estimation de la masse de l'atome d'iode $_{53}^{123}I$ est :
+
++ $1,23.10^{-25}$ kg
+- $5,3.10^{-26}$ kg
+- $7,3.10^{-26}$ kg
+- $1,76.10^{-25}$ kg
+
+* Le mercure est un liquide métallique constitué d'atomes. La masse d'un atome de mercure est $10^{-22}$ g. Une goutte de mercure pèse 100 mg. Combien d'atomes contient une goutte de mercure ?
+
++ il y a $10^{21}$
+- il y a $10^{25}$
+- il y a $10^{23}$
+- il y a $10^{20}$
+
+* L'atome de cuivre possède 27 protons, 65 neutrons et 27 électrons. L'écriture symbolique de son noyau est:
+
++ $_{27}^{92}Cu$
+- $_{27}^{65}Cu$
+- $_{27}^{38}Cu$
+- $_{38}^{27}Cu$
+
+* La taille d'un atome est de l'ordre de 
++ $10^{-10}$ m
+- $10^{-15}$ m
+- $10^{10}$ m
+- $10^{15}$ m
+
+* L'ion sodium a pour formule
++ $Na^+$
+- $SO_4^{2-}$
+- $SO_3^{2-}$
+- $C\ell^-$
+
+* L'ion potassium a pour formule
++ $K^+$
+- $Na^+$
+- $Ca^{2+}$
+- $Mg^{2+}$
+
+* Deux atomes sont des isotopes si :
++ ils ont le même numéro atomique Z (même nombre de protons) mais des nombres de masse A différents
+- ils ont le même nombre de masse A mais des numéros atomiques Z différents
+- ils ont exactement la même composition (même Z et même A)
+- ils appartiennent au même groupe du tableau périodique
+
+** Parmi les affirmations sur la taille d'un atome, lesquelles sont correctes ?
++ La taille d'un atome est de l'ordre de $10^{-10}$ m (soit 0,1 nm)
++ Le noyau est environ 100 000 fois plus petit que l'atome (taille $\approx 10^{-15}$ m)
+- Le noyau occupe la majeure partie du volume de l'atome
+- La taille d'un atome est comparable à celle d'une cellule biologique ($10^{-6}$ m)
+
+* La taille d'un noyau est de l'ordre de :
++ $10^{-15}$ m (soit 1 femtomètre)
+- $10^{-10}$ m
+- $10^{-6}$ m
+- $10^{-3}$ m
+</script>
+
+<script type="application/x-qcm" id="raw-04_configuration_electronique">
+#  QCM Configuration électronique et familles chimiques — Physique-Chimie Seconde
+#  Source : atomes_2_2nd04/simple-txt.txt
+
+* Dans la sous couche p on peut placer jusqu'à 
++ 6 électrons
+- 5 électrons
+- 2 électrons
+- 7 électrons
+
+* L'atome de chlore a 17 électrons. Sa configuration électronique est:
+
++ $1s^22s^22p^63s^23p^5$
+- $1s^22s^22p^63s^23p^6$
+- $1s^22s^22p^63s^23p^4$
+- $1s^22s^22p^63s^23p^3$
+
+** Les gaz nobles sont
++ Inertes chimiquement
++ situés à la dernière colonne du tableau
+- situés à la première colonne du tableau
+- inflammable à l'eau
+- métalliques
+- des molécules ou des ions
+
+* Le sodium a pour formule
+- $K$
+- $K^+$
++ $Na$
+- $S$
+- $Na^+$
+
+* Le potassium appartient à la famille des
++ alcalins
+- halogènes
+- gaz nobles
+- salins
+
+* La couche K (n=1) peut contenir au maximum :
++ 2 électrons
+- 6 électrons
+- 8 électrons
+- 18 électrons
+
+* La couche L (n=2) est complète lorsqu'elle contient :
++ 8 électrons (sous-couches 2s et 2p remplies)
+- 2 électrons
+- 6 électrons
+- 18 électrons
+
+* La configuration électronique du néon (Z=10) est :
++ $1s^2\,2s^2\,2p^6$
+- $1s^2\,2s^2\,2p^4$
+- $1s^2\,2s^6\,2p^2$
+- $1s^{10}$
+
+** Les halogènes (fluor, chlore, brome, iode) sont dans la même colonne du tableau périodique car :
++ ils ont tous 7 électrons sur leur couche de valence
++ ils tendent tous à capter 1 électron pour former un ion de charge −1
+- ils ont tous la même masse molaire
+- ils sont tous gazeux à température ambiante
+
+** L'atome de soufre (Z=16) a pour configuration $1s^2\,2s^2\,2p^6\,3s^2\,3p^4$. Quelles affirmations sont correctes ?
++ L'atome de soufre possède 6 électrons de valence (couche n=3)
++ Le soufre est dans la même famille que l'oxygène (Z=8) car les deux ont 6 électrons de valence
+- Le soufre forme préférentiellement un ion $S^{2+}$
+- Le soufre est un gaz noble car sa couche 3p est à moitié remplie
+
+* L'atome d'oxygène (Z=8) a pour configuration électronique :
++ $1s^2\,2s^2\,2p^4$
+- $1s^2\,2s^2\,2p^6$
+- $1s^2\,2s^4\,2p^2$
+- $1s^8$
+
+* La couche de valence est :
++ la couche électronique la plus externe occupée, celle dont les électrons participent aux liaisons chimiques
+- la couche interne la plus proche du noyau
+- la couche qui contient le plus grand nombre d'électrons
+- la couche K (n=1) quelle que soit l'atome
+</script>
+
+<script type="application/x-qcm" id="raw-05_ions_tableau_periodique">
+#  QCM Ions et tableau périodique — Physique-Chimie Seconde
+#  Source : Atome_ions/simple-txt.txt
+
+* Le numéro atomique est noté:
+
++ Z
+- A
+- X
+- N
+- 4
+
+* Un atome possède toujours
++ autant d'électrons que de protons
+- autant d'électrons que de neutrons
+- autant de neutrons que de protons
+- plus de neutrons que de protons
+
+* L'atome de chlore a 17 électrons sa configuration électronique est:
+
++ $1s^22s^22p^63s^23p^5$
+- $1s^22s^22p^63s^23p^6$
+- $1s^22s^22p^63s^23p^4$
+- $1s^22s^22p^63s^23p^3$
+
+** Les gaz nobles sont
++ Inertes chimiquement
++ situés à la dernière colonne du tableau
+- situés à la première colonne du tableau
+- inflammable à l'eau
+- métalliques
+- des molécules ou des ions
+
+* L'atome de magnésium Mg perd deux électrons, l'ion formé s'écrit:
+
++ $Mg^{2+}$
+- $Mg^+$
+- $Mg^{2-}$
+- $Ar$
+- $Ne$
+
+* L'atome de chlore cherche à obtenir la même structure électronique que
++ L'argon et forme l'ion $C\ell^-$
+- Le néon et forme l'ion $C\ell^-$
+- Le sodium pour faire du chlorure de sodium $NaC\ell$
+- Le néon et forme l'ion $C\ell^+$
+
+* L'ion potassium a pour formule
++ $K^+$
+- $K^-$
+- $P^+$
+- $P^-$
+- $Na^+$
+
+* Les alcalins sont les éléments de la colonne :
++ 1 (Li, Na, K, Rb, Cs...) — ils ont 1 électron de valence et forment des ions $M^+$
+- 17 (F, Cl, Br...) — ils ont 7 électrons de valence
+- 18 (He, Ne, Ar...) — ils ont 8 électrons de valence
+- 2 (Be, Mg, Ca...) — ils ont 2 électrons de valence
+
+* L'ion calcium a pour formule :
++ $Ca^{2+}$
+- $Ca^-$
+- $Ca^{2-}$
+- $Ca^+$
+
+* L'ion oxyde a pour formule :
++ $O^{2-}$
+- $O^{2+}$
+- $O^-$
+- $O^+$
+
+** Pour former ses ions, un atome tend à adopter la configuration électronique :
++ du gaz noble le plus proche dans le tableau périodique (règle de l'octet)
++ en gagnant ou en perdant des électrons de valence uniquement
+- du métal le plus proche dans le tableau périodique
+- en modifiant son noyau
+
+* L'ion sulfate a pour formule :
++ $SO_4^{2-}$
+- $SO_3^{2-}$
+- $SO_4^{2+}$
+- $S^{2-}$
+</script>
+
+<script type="application/x-qcm" id="raw-06_mole">
+#  QCM La mole et les quantités de matière — Physique-Chimie Seconde
+#  Source : mole/simple-txt.txt
+
+** Le nombre d'Avogadro :
+
++ vaut \num{6,02e23} $\mathrm{mol}^{-1}$
++ se note $\mathcal{N_A}$
+- vaut \num{6,02e-23} $\mathrm{mol}^{-1}$
+- vaut \num{-6,02e23} $\mathrm{mol}^{-1}$
+- se note $n$
+- se note $Nb_A$
+
+* Une quantité de matière est :
+
++ le nombre de moles contenu dans un échantillon
+- la masse d'un échantillon
+- le nombre de particules d'un échantillon
+- le volume d'un échantillon
+
+* Une quantité de matière s'exprime en :
+
++ mol
+- g
+- sans unité
+- $\mathrm{mol}^{-1}$
+
+* Trois moles d'atomes de carbone correspondent à environ:
+
++ \num{18e23} atomes de carbone
+- \num{2e23} atomes de carbone
+- \num{0,33e-23} atomes de carbone
+- on ne peut pas répondre, ça dépend de la masse
+
+* Une goutte d'eau contient \num{6e-6} mol de molécules d'eau. Combien de molécules d'eau contient cette goutte ?
+
++ \num{36e17}
+- \num{e-17}
+- \num{e17}
+- \num{36e-29}
+
+* Un bijou en or contient \num{3e23} atomes d'or. Quelle est la quantité de matière en atomes d'or contenue dans ce bijou ?
+
++ \num{0,5} mol
+- \num{18e23} mol
+- \num{18e46} atomes
+- \num{0,5} molécules
+
+* On dispose de 11 g de dioxyde de carbone. Quelle est la quantité de matière correspondante ? ($M_{\mathrm{C}} = \SI{12}{g/mol}$ ; $M_{\mathrm{O}} = \SI{16}{g/mol}$)
+
++ 0,25 mol
+- 0,39 mol
+- 4 mol
+- 12 mol
+- \SI{1.8e-23}{\mol}
+
+* Quelle masse de carbone doit on peser pour préparer un échantillon de 0,75 mol ? ($M_C = 12$ g/mol)
++ 9 g
+- 7,5 g
+- 12 g
+- 16 g
+
+* La relation entre la quantité de matière $n$, la masse $m$ et la masse molaire $M$ est :
++ $n = \dfrac{m}{M}$
+- $n = m \times M$
+- $n = \dfrac{M}{m}$
+- $M = n + m$
+
+** La masse molaire du chlorure de sodium NaCl est de 58,5 g/mol ($M_{Na} = 23$ g/mol, $M_{Cl} = 35,5$ g/mol). Pour préparer 0,2 mol de NaCl, il faut peser :
++ 11,7 g : $m = n \times M = 0,2 \times 58,5 = 11,7$ g
+- 5,85 g
+- 58,5 g
+- 23,4 g
+
+* La quantité de matière de molécules d'eau dans un verre contenant 18 g d'eau ($M_{eau} = 18$ g/mol) est :
++ 1 mol
+- 18 mol
+- 0,1 mol
+- $6,02 \times 10^{23}$ mol
+
+** On dispose d'un échantillon de 9 g d'eau ($M_{H_2O} = 18$ g/mol). Quelles affirmations sont correctes ?
++ La quantité de matière vaut $n = 9/18 = 0,5$ mol
++ Le nombre de molécules vaut $N = 0,5 \times 6,02 \times 10^{23} \approx 3,01 \times 10^{23}$
+- La quantité de matière vaut 18 mol
+- Le nombre de molécules vaut $6,02 \times 10^{23}$ (une mole complète)
+</script>
+
+<script type="application/x-qcm" id="raw-07_transformation_physique">
+#  QCM Transformations physiques — Physique-Chimie Seconde
+#  Source : programme BO 2019 Seconde
+
+* Un changement d'état est une transformation :
++ physique : la nature des molécules (ou des entités) ne change pas
+- chimique : de nouvelles molécules sont créées
+- nucléaire : le noyau des atomes se modifie
+- biologique : liée aux êtres vivants
+
+* Le passage de l'état liquide à l'état gazeux s'appelle :
++ la vaporisation (ébullition ou évaporation)
+- la fusion
+- la solidification
+- la sublimation
+
+* La fusion est le passage de :
++ l'état solide à l'état liquide
+- l'état liquide à l'état solide
+- l'état liquide à l'état gazeux
+- l'état gazeux à l'état solide (condensation solide)
+
+* La sublimation est le passage de :
++ l'état solide directement à l'état gazeux, sans passer par l'état liquide
+- l'état liquide à l'état gazeux
+- l'état gazeux à l'état liquide
+- l'état solide à l'état liquide
+
+** Parmi les affirmations suivantes, lesquelles sont vraies pour un corps pur en train de changer d'état ?
++ La température reste constante pendant toute la durée du changement d'état
++ On observe un palier sur la courbe température = f(temps)
+- La température augmente régulièrement pendant le changement d'état
+- La température diminue légèrement pendant la fusion
+
+* La température de fusion de l'eau pure est de :
++ 0°C (à la pression atmosphérique)
+- 20°C
+- 100°C
+- -20°C
+
+* La température d'ébullition de l'eau pure vaut :
++ 100°C à la pression atmosphérique standard
+- 0°C
+- 37°C
+- 212°C
+
+** Comment distinguer un corps pur d'un mélange lors d'un chauffage ?
++ Un corps pur présente un palier de température parfaitement constant lors du changement d'état
++ La température de changement d'état d'un corps pur est fixe et reproductible
+- Un mélange présente aussi un palier de changement d'état identique à celui du corps pur
+- La température d'un mélange reste constante pendant tout le chauffage
+
+* On chauffe un bloc de glace. Pendant la fusion, la température :
++ reste constante à 0°C jusqu'à ce que toute la glace soit fondue
+- augmente régulièrement de -10°C à 0°C
+- dépasse 0°C dès le début de la fusion
+- descend en dessous de -10°C
+
+* La condensation est le passage de :
++ l'état gazeux à l'état liquide
+- l'état liquide à l'état gazeux
+- l'état solide à l'état liquide
+- l'état gazeux à l'état solide
+
+* L'eau bout à 100°C à pression atmosphérique. Si on monte en altitude (pression plus basse), l'eau bout :
++ à une température inférieure à 100°C car la pression est plus faible
+- à exactement 100°C, indépendamment de la pression
+- à une température supérieure à 100°C car il faut plus d'énergie
+- à 0°C car l'altitude refroidit l'atmosphère
+
+** On dispose de deux substances A et B. A change d'état à 80°C avec un palier net. B change d'état sur un intervalle de 75°C à 85°C. Quelles affirmations sont correctes ?
++ A est probablement un corps pur car son changement d'état est net et isotherme
++ B est probablement un mélange car sa température de changement d'état s'étale sur un intervalle
+- A et B sont tous les deux des corps purs car ils changent d'état dans la même zone de température
+- B est un corps pur car la variation de température est faible
+</script>
+
+<script type="application/x-qcm" id="raw-08_transformation_chimique">
+#  QCM Transformations chimiques — Physique-Chimie Seconde
+#  Source : programme BO 2019 Seconde
+
+* Dans une réaction chimique, les réactifs sont :
++ les espèces chimiques qui disparaissent au cours de la transformation
+- les espèces chimiques qui apparaissent au cours de la transformation
+- les espèces qui jouent le rôle de catalyseur
+- les espèces inchangées à la fin de la réaction
+
+* Dans une équation de réaction chimique équilibrée, les nombres placés devant les formules s'appellent :
++ des nombres stœchiométriques (ou coefficients stœchiométriques)
+- des exposants
+- des numéros atomiques
+- des indices
+
+* La loi de conservation de la masse (loi de Lavoisier) stipule que :
++ la masse totale des réactifs est égale à la masse totale des produits
+- la masse des produits est toujours supérieure à celle des réactifs
+- les atomes disparaissent au cours d'une réaction chimique
+- le nombre de molécules est conservé lors d'une réaction
+
+** Pour équilibrer l'équation $H_2 + O_2 \rightarrow H_2O$, on écrit $2 H_2 + O_2 \rightarrow 2 H_2O$. Quelles affirmations sont correctes ?
++ Le nombre d'atomes d'hydrogène est conservé : 4 H à gauche, 4 H à droite
++ Le nombre d'atomes d'oxygène est conservé : 2 O à gauche, 2 O à droite
+- On a créé des atomes d'oxygène supplémentaires lors de l'équilibrage
+- Le nombre de molécules est conservé (3 à gauche et 2 à droite)
+
+* Une transformation chimique est dite totale lorsque :
++ au moins un des réactifs est entièrement consommé à la fin de la réaction
+- les réactifs et les produits coexistent indéfiniment
+- la réaction se déroule très lentement
+- les masses des réactifs et des produits sont égales
+
+* Le réactif limitant est :
++ le réactif qui est entièrement consommé en premier, ce qui stoppe la réaction
+- le réactif introduit en plus grande quantité
+- le réactif dont la masse molaire est la plus grande
+- le réactif qui réagit le plus lentement
+
+* On mélange 2 g de fer (Fe) avec 2 g de soufre (S) et on chauffe. Il se forme du sulfure de fer (FeS). Cette transformation est :
++ chimique car de nouvelles entités (FeS) sont créées, différentes des réactifs
+- physique car les atomes de Fe et de S restent intacts
+- nucléaire car les noyaux des atomes changent
+- physique car la masse totale est conservée
+
+** Quelle(s) affirmation(s) sur la combustion du méthane ($CH_4 + 2\,O_2 \rightarrow CO_2 + 2\,H_2O$) sont correctes ?
++ Le méthane et le dioxygène sont les réactifs
++ Le dioxyde de carbone et l'eau sont les produits
++ Il faut 2 molécules de dioxygène pour 1 molécule de méthane
+- Le carbone disparaît car il y a moins de molécules contenant du C à droite
+- L'eau est un réactif car elle est nécessaire à la combustion
+
+* On brûle complètement 4 g de méthane $CH_4$ ($M = 16$ g/mol). On obtient de l'eau et du $CO_2$. La masse de $CO_2$ obtenu ($M = 44$ g/mol) vaut :
++ 11 g : $n_{CH_4} = 4/16 = 0,25$ mol → $n_{CO_2} = 0,25$ mol → $m = 0,25 \times 44 = 11$ g
+- 4 g
+- 16 g
+- 44 g
+
+* Lors de la décomposition de l'eau oxygénée : $2\,H_2O_2 \rightarrow 2\,H_2O + O_2$, pour 2 moles de $H_2O_2$ décomposées, on produit :
++ 2 moles de $H_2O$ et 1 mole de $O_2$
+- 1 mole de $H_2O$ et 1 mole de $O_2$
+- 2 moles de $H_2O$ et 2 moles de $O_2$
+- 4 moles de $H_2O$ et 2 moles de $O_2$
+
+** On fait réagir 0,5 mol de fer avec 0,5 mol de soufre selon $Fe + S \rightarrow FeS$. Quelles affirmations sont correctes ?
++ Les deux réactifs sont en proportions stœchiométriques : aucun n'est en excès
++ On forme 0,5 mol de FeS
++ La masse de FeS formé vaut $0,5 \times 88 = 44$ g ($M_{FeS} = 88$ g/mol)
+- Le fer est le réactif limitant car il a la plus grande masse molaire
+- On obtient 1 mol de FeS
+
+* On mélange 1 mol de $H_2$ et 0,4 mol de $O_2$ selon $2\,H_2 + O_2 \rightarrow 2\,H_2O$. Le réactif limitant est :
++ le dioxygène $O_2$ : il faudrait 0,5 mol de $O_2$ pour 1 mol de $H_2$, mais on n'en a que 0,4 mol
+- le dihydrogène $H_2$ car il est introduit en moins grande quantité molaire
+- aucun des deux, ils sont en proportions stœchiométriques
+- l'eau car c'est le produit formé
+</script>
+
+<script type="application/x-qcm" id="raw-09_transformation_nucleaire">
+#  QCM Transformations nucléaires — Physique-Chimie Seconde
+#  Source : programme BO 2019 Seconde
+
+* Le numéro atomique Z d'un noyau représente :
++ le nombre de protons dans le noyau
+- le nombre de neutrons dans le noyau
+- le nombre de nucléons dans le noyau
+- la masse du noyau en grammes
+
+* Le nombre de masse A d'un noyau représente :
++ le nombre total de nucléons (protons + neutrons) dans le noyau
+- le nombre de protons uniquement
+- la masse du noyau en grammes
+- le nombre d'électrons de l'atome
+
+* Pour le noyau $^{14}_{\;6}C$, le nombre de neutrons N vaut :
++ 8 : $N = A - Z = 14 - 6 = 8$
+- 6
+- 14
+- 20
+
+* Deux noyaux sont isotopes si :
++ ils ont le même nombre de protons (même Z) mais un nombre de neutrons différent
+- ils ont le même nombre de nucléons (même A) mais des numéros atomiques différents
+- ils ont exactement la même composition (même Z et même A)
+- ils ont le même nombre de neutrons mais des numéros atomiques différents
+
+** Parmi les affirmations sur la radioactivité, lesquelles sont correctes ?
++ La radioactivité est un phénomène spontané : un noyau instable se désintègre de lui-même
++ Lors d'une désintégration, les nombres A et Z sont conservés au total (loi de conservation)
+- La radioactivité est une réaction chimique : les électrons participent au processus
+- Un noyau stable peut devenir instable sous l'effet de la chaleur
+
+* La radioactivité $\alpha$ correspond à l'émission de :
++ un noyau d'hélium $^4_2He$ (2 protons + 2 neutrons)
+- un électron
+- un photon (rayonnement électromagnétique)
+- un neutron seul
+
+* La radioactivité $\beta^-$ correspond à l'émission de :
++ un électron $e^-$ (un neutron se transforme en proton + électron)
+- un noyau d'hélium $^4_2He$
+- un proton seul
+- un rayonnement électromagnétique de très haute énergie
+
+* Le rayonnement $\gamma$ est :
++ un rayonnement électromagnétique (photon) de très haute énergie, sans charge ni masse
+- une particule chargée positivement
+- identique au rayonnement visible mais de fréquence plus élevée
+- un flux de neutrons
+
+** Lors de la désintégration $\alpha$ du radium $^{226}_{88}Ra$, le noyau fils X est tel que :
++ $A_X = 226 - 4 = 222$
++ $Z_X = 88 - 2 = 86$ (radon $^{222}_{86}Rn$)
+- $A_X = 226$ et $Z_X = 86$
+- $A_X = 222$ et $Z_X = 90$
+
+* La demi-vie $t_{1/2}$ d'un noyau radioactif est définie comme :
++ la durée au bout de laquelle la moitié des noyaux radioactifs initialement présents se sont désintégrés
+- la durée de vie totale d'un noyau radioactif
+- la durée au bout de laquelle tous les noyaux se sont désintégrés
+- la durée nécessaire pour que la radioactivité double
+
+* On part de $N_0 = 1600$ noyaux radioactifs de demi-vie $t_{1/2} = 2$ h. Après 6 h (soit 3 demi-vies), il reste :
++ 200 noyaux : $1600 \rightarrow 800 \rightarrow 400 \rightarrow 200$
+- 400 noyaux
+- 800 noyaux
+- 0 noyaux
+
+* L'équation de désintégration $\beta^-$ du carbone 14 s'écrit $^{14}_{\;6}C \rightarrow X + e^-$. Le noyau fils X est :
++ $^{14}_{\;7}N$ (azote) : $Z$ augmente de 1 car un neutron devient un proton
+- $^{14}_{\;5}B$ (bore)
+- $^{10}_{\;6}C$
+- $^{14}_{\;6}C$ inchangé
+</script>
+
+<script type="application/x-qcm" id="raw-10_mouvement">
+#  QCM Mouvement et vitesse — Physique-Chimie Seconde
+#  Source : programme BO 2019 Seconde
+
+* Le mouvement d'un objet est toujours défini par rapport à :
++ un référentiel (un objet ou ensemble d'objets pris comme repère)
+- la Terre uniquement, quel que soit le contexte
+- l'objet lui-même
+- le Soleil, qui est le seul référentiel valable
+
+* Un objet dont la trajectoire est une ligne droite est animé d'un mouvement :
++ rectiligne
+- circulaire
+- curviligne
+- parabolique
+
+** Un train se déplace à 200 km/h par rapport au sol. Un passager marche à 5 km/h vers l'avant dans le train. Quelles affirmations sont correctes ?
++ La vitesse du passager par rapport au sol est 205 km/h
++ Par rapport au train, le passager se déplace à 5 km/h
+- La vitesse du passager par rapport au sol est toujours 200 km/h, quel que soit son mouvement dans le train
+- Par rapport au sol, le passager est immobile car il est dans le train
+
+* La vitesse moyenne d'un objet sur un trajet de longueur $d$ effectué en durée $\Delta t$ vaut :
++ $v = \dfrac{d}{\Delta t}$
+- $v = d \times \Delta t$
+- $v = \dfrac{\Delta t}{d}$
+- $v = d^2 \times \Delta t$
+
+* Un cycliste parcourt 36 km en 2 h. Sa vitesse moyenne vaut :
++ 18 km/h
+- 72 km/h
+- 36 km/h
+- 5 m/s
+
+* Un mouvement rectiligne uniforme (MRU) est caractérisé par :
++ une trajectoire rectiligne et une vitesse constante (en valeur et en direction)
+- une trajectoire rectiligne et une vitesse qui augmente régulièrement
+- une trajectoire circulaire et une vitesse constante
+- une trajectoire quelconque et une vitesse nulle
+
+** Lors d'une chronophotographie, on observe un mobile à intervalles de temps réguliers. Quelles affirmations permettent de conclure que le mouvement est accéléré ?
++ Les positions successives sont de plus en plus espacées
++ La distance parcourue entre deux positions consécutives augmente
+- Les positions successives sont également espacées
+- La distance entre deux positions consécutives est constante
+
+* On convertit 72 km/h en m/s. Le résultat est :
++ 20 m/s : $72 \div 3,6 = 20$
+- 72 m/s
+- 259 200 m/s
+- 0,02 m/s
+
+* Une voiture parcourt 400 m en 20 s. Sa vitesse moyenne est :
++ 20 m/s
+- 8000 m/s
+- 380 m/s
+- 200 m/s
+
+** Un astronaute à bord de l'ISS se déplace à $7,7$ km/s par rapport à la Terre. Quelles affirmations sont correctes ?
++ Par rapport à la Terre, l'astronaute est en mouvement
++ Par rapport à l'ISS, l'astronaute peut être considéré comme immobile (s'il ne bouge pas dans la station)
+- Par rapport à la Terre, l'astronaute est immobile car l'espace est vide
+- La notion de mouvement ne s'applique pas dans l'espace
+
+* Sur une chronophotographie, un objet fait des sauts de 5 cm, 5 cm, 5 cm, 5 cm entre des flashs séparés de 0,1 s. La nature du mouvement est :
++ rectiligne uniforme : les écarts sont constants donc la vitesse est constante
+- rectiligne accéléré : les sauts sont tous positifs
+- circulaire uniforme car l'objet ne change pas de direction
+- décéléré car la distance de 5 cm est petite
+
+* On étudie une bille roulant sur un plan incliné. Entre les instants $t = 0$ s et $t = 4$ s, elle parcourt $d = 8$ m. Sa vitesse moyenne sur ce trajet vaut :
++ 2 m/s
+- 32 m/s
+- 0,5 m/s
+- 4 m/s
+</script>
+
+<script type="application/x-qcm" id="raw-11_forces">
+#  QCM Les forces — Physique-Chimie Seconde
+#  Source : forces_2026/simple-txt.txt
+
+** Retrouve certaines caractéristiques du poids:
++ vertical
++ centre de gravité
++ vers le bas
+- horizontal
+- oblique
+- point de contact
+- ascendant
+- homogène
+- masse
+- 10 N/kg
+- 9,8 kg
+
+* En quelle unité s'exprime le poids
++ Newton
+- Kelvin
+- kilo
+- kilogramme
+- masse
+- N/kg
+
+** Lorsque 2 forces se compensent, elles ont:
++ la même direction
+- le même sens
++ des sens opposés
+- une direction oblique
++ des valeurs identiques
+- des valeurs différentes
+
+* Calcule le poids d'un livre de 500 g. On prendra g=10 N/kg.
++ 5 N
+- 5000 N
+- 0,5 N
+- 50 N
+- 500 N
+
+** Le système étudié est un vidéoprojecteur fixé au plafond par une tige en métal. Retrouve les objets qui interagissent avec le système.
++ tige en métal
++ Terre
+- sol
+- plafond
+- mur
+- tableau
+
+* Une force est caractérisée par :
++ un point d'application, une direction, un sens et une valeur (intensité)
+- uniquement une valeur (en newtons)
+- une direction et une valeur, mais pas de sens
+- un point d'application et une valeur uniquement
+
+* La loi des actions réciproques (3e loi de Newton) énonce que :
++ si A exerce une force sur B, alors B exerce sur A une force opposée, de même direction et même valeur
+- si A exerce une force sur B, cette force agit aussi sur A dans le même sens
+- la somme de toutes les forces est toujours nulle
+- une force nécessite un contact direct entre les objets
+
+* Deux forces $\vec{F_1}$ et $\vec{F_2}$ sont équilibrées (se compensent) si :
++ elles ont la même direction, des sens opposés et la même valeur (leur somme vectorielle est nulle)
+- elles ont des directions et des sens différents
+- leur valeur est nulle individuellement
+- elles s'appliquent obligatoirement en deux points différents
+
+** Une bille de masse $m = 200$ g est posée sur une table. Quelles affirmations sont correctes ?
++ La bille est soumise à son poids $P = m \times g = 0,2 \times 10 = 2$ N vers le bas
++ La table exerce une réaction normale $R = 2$ N vers le haut sur la bille
+- La bille n'est soumise à aucune force car elle est immobile
+- Le poids de la bille vaut 200 N
+
+** La gravitation universelle entre deux objets de masses $m_1$ et $m_2$ séparés d'une distance $d$ vaut $F = G \dfrac{m_1 m_2}{d^2}$. Quelles affirmations sont correctes ?
++ Si la distance $d$ double, la force est divisée par 4
++ La force exercée par $m_1$ sur $m_2$ est égale à celle exercée par $m_2$ sur $m_1$ (3e loi de Newton)
+- Si la distance $d$ double, la force est divisée par 2
+- La force gravitationnelle nécessite un contact physique entre les deux masses
+
+* Le poids d'un objet de masse $m$ sur Terre ($g = 9,8$ N/kg) vaut :
++ $P = m \times g$ (en newtons, avec $m$ en kg)
+- $P = m / g$
+- $P = m \times g^2$
+- $P$ est identique au poids sur la Lune
+
+* Sur la Lune, $g_{Lune} \approx 1,6$ N/kg. Un astronaute de 80 kg a un poids lunaire de :
++ 128 N : $P = 80 \times 1,6 = 128$ N
+- 800 N (son poids terrestre)
+- 80 N
+- 0 N car il est en apesanteur
+</script>
+
+<script type="application/x-qcm" id="raw-12_principe_inertie">
+#  QCM Principe d'inertie — Physique-Chimie Seconde
+#  Source : forces_principeinertie_2026/simple-txt.txt
+
+* Calcule le poids d'un livre de 5000 g. On prendra g=10 N/kg.
+- 5 N
+- 5000 N
+- 0,5 N
++ 50 N
+- 500 N
+
+* En quelle unité s'exprime le poids
++ Newton
+- Kelvin
+- kilo
+- kilogramme
+- masse
+- N/kg
+
+** Un système subit deux forces $\vec{F_1}$ et $\vec{F_2}$ et sa vitesse diminue au cours du temps.
++ Le mouvement n'est pas rectiligne uniforme
+- $\vec{F_1} + \vec{F_1} = \vec{0}$
+- $F_1+F_2 = 0$
++ Les forces ne se compensent pas.
+- Les forces s'opposent
+
+** On considère la chronophotographie de deux mouvements:
+\includegraphics[width=6cm]{chronophotographie.png}
+
++ (b) est un mouvement rectiligne uniforme
++ (a) subit des forces qui ne se compensent pas
+- (b) est un mouvement rectiligne ralenti
+- (a) est un mouvement rectiligne ralenti
+- (b) subit des forces qui ne se compensent pas
+
+* La direction du poids est:
++ verticale
+- vers le bas
+- vers le centre de la Terre
+- a pour valeur P=m.g
+
+* Le principe d'inertie (1re loi de Newton) énonce que :
++ si les forces exercées sur un objet se compensent, celui-ci est soit immobile, soit en mouvement rectiligne uniforme
+- un objet immobile ne subit aucune force
+- tout objet en mouvement finit par s'arrêter en l'absence de forces
+- un objet accélère si les forces se compensent
+
+* Un objet se déplace en ligne droite à vitesse constante. On peut conclure que :
++ les forces exercées sur cet objet se compensent (somme des forces nulle)
+- aucune force ne s'exerce sur cet objet
+- le poids de l'objet est nul
+- l'objet est en chute libre
+
+** Un livre est posé sur une table horizontale. Il est immobile. Quelles affirmations sont correctes ?
++ Les forces exercées sur le livre se compensent
++ Le poids du livre est dirigé vers le bas ; la réaction de la table est dirigée vers le haut
+- Le livre est immobile donc il ne subit aucune force
+- Le poids du livre et la réaction de la table s'appliquent sur des objets différents (3e loi de Newton)
+
+* Un satellite en orbite circulaire autour de la Terre se déplace à vitesse constante. Pourtant, son mouvement est circulaire et non rectiligne. Cela signifie que :
++ les forces exercées sur le satellite ne se compensent pas (la force gravitationnelle le fait dévier de la trajectoire rectiligne)
+- les forces se compensent parfaitement car la vitesse est constante
+- le satellite ne subit aucune force dans l'espace
+- le principe d'inertie ne s'applique pas dans l'espace
+
+** Une voiture roule à vitesse constante sur une autoroute horizontale. Quelles affirmations sont correctes ?
++ Le moteur exerce une force vers l'avant qui compense les frottements et la résistance de l'air
++ La résultante de toutes les forces est nulle car la vitesse est constante
+- La voiture accélère légèrement car le moteur fonctionne
+- Il n'y a pas de frottements sur autoroute
+
+* Un objet lancé horizontalement dans le vide (sans frottements) est soumis uniquement à son poids. Sa trajectoire est :
++ parabolique car le poids agit vers le bas, créant une accélération verticale
+- rectiligne car il n'y a pas de frottements
+- circulaire
+- rectiligne et verticale
+
+* Dans un référentiel galiléen (dit inertiel), le principe d'inertie est valide. La Terre est :
++ approximativement galiléenne pour les expériences de courte durée en laboratoire
+- parfaitement galiléenne en toutes circonstances
+- non galiléenne : on ne peut jamais y appliquer le principe d'inertie
+- galiléenne uniquement en l'absence de pesanteur
+</script>
+
+<script type="application/x-qcm" id="raw-13_electricite">
+#  QCM Circuits électriques — lois et grandeurs — Physique-Chimie Seconde
+#  Source : Electricite_2/simple-txt.txt
+
+* Le sens conventionnel du courant électrique est (à l'extérieur du générateur): 
++ de la borne + du générateur vers sa borne -
+- de la borne - du générateur vers sa borne +
+- n'existe pas 
+- est dans le sens contraire de la flèche de tension
+
+* Pour mesurer une tension:
++ on utilise un voltmètre branché en dérivation
+- on utilise un voltmètre branché en série
+- on utilise un ampèremètre branché en dérivation
+- on utilise un ampèremètre branché en série
+
+* Dans le circuit suivant, La loi des mailles s'écrit:
+
+\includegraphics[width=3.5 cm]{loi_noeuds.png}
++ $I_1+I_5=I_2+I_3+I_4+I_6$
+- $I_1+I_2+I_3+I_4+I_5+I_6=0$
+- $I_1 = I_4$ ; $I_5=I_2+I_3$
+- $I_1+I_2+I_3 = I_4+I_5+I_6$
+
+* Pour le noeud N, la loi des noeuds s'écrit: 
+
+\includegraphics[width=3.5 cm]{loi_maille.png}
+
++ U1 + U2 = U3 + U4
+- U1 =  U2 + U3 + U4
+- U4 = U2 et U1 = U3
+- U4 = - U2 et U1 = - U3
+
+* La loi d'Ohm s'écrit:
+
++ $U=R \times I$
+- $U=\frac{R}{I}$
+- $U=\frac{I}{R}$
+- $R = U\times I$
+
+* L'unité de la résistance électrique est :
++ l'ohm (Ω)
+- le volt (V)
+- l'ampère (A)
+- le watt (W)
+
+* Dans un circuit en série, l'intensité du courant :
++ est la même en tout point du circuit (loi des nœuds : un seul chemin)
+- est plus grande près du générateur qu'aux bornes de la lampe
+- s'additionne à chaque dipôle
+- vaut zéro si une lampe est éteinte mais les autres fonctionnent
+
+* Pour mesurer une intensité, on utilise :
++ un ampèremètre branché en série dans le circuit
+- un voltmètre branché en série dans le circuit
+- un ampèremètre branché en dérivation
+- un ohmmètre branché en dérivation
+
+** Dans un circuit en dérivation avec deux lampes $L_1$ et $L_2$, quelles affirmations sont correctes ?
++ La tension aux bornes de $L_1$ est égale à la tension aux bornes de $L_2$ (loi des mailles)
++ Si $L_1$ grille (circuit ouvert), $L_2$ continue de fonctionner
+- Les deux lampes reçoivent la même intensité
+- Si $L_1$ grille, $L_2$ s'éteint aussi car elles sont en série
+
+** Une résistance $R = 100$ Ω est parcourue par un courant $I = 0,5$ A. Quelles affirmations sont correctes ?
++ La tension à ses bornes vaut $U = R \times I = 100 \times 0,5 = 50$ V
++ La puissance dissipée vaut $P = U \times I = 50 \times 0,5 = 25$ W
+- La tension à ses bornes vaut 200 V
+- La puissance dissipée vaut 50 W
+
+* La puissance électrique dissipée par un dipôle est donnée par :
++ $P = U \times I$ (en watts, avec U en volts et I en ampères)
+- $P = U / I$
+- $P = U + I$
+- $P = R \times I$
+
+** Dans un circuit comprenant un générateur de 12 V et deux résistances $R_1 = 40$ Ω et $R_2 = 20$ Ω en série, quelles affirmations sont correctes ?
++ La résistance totale vaut $R = R_1 + R_2 = 60$ Ω
++ L'intensité dans le circuit vaut $I = U/R = 12/60 = 0,2$ A
+- La résistance totale vaut 20 Ω (la plus petite)
+- La tension aux bornes de chaque résistance est 12 V
+</script>
+
+<script type="application/x-qcm" id="raw-14_lumiere_spectre">
+#  QCM Lumière et spectres — Physique-Chimie Seconde
+#  Source : programme BO 2019 Seconde
+
+* La lumière se propage en ligne droite dans un milieu transparent homogène. C'est le principe de :
++ la propagation rectiligne de la lumière
+- la réfraction
+- la diffraction
+- la réflexion totale interne
+
+* La lumière blanche est :
++ un mélange de toutes les radiations colorées du spectre visible
+- uniquement la couleur blanche pure, sans autre composante
+- une radiation de longueur d'onde unique
+- identique à la lumière infrarouge
+
+* Le spectre visible s'étend de façon approximative entre :
++ 400 nm (violet) et 800 nm (rouge)
+- 1 nm et 100 nm
+- 10 μm et 1 mm
+- 400 m et 800 m
+
+* La dispersion de la lumière blanche par un prisme produit :
++ un spectre continu allant du violet au rouge
+- uniquement de la lumière rouge
+- des faisceaux parallèles de même direction
+- une lumière blanche encore plus intense
+
+** Parmi les affirmations suivantes sur les spectres, lesquelles sont correctes ?
++ Un spectre d'émission est composé de raies brillantes sur fond sombre
++ Un spectre d'absorption montre des raies sombres sur fond continu
+- Un spectre d'émission et un spectre d'absorption sont identiques pour un même élément
+- Les raies d'absorption d'un élément sont situées à des longueurs d'onde différentes de ses raies d'émission
+
+* La longueur d'onde dans le vide d'une radiation lumineuse est liée à sa fréquence $f$ et à la vitesse de la lumière $c$ par :
++ $\lambda = \dfrac{c}{f}$
+- $\lambda = c \times f$
+- $\lambda = \dfrac{f}{c}$
+- $\lambda = c^2 \times f$
+
+* Une radiation de longueur d'onde $\lambda = 550$ nm appartient au domaine :
++ visible (vert)
+- infrarouge
+- ultraviolet
+- rayons X
+
+* Les raies d'un spectre d'émission d'un élément chimique sont :
++ caractéristiques de cet élément (elles permettent son identification)
+- identiques pour tous les éléments
+- continues, sans raies particulières
+- visibles uniquement dans l'infrarouge
+
+** Quelles affirmations sur la lumière du Soleil sont correctes ?
++ Le Soleil émet un spectre continu (lumière blanche) dû à sa haute température
++ L'atmosphère solaire absorbe certaines radiations, créant des raies sombres (raies de Fraunhofer)
+- Le Soleil n'émet que de la lumière rouge car il est très chaud
+- Le spectre solaire est un spectre d'émission de raies, car le Soleil est un gaz
+
+* La longueur d'onde $\lambda = 700$ nm correspond à la couleur :
++ rouge
+- violette
+- verte
+- bleue
+
+* On observe à l'aide d'un spectroscope la flamme d'un brûleur alimenté avec du sodium. On voit :
++ deux raies jaune-orangées brillantes sur fond sombre (spectre d'émission de raies du sodium)
+- un spectre continu arc-en-ciel complet
+- des raies sombres sur fond coloré continu
+- uniquement des raies bleues
+
+* La vitesse de la lumière dans le vide est $c = 3,0 \times 10^8$ m/s. La fréquence d'une radiation verte de longueur d'onde $\lambda = 500$ nm vaut :
++ $6,0 \times 10^{14}$ Hz : $f = \dfrac{c}{\lambda} = \dfrac{3,0 \times 10^8}{500 \times 10^{-9}}$
+- $1,5 \times 10^{-16}$ Hz
+- $6,0 \times 10^{-7}$ Hz
+- $1,5 \times 10^{17}$ Hz
+</script>
+
+<script type="application/x-qcm" id="raw-15_refraction">
+#  QCM Réfraction et loi de Snell-Descartes — Physique-Chimie Seconde
+#  Source : refraction_26/simple-txt.txt
+
+* Retrouve la loi de Snell-Descartes pour la réfraction:
+
++ $n_1 \sin i = n_2 \sin r$
+- $n_1 \sin r = n_2 \sin i$
+- $n_2 \sin i = n_1 \sin r$
+- $n_1 \cos i = n_2 \cos r$
+
+** Quelle est la valeur de c la vitesse de la lumière dans le vide ou l'air ?
+
++ $\SI{3.0e8}{\meter\per\second}$
++ $\SI{300 000}{\kilo\meter\per\second}$
+- $\SI{3.0e5}{\meter\per\second}$
+- $\SI{340}{\meter\per\second}$
+- $\SI{3.0e8}{\kilo\meter\per\second}$
+- $\SI{3.0e5}{\kilo\meter\per\second}$
+
+* Un rayon incident $i= \SI{50}{\degree}$ se propage de l'air vers du verre. L'indice de l'air est $n_1=1,00$. L'angle réfracté vaut $r=\SI{25}{\degree}$. Calculer l'indice de réfraction $n_2$ du verre.
+
++ 1,81
+- 0,55
+- 1,33
+- 1,98
+
+* Si v est la vitesse de la lumière dans un milieu transparent. Que vaut l'indice de réfraction ?
+
++ $\frac{c}{v}$
+- $\frac{v}{c}$
+- 1,0
+- $\frac{n}{v}$
+
+* Calculer l'angle de réfraction $r$ pour un angle d'incidence $i$ égal à $25°$ et des indices de réfraction $n_1=1,00$ et $n_2=1,39$ :
+
++ 17,7°
+- 25°
+- 17,98°
+- 36,1°
+
+* L'indice de réfraction d'un milieu est toujours :
++ supérieur ou égal à 1 (la lumière va moins vite dans tout milieu que dans le vide)
+- inférieur à 1
+- égal à 1 dans tous les milieux
+- négatif pour les milieux qui ralentissent la lumière
+
+* Lorsqu'un rayon lumineux passe d'un milieu peu dense ($n_1=1$) vers un milieu plus dense ($n_2>1$) :
++ le rayon se rapproche de la normale car $r < i$
+- le rayon s'éloigne de la normale car $r > i$
+- le rayon n'est pas dévié : $r = i$
+- le rayon est totalement réfléchi
+
+* Les angles d'incidence et de réfraction sont mesurés par rapport à :
++ la normale à la surface de séparation au point d'incidence
+- la surface de séparation elle-même
+- la verticale
+- la direction du rayon incident
+
+** Un rayon passe de l'eau ($n_1=1,33$) vers l'air ($n_2=1,00$) avec $i=30°$. On calcule $\sin r = 1,33 \times \sin 30° = 0,665$ donc $r \approx 41,7°$. Quelles affirmations sont correctes ?
++ Le rayon s'éloigne de la normale car il passe vers un milieu moins dense ($n_2 < n_1$)
++ $r > i$ car $n_1 > n_2$
+- Le rayon se rapproche de la normale
+- $r = i = 30°$
+
+** La réflexion totale interne se produit quand $i$ dépasse l'angle critique $i_c$ tel que $\sin i_c = n_2/n_1$ (avec $n_1 > n_2$). Pour l'eau vers l'air : $\sin i_c = 1/1,33 \approx 0,75$. Quelles affirmations sont correctes ?
++ $i_c \approx 48,8°$
++ Au-delà de $i_c$, toute la lumière est réfléchie (pas de rayon transmis dans l'air)
+- La réflexion totale est possible quand le rayon va vers un milieu plus dense
+- La réflexion totale se produit quel que soit l'angle d'incidence
+
+* La vitesse de la lumière dans un verre d'indice $n = 1,5$ vaut :
++ $v = c/n = 3,0 \times 10^8 / 1,5 = 2,0 \times 10^8$ m/s
+- $v = c \times n = 4,5 \times 10^8$ m/s
+- $v = c = 3,0 \times 10^8$ m/s (la lumière garde la même vitesse)
+- $v = 340$ m/s (vitesse du son, pas de la lumière)
+
+* L'angle d'incidence $i$ est mesuré entre le rayon incident et :
++ la normale à la surface de séparation (perpendiculaire à la surface)
+- la surface de séparation elle-même
+- la verticale
+- la direction du rayon réfracté
+</script>
+
+<script type="application/x-qcm" id="raw-16_son_ondes">
+#  QCM Son et ondes — Physique-Chimie Seconde
+#  Source : son_2025/simple-txt.txt
+
+** On a représenté ci-dessous l'enregistrement électrique correspondant à un son. 
+
+\includegraphics[width=6cm]{signal.png}
+
++ La période vaut 2  ms
++ La fréquence vaut 500 Hz
+- La période vaut 1  ms
+- La période vaut 3  ms
+- La fréquence vaut 0,500 Hz
+- La fréquence vaut 100 Hz
+- La fréquence vaut 3 V
+
+* La relation entre période est fréquence est:
++ $f = \frac{1}{T}$ avec f en Hz et T en s
+- $f = \frac{1}{T}$ avec f en s et T en Hz
+- $T = \frac{1}{f}$ avec f en s et T en Hz
+
+* Le domaine de l'audible est l'intervalle compris entre
+- 20 Hz et 2000 Hz
++ 20 Hz et 20000 Hz
+- 20 s et 2000 s
+- 20 s et 20000 s
+
+** Un diapason et un piano jouent la même note de musique 
++ Les 2 sons ont la même période
++ Les 2 sons ont la même fréquence
++ Les 2 sons n'ont pas le même timbre
+- Les 2 sons n'ont pas la même période
+- Les 2 sons n'ont pas la même fréquence
+- Les 2 sons ont le même timbre
+
+* La vitesse du son est
++ 340 m/s dans l'air à 20°C
+- 340 km/h
+- $3 \times 10^8$ m/s
+- $3 \times 10^8$ km/h
+
+* Un son est une onde :
++ mécanique : il a besoin d'un milieu matériel (air, eau, solide) pour se propager
+- électromagnétique : il se propage dans le vide comme la lumière
+- qui se propage à la vitesse de la lumière
+- uniquement transversale
+
+* La hauteur d'un son (grave ou aigu) est liée à :
++ sa fréquence : plus la fréquence est élevée, plus le son est aigu
+- son amplitude (volume)
+- sa vitesse de propagation
+- le milieu dans lequel il se propage
+
+* Les infrasons sont des sons dont la fréquence est :
++ inférieure à 20 Hz (non perceptibles par l'oreille humaine)
+- supérieure à 20 000 Hz
+- comprise entre 20 Hz et 20 000 Hz
+- négative
+
+* Un son de fréquence $f = 440$ Hz a une période $T$ de :
++ $T = 1/f = 1/440 \approx 2,3 \times 10^{-3}$ s soit environ 2,3 ms
+- $T = 440$ s
+- $T = 1$ s
+- $T = 220$ ms
+
+** Une source sonore émet un son de fréquence $f = 680$ Hz. La vitesse du son est $v = 340$ m/s. Quelles affirmations sont correctes ?
++ La longueur d'onde est $\lambda = v/f = 340/680 = 0,5$ m
++ La période est $T = 1/f \approx 1,47 \times 10^{-3}$ s
+- La longueur d'onde est 680 m
+- La longueur d'onde est $v \times f = 231\,200$ m
+
+* Le volume sonore (intensité) est lié à :
++ l'amplitude des vibrations (plus l'amplitude est grande, plus le son est fort)
+- la fréquence du son
+- la vitesse de propagation du son
+- la longueur d'onde
+
+* Un ultrason a une fréquence :
++ supérieure à 20 000 Hz (20 kHz), non perceptible par l'oreille humaine
+- inférieure à 20 Hz
+- comprise entre 20 Hz et 20 kHz
+- identique à un son audible, mais plus fort
+</script>
+
+<!-- ═══════════ APP HTML ═══════════ -->
+<div id="app">
+
+  <div id="screen-mode" class="screen">
+    <div class="app-header">
+      <a href="index.html" class="portal-link">← Retour au portail</a>
+      <h1>⚗️ Quiz Physique-Chimie</h1>
+      <p class="subtitle">Seconde — Quiz de 10 questions</p>
+    </div>
+    <div class="mode-grid">
+      <div class="mode-card" onclick="selectMode('random')">
+        <div class="mode-icon">🎲</div>
+        <div class="mode-title">Aléatoire</div>
+        <div class="mode-desc">10 questions tirées au hasard dans toute la banque</div>
+      </div>
+      <div class="mode-card" onclick="selectMode('single')">
+        <div class="mode-icon">📚</div>
+        <div class="mode-title">Chapitre</div>
+        <div class="mode-desc">Questions dans un chapitre de votre choix</div>
+      </div>
+      <div class="mode-card" onclick="selectMode('multi')">
+        <div class="mode-icon">🎯</div>
+        <div class="mode-title">Multi-chapitres</div>
+        <div class="mode-desc">10 questions réparties équitablement sur plusieurs chapitres</div>
+      </div>
+    </div>
+    <div class="bank-info" id="bank-info"></div>
+  </div>
+
+  <div id="screen-chapters" class="screen hidden">
+    <div class="nav-bar">
+      <button class="btn-back" onclick="goBack()">← Retour</button>
+      <h2 id="chapter-screen-title"></h2>
+    </div>
+    <div id="chapter-grid" class="chapter-grid"></div>
+    <div class="selection-bar">
+      <div id="selection-info" class="selection-info"></div>
+      <button id="btn-start" class="btn-primary" disabled onclick="startQuiz()">Démarrer →</button>
+    </div>
+  </div>
+
+  <div id="screen-quiz" class="screen hidden">
+    <div class="quiz-top">
+      <div class="quiz-nav">
+        <span class="quiz-counter">Question <span id="q-num">1</span> / <span id="q-tot">10</span></span>
+        <span id="q-chapter-tag" class="chapter-tag"></span>
+      </div>
+      <div class="progress-bar"><div id="progress-bar-fill" class="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div id="question-card" class="question-card"></div>
+    <div class="quiz-bottom">
+      <button id="btn-next" class="btn-primary" onclick="nextQuestion()">Question suivante →</button>
+    </div>
+  </div>
+
+  <div id="screen-results" class="screen hidden">
+    <h2 class="results-title">Résultats</h2>
+    <div id="score-block" class="score-block"></div>
+    <div id="results-list" class="results-list"></div>
+    <div class="results-actions">
+      <button class="btn-secondary" onclick="startQuiz()">↺ Rejouer</button>
+      <button class="btn-primary" onclick="goToMenu()">🏠 Menu</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<script>
+'use strict';
+
+const CHAPTER_NAMES = {
+  '01_corps_purs': 'Corps purs et mélanges',
+  '02_solutions_aqueuses': 'Solutions aqueuses',
+  '03_atome': 'Structure de l\'atome',
+  '04_configuration_electronique': 'Configuration électronique',
+  '05_ions_tableau_periodique': 'Ions et tableau périodique',
+  '06_mole': 'La mole',
+  '07_transformation_physique': 'Transformations physiques',
+  '08_transformation_chimique': 'Transformations chimiques',
+  '09_transformation_nucleaire': 'Transformations nucléaires',
+  '10_mouvement': 'Mouvement et vitesse',
+  '11_forces': 'Les forces',
+  '12_principe_inertie': 'Principe d\'inertie',
+  '13_electricite': 'Circuits électriques',
+  '14_lumiere_spectre': 'Lumière et spectres',
+  '15_refraction': 'Réfraction',
+  '16_son_ondes': 'Son et ondes',
+};
+
+function parseAMC(text) {
+  const questions = [];
+  let cur = null;
+  for (const rawLine of text.split('\n')) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith('#')) continue;
+    if (/^\*\*($|\s)/.test(line)) {
+      if (cur) questions.push(cur);
+      cur = { type: 'multiple', text: line.replace(/^\*\*\s*/, ''), answers: [] };
+    } else if (/^\*($|\s)/.test(line)) {
+      if (cur) questions.push(cur);
+      cur = { type: 'single', text: line.replace(/^\*\s*/, ''), answers: [] };
+    } else if (/^\+/.test(line) && cur) {
+      const t = line.replace(/^\+\s*/, '');
+      if (t && !t.includes('\\includegraphics')) cur.answers.push({ text: t, correct: true });
+    } else if (/^-/.test(line) && cur) {
+      const t = line.replace(/^-\s*/, '');
+      if (t && !t.includes('\\includegraphics')) cur.answers.push({ text: t, correct: false });
+    } else if (cur) {
+      if (line.includes('\\includegraphics')) cur.text += '\n[📊 Figure non disponible]';
+      else cur.text += '\n' + line;
+    }
+  }
+  if (cur) questions.push(cur);
+  return questions.filter(q => q.answers.length >= 2 && q.answers.some(a => a.correct));
+}
+
+const CHAPTERS = {};
+for (const id of Object.keys(CHAPTER_NAMES)) {
+  const el = document.getElementById('raw-' + id);
+  if (el) {
+    const qs = parseAMC(el.textContent);
+    if (qs.length > 0) CHAPTERS[id] = qs;
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function renderMath(el) {
+  if (typeof renderMathInElement === 'function') {
+    renderMathInElement(el, {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$',  right: '$',  display: false },
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true },
+      ],
+      throwOnError: false,
+    });
+  }
+}
+
+const TOTAL = 10;
+const S = { mode: null, selected: [], quiz: [], cur: 0, userAnswers: [] };
+
+function buildQuiz() {
+  if (S.mode === 'random') {
+    const pool = [];
+    for (const [id, qs] of Object.entries(CHAPTERS))
+      qs.forEach(q => pool.push({ ...q, chapter: CHAPTER_NAMES[id] }));
+    return shuffle(pool).slice(0, Math.min(TOTAL, pool.length));
+  }
+  if (S.mode === 'single') {
+    const id = S.selected[0];
+    return shuffle(CHAPTERS[id] || [])
+      .slice(0, Math.min(TOTAL, (CHAPTERS[id] || []).length))
+      .map(q => ({ ...q, chapter: CHAPTER_NAMES[id] }));
+  }
+  const pools = S.selected
+    .filter(id => CHAPTERS[id]?.length > 0)
+    .map(id => ({ id, qs: shuffle([...CHAPTERS[id]]) }));
+  if (!pools.length) return [];
+  const n = pools.length;
+  const counts = pools.map(() => Math.floor(TOTAL / n));
+  let rem = TOTAL % n;
+  for (let i = 0; i < pools.length && rem > 0; i++) { counts[i]++; rem--; }
+  for (let i = 0; i < pools.length; i++) counts[i] = Math.min(counts[i], pools[i].qs.length);
+  let taken = counts.reduce((s, c) => s + c, 0);
+  for (let i = 0; i < pools.length && taken < TOTAL; i++) {
+    const add = Math.min(pools[i].qs.length - counts[i], TOTAL - taken);
+    counts[i] += add; taken += add;
+  }
+  const result = [];
+  for (let i = 0; i < pools.length; i++)
+    pools[i].qs.slice(0, counts[i]).forEach(q => result.push({ ...q, chapter: CHAPTER_NAMES[pools[i].id] }));
+  return shuffle(result);
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  const el = document.getElementById(id);
+  el.classList.remove('hidden');
+  el.style.animation = 'none'; el.offsetHeight; el.style.animation = '';
+}
+
+function selectMode(mode) {
+  S.mode = mode; S.selected = [];
+  if (mode === 'random') { startQuiz(); return; }
+  document.getElementById('chapter-screen-title').textContent =
+    mode === 'single' ? 'Choisissez un chapitre' : 'Choisissez les chapitres';
+  document.getElementById('selection-info').textContent = '';
+  document.getElementById('btn-start').disabled = true;
+  buildChapterGrid(mode);
+  showScreen('screen-chapters');
+}
+
+function buildChapterGrid(mode) {
+  const grid = document.getElementById('chapter-grid');
+  grid.innerHTML = '';
+  for (const [id, name] of Object.entries(CHAPTER_NAMES)) {
+    const qs = CHAPTERS[id];
+    if (!qs) continue;
+    const item = document.createElement('div');
+    item.className = 'ch-item'; item.dataset.id = id;
+    item.innerHTML = `<div class="ch-name">${name}</div><div class="ch-count">${qs.length} question${qs.length > 1 ? 's' : ''}</div>`;
+    item.addEventListener('click', () => toggleChapter(id, mode, item));
+    grid.appendChild(item);
+  }
+}
+
+function toggleChapter(id, mode, el) {
+  if (mode === 'single') {
+    document.querySelectorAll('.ch-item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected'); S.selected = [id];
+    const n = Math.min(CHAPTERS[id].length, TOTAL);
+    document.getElementById('selection-info').textContent = `${n} question${n > 1 ? 's' : ''} dans ce chapitre`;
+    document.getElementById('btn-start').disabled = false;
+  } else {
+    const idx = S.selected.indexOf(id);
+    if (idx >= 0) { S.selected.splice(idx, 1); el.classList.remove('selected'); }
+    else           { S.selected.push(id);       el.classList.add('selected'); }
+    const nb = S.selected.length;
+    document.getElementById('selection-info').textContent =
+      nb ? `${nb} chapitre${nb > 1 ? 's' : ''} sélectionné${nb > 1 ? 's' : ''}` : '';
+    document.getElementById('btn-start').disabled = nb === 0;
+  }
+}
+
+function goBack() { showScreen('screen-mode'); }
+
+function startQuiz() {
+  S.quiz = buildQuiz();
+  if (!S.quiz.length) { alert('Aucune question disponible.'); return; }
+  S.cur = 0; S.userAnswers = S.quiz.map(() => new Set());
+  document.getElementById('q-tot').textContent = S.quiz.length;
+  showQuestion(0); showScreen('screen-quiz');
+}
+
+function showQuestion(idx) {
+  const q = S.quiz[idx], total = S.quiz.length;
+  document.getElementById('q-num').textContent = idx + 1;
+  document.getElementById('progress-bar-fill').style.width = ((idx + 1) / total * 100) + '%';
+  document.getElementById('q-chapter-tag').textContent = q.chapter || '';
+  const shuffled = shuffle(q.answers.map((a, i) => ({ ...a, oi: i })));
+  const isMulti = q.type === 'multiple';
+  const badge = isMulti
+    ? '<span class="q-type-badge badge-multi">Réponses multiples</span>'
+    : '<span class="q-type-badge badge-single">Réponse unique</span>';
+  const answersHTML = shuffled.map(a => `
+    <label class="ans-item" data-oi="${a.oi}">
+      <input type="${isMulti ? 'checkbox' : 'radio'}" name="${isMulti ? 'q'+idx+'a'+a.oi : 'q'+idx}" value="${a.oi}" onchange="handleAnswer(${idx},${a.oi},this)">
+      <span class="ans-text">${a.text}</span>
+    </label>`).join('');
+  const card = document.getElementById('question-card');
+  card.innerHTML = `${badge}<div class="q-text">${q.text.trim()}</div><div class="answers-list">${answersHTML}</div>`;
+  document.getElementById('btn-next').textContent = idx === total - 1 ? 'Voir les résultats →' : 'Question suivante →';
+  renderMath(card);
+}
+
+function handleAnswer(qIdx, oi, input) {
+  const q = S.quiz[qIdx], sel = S.userAnswers[qIdx];
+  if (q.type === 'single') {
+    sel.clear(); sel.add(oi);
+    document.querySelectorAll('#question-card .ans-item').forEach(el => el.classList.remove('selected'));
+    input.closest('.ans-item').classList.add('selected');
+  } else {
+    if (input.checked) { sel.add(oi); input.closest('.ans-item').classList.add('selected'); }
+    else               { sel.delete(oi); input.closest('.ans-item').classList.remove('selected'); }
+  }
+}
+
+function nextQuestion() {
+  S.cur++;
+  if (S.cur >= S.quiz.length) showResults(); else showQuestion(S.cur);
+}
+
+function isCorrect(q, sel) {
+  const correct = new Set(q.answers.map((a, i) => a.correct ? i : -1).filter(i => i >= 0));
+  return [...correct].every(i => sel.has(i)) && [...sel].every(i => correct.has(i));
+}
+
+function showResults() {
+  const total = S.quiz.length;
+  const scored = S.quiz.map((q, i) => isCorrect(q, S.userAnswers[i]));
+  const score = scored.filter(Boolean).length;
+  const pct = Math.round(score / total * 100);
+  let emoji = '😅', color = '#dc2626';
+  if (pct >= 90) { emoji = '🏆'; color = '#16a34a'; }
+  else if (pct >= 70) { emoji = '😊'; color = '#16a34a'; }
+  else if (pct >= 50) { emoji = '🤔'; color = '#d97706'; }
+  document.getElementById('score-block').innerHTML = `
+    <div class="score-card">
+      <div class="score-emoji">${emoji}</div>
+      <div class="score-num" style="color:${color}">${score}<span class="score-denom">/${total}</span></div>
+      <div class="score-pct">${pct}% de réussite</div>
+    </div>`;
+  const list = document.getElementById('results-list');
+  list.innerHTML = '';
+  S.quiz.forEach((q, i) => {
+    const ok = scored[i], sel = S.userAnswers[i];
+    const div = document.createElement('div');
+    div.className = `res-item ${ok ? 'res-ok' : 'res-fail'}`;
+    const answersHTML = q.answers.map((a, ai) => {
+      const was = sel.has(ai);
+      if (a.correct && was)  return `<div class="res-ans ra-ok"><span class="ra-icon">✓</span><span>${a.text}</span></div>`;
+      if (!a.correct && was) return `<div class="res-ans ra-err"><span class="ra-icon">✗</span><span>${a.text}</span></div>`;
+      if (a.correct && !was) return `<div class="res-ans ra-miss"><span class="ra-icon">○</span><span>${a.text} <em>(manquée)</em></span></div>`;
+      return '';
+    }).join('');
+    div.innerHTML = `
+      <div class="res-chapter">${q.chapter || ''}</div>
+      <div class="res-top">
+        <div class="res-q-text">${q.text.trim()}</div>
+        <div class="res-icon">${ok ? '✅' : '❌'}</div>
+      </div>
+      <div class="res-answers">${answersHTML}</div>`;
+    list.appendChild(div); renderMath(div);
+  });
+  showScreen('screen-results');
+}
+
+function goToMenu() { S.mode = null; S.selected = []; showScreen('screen-mode'); }
+
+// Init
+(function () {
+  let total = 0;
+  for (const qs of Object.values(CHAPTERS)) total += qs.length;
+  document.getElementById('bank-info').textContent =
+    `${total} questions disponibles · ${Object.keys(CHAPTERS).length} chapitres`;
+})();
+</script>
+</body>
+</html>
