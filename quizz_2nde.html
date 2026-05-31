@@ -81,6 +81,9 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .quiz-counter { font-size: .875rem; font-weight: 700; color: var(--muted); }
 .chapter-tag { font-size: .72rem; font-weight: 700; color: var(--primary);
   background: #dbeafe; border-radius: 999px; padding: 3px 10px; }
+.btn-quit { background: none; border: none; color: var(--muted); font-size: .8rem;
+  cursor: pointer; padding: 4px 0; transition: color .15s; flex-shrink: 0; }
+.btn-quit:hover { color: var(--text); }
 .progress-bar { height: 7px; background: var(--border); border-radius: 99px; overflow: hidden; }
 .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary));
   border-radius: 99px; transition: width .35s ease; }
@@ -1495,6 +1498,7 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
   <div id="screen-quiz" class="screen hidden">
     <div class="quiz-top">
       <div class="quiz-nav">
+        <button class="btn-quit" onclick="goToMenu()">← Menu</button>
         <span class="quiz-counter">Question <span id="q-num">1</span> / <span id="q-tot">10</span></span>
         <span id="q-chapter-tag" class="chapter-tag"></span>
       </div>
