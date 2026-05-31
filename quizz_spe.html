@@ -131,552 +131,15 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 .ra-miss { background: #fffbeb; color: #b45309; }
 .ra-icon { flex-shrink: 0; font-weight: 700; }
 .results-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.portal-link { display: inline-block; font-size: .8rem; color: var(--muted); text-decoration: none;
+  margin-bottom: 18px; font-family: 'Segoe UI', system-ui, sans-serif; }
+.portal-link:hover { color: var(--text); }
 </style>
 </head>
 <body>
 
 <!-- ═══════════ RAW QCM DATA (généré automatiquement) ═══════════ -->
-<script type="application/x-qcm" id="raw-RC">
-* La capacité d'un condensateur se mesure en
-
-+ Farad
-- Faraday
-- Coulomb
-- Vasco de Gamma
-- Ohm
-
-* L'intensité i du courant à l'instant t est reliée à la charge q d'une armature du condensateur selon
-+ $i = \frac{dq}{dt}$
-- $i = \frac{q}{dt}$
-- $i = \frac{U}{R}$
-- $i = \frac{dt}{q}$
-
-** On charge un condensateur C= 3 $\mu$F initialement déchargé à l'aide d'une générateur de 5 V. La résistance du circuit vaut R=100 k$\Omega$.
-
-+ $\tau= 0,3$ s
-- $\tau= 300$ s
-- $\tau= 3,0$ s
-+ Lorsque le condensateur est chargé sa tension vaut 5 V
-- Lorsque le condensateur est chargé sa tension vaut 3 V
-- Lorsque le condensateur est chargé sa tension vaut $0,63\times 5$ V
-
-* Le temps caractéristique $\tau$ 
-
-+ vaut $R\times C$ 
-- vaut $5.R\times C$ 
-- vaut $\frac{R}{C}$
-- vaut $\frac{1}{RC}$
-
-* On dispose d'un condensateur C initialement chargé à la tension E. On étudie sa décharge à travers une résistance R. La loi des mailles s'écrit:
-
-- $u_C- u_R=0$
-- $u_C- u_R=E$
-+ $u_C+ u_R=0$
-- $u_C+ u_R=E$
-
-* L'équation différentielle $$y' = ay +b$$ a pour solution générale
-
-+ $y=K.e^{a.x} - \frac{b}{a}$ où K est une constante
-- $y=e^{b.x} + \frac{b}{a}+ K$ où K est une constante
-- $y=K.e^{b.x} - \frac{b}{a}$ où K est une constante
-- $y=K.e^{-a.x} - \frac{b}{a}$ où K est une constante
-
-** Lors de la charge du condensateur, on peut déterminer graphiquement $\tau$ en utilisant la représentation $u_c = f(t)$. Pour cela
-
-- On trace l'asymptote et on relève la valeur
-+ On trace la tangente à l'origine et on relève l'abscisse du point d'intersection avec l'asymptote
-- On trace la tangente à l'origine et on relève l'ordonnée du point d'intersection avec l'asymptote
-+ On mesure l'abscisse du point de la courbe dont l'ordonnée vaut $0,63\times E$ 
-- On mesure l'abscisse du point de la courbe dont l'ordonnée vaut $0,37\times E$ 
-
-* L'intensité du courant dans un circuit RC est définie comme :
-- La charge électrique totale du condensateur.
-+ Le débit de charges traversant un conducteur.
-- La tension aux bornes du condensateur.
-- L'opposé de la charge stockée dans le condensateur.
-
-* La relation entre la charge et la tension aux bornes d'un condensateur est :
-- \( q = \frac{u_C}{C} \)
-- \( q = C + u_C \)
-+ \( q = C \times u_C \)
-- \( q = C \times \frac{1}{u_C} \)
-
-* Lors de la décharge d’un condensateur dans un circuit RC, la tension aux bornes du condensateur :
-- Augmente exponentiellement.
-+ Diminue exponentiellement.
-- Reste constante.
-- Passe immédiatement à zéro.
-
-
-* Un condensateur initialement chargé à une tension \( E \) est mis en décharge dans un circuit RC. Quelle est la tension \( u_C \) après un temps \( t = 2\tau \) ?
-- \( E \)
-- \( 0.63E \)
-- \( 0.14E \)
-+ \( 0.37E \)
-</script>
-
-<script type="application/x-qcm" id="raw-Thermo_electrolyse">
-* La variation d'énergie interne $\Delta U$ vaut
-+ W+Q
-- W-Q
-- $W\times Q$
-- Q
-
-* Un systéme est chauffé est sa température passe de $T_i$ à $T_f$. Aucune force ne travaille.
-
-+ $\Delta U = m\times c \times (T_f - T_i)$
-- $\Delta U = m\times c \times (T_f + T_i)$
-- $\Delta U = m\times c \times (T_i + T_f)$
-
-** La face interne d'un mur est à une température de 20°C et sa face externe 40°C. L'énergie thermique traverse le mur
-+ par conduction 
-- par convection
-- par rayonnement
-+ de la face externe vers la face interne
-- de la face interne vers la face externe
-
-* La résistance thermique d'une paroi augmente lorsque
-+ La surface diminue
-- L'épaisseur augmente
-- la conductivité augmente
-
-** On réalise l'électrolyse d'une solution de $Cu^{2+} + Br^-$. On donne les couples redox: $Cu^{2+}/Cu_{(s)}$ et $Br_2 / Br^-$
-
-\includegraphics[width=6cm]{electrolyse.png}
-
-+ On observe la formation de cuivre sur l'électrode A
-- On observe la formation de cuivre sur l'électrode B
-- La transformation est spontanée
-+ La transformation est forcée
-+ A l'électrode B, il y a une oxydation
-- A l'électrode B, il y a une réduction
-+ Les électrons vont de B vers A
-- Les électrons vont de A vers B
-
-** Une électrolyse consomme un courant de 2 A pendant 1h.  Pendant cette électrolyse à la cathode les ions cuivre sont réduits en cuivre selon $$Cu^{2+}+2e-=Cu_{(s)}$$. La masse molaire du cuivre est 63,5 g/mol.
-+ La masse de cuivre produite est 2,37 g
-- La masse de cuivre produite est 1,19 g
-- La masse de cuivre produite est 4,74 g
-+ La charge qui a circulé vaut 7200 C
-- La charge qui a circulé vaut 3600 C
-- La charge qui a circulé vaut 2 C
-</script>
-
-<script type="application/x-qcm" id="raw-acide_base">
-* Une base selon Bronsted est une espèce chimique capable de
-+ capter un ion $H^+$
-- céder un ion $H^+$
-- céder un électron
-- capter un électron
-
-* Un acide selon Bronsted est une espèce chimique capable de
-- capter un ion $H^+$
-+ céder un ion $H^+$
-- céder un électron
-- capter un électron
-
-* La base conjuguée de l'eau est:
-+ $OH^-$
-- $H_3O^+$
-- $H^+$
-- $H^-$
-
-* L'acide  conjuguée de l'eau est:
-- $OH^-$
-+ $H_3O^+$
-- $AH^+$
-- $H^-$
-
-* L'ion hydrogénocarbonate $HCO_3^-$ est un amphotère
-+ Vrai
-- Faux
-- ça dépend
-
-* On peut calculer la concentration en ion oxonium à partir du pH en utilisant la relation ($C^0=1$ mol/L):
-+ $10^{-pH}\times C^0$
-- $10^{pH}\times C^0$
-- $-\log [H_3O^+]/C^0$
-- $\log [H_3O^+]/C^0$
-
-* On peut calculer le pH à partir de la concentration en ion oxonium en utilisant la relation ($C^0=1$ mol/L):
-- $10^{-pH}\times C^0$
-- $10^{pH}\times C^0$
-+ $-\log [H_3O^+]/C^0$
-- $\log [H_3O^+]/C^0$
-
-* Le caractère basique de $NH_3$ se justifie par la présence de
-+ un doublet non liant sur l'atome N
-- une lacune sur l'atome N
-- une lacune sur un atome d'H
-- un doublet non liant sur un atome d'H
-
-** L'ion $Na^+$ est 
-+ n'a pas de caractère acide ou basique dans l'eau
-- un acide
-- une base
-+ un cation
-- un anion
-</script>
-
-<script type="application/x-qcm" id="raw-cinematique">
-* Pour calculer la valeur de la vitesse v à partir des coordonnées du vecteur vitesse $v_x$ et $v_y$ on calcule:
-
-+ $\sqrt{v_x^2 + v_y^2}$
-- $\sqrt{v_x + v_y}$
-- $v_x^2 + v_y^2$
-- $\sqrt{v_x^{2} \times v_y^2}$
-
-** Le vecteur accélération 
-
-- s'obtient en dérivant le vecteur position
-+ s'obtient en dérivant le vecteur vitesse
-+ n'est pas toujours tangent à la trajectoire
-- est toujours dans le sens du mouvement
-
-* Lors d'une mouvement circulaire de rayon r, les coordonnées dans le repère de Frenet du vecteur accélération s'écrivent:
-
-+ $a_t=\frac{dv}{dt}$ et $a_n=\frac{v^2}{r}$
-- $a_n=\frac{dv}{dt}$ et $a_t=\frac{v^2}{r}$
-- $a_t=\frac{d\vec{v}}{dt}$ et $a_n=\frac{v^2}{r}$
-- $a_t=\frac{d\vec{v}}{dt}$ et $a_n=\frac{\vec{v}}{r}$
-
-* L'abscisse d'un point mobile a pour équation horaire $x(t)=-5t^2+7t+1$ que vaut $v_x(t)$ ?
-+ $-10t+7$
-- $-5t+7$
-- $-10t+8$
-- $-5+7+1=3$
-
-
-** Lors d'un mouvement circulaire uniforme
-
-+ la valeur de l'accélération est constante
-- le vecteur accélération est constant
-+ $\vec{a}$ est orienté vers le centre du cercle
-- $\vec{a}$ est orienté vers l'extérieur du cercle
-- $\vec{v}$ est constant 
-
-
-* L'abscisse d'un point mobile a pour équation horaire $x(t)=-5t^2+7t+1$ que vaut $a_x(t)$ ?
-+ $-10$
-- $-10t+7$
-- $-5$
-- $5$
-- $10$
-
-** Un point mobile est lancé vers la droite selon la direction d'un axe (Ox). La coordonnée de son vecteur vitesse a pour expression: $v_x(t)= -3t +2$. Que peut-on affirmer ?
-
-+ L'accélération a pour valeur 3 $m/s^2$
-- L'accélération a pour valeur -3 $m/s^2$
-+ Le mouvement est ralenti.
-- La vitesse initiale est nulle.
-- Le vecteur accélération et le vecteur vitesse sont dans le même sens
-- Le mouvement est accéléré dans le sens de (Ox)
-</script>
-
-<script type="application/x-qcm" id="raw-cinetique">
-** On dispose d'une solution mère à 12 mol/L on veut fabriquer 100 mL de solution fille à 3 mol/L
-
-+ Le facteur de dilution vaut 12/3= 4
-- Le facteur de dilution vaut 3/12 = 0,25
-+ On utilise une pipette jaugée de 25 mL
-- On utilise une pipette jaugée de 20 mL
-- On utilise une pipette jaugée de 4 mL
-
-* Par définition lors d'une réaction $A\rightarrow B$ la vitesse de disparition de A vaut
-+ $ - \frac{d[A]}{dt}$
-- d/t
-- $\frac{C_A}{\Delta t}$
-- $\frac{d[A]}{dt}$
-
-** Si la loi de vitesse est d'ordre 1 selon le réactif A. 
-+ $v_{disp}(A)=k\times [A]_t$
-+ $[A]_t=[A]_0\times e^{-kt}$
-- $[A]_t=[A]_0\times e^{kt}$
-- $v= - \frac{d[A]}{dt}$
-- $t_{1/2}$ est proportionnelle à la concentration initiale
-+ $ln([A])$ est une fonction affine du temps
-
-** Retrouve les facteurs cinétiques
-+ Concentration des réactifs
-+ Température
-- Concentration des produits
-- Rapidité
-- Intermédiaire réactionnel
-
-* On définit le temps de demi-réaction par:
-
-+ $x(t_{1/2})= \frac{x_f}{2}$
-- $t_{1/2}= \frac{x_f}{2}$
-- $x(x_f)= \frac{t_{1/2}}{2}$
-- $x(t_{1/2})= \frac{x_{max}}{2}$
-
-** Un catalyseur permet d'augmenter la vitesse de la réaction
-
-+  sans figurer dans le bilan de la réaction
-- doit figurer dans le bilan de la réaction
-- n'intervient pas dans les actes élémentaires
-+ doit être régénérer à la fin de la réaction
-- doit être une enzyme
-
-* Un intermédiaire réactionnel
-
-- est une espèce dont on peut se passer
-- augmente la vitesse
-+ apparaît lors d'un acte élémentaire et disparaît à l'acte suivant
-- apparaît lors d'un acte élémentaire mais ne figure pas dans le bilan
-
-** La flèche courbe 
-
-+ est orientée du site donneur vers le site accepteur
-+ permet d'expliquer l'apparition et la rupture de liaisons
-- est orientée du site accepteur vers le site donneur
-- s'écrit à droite dans les actes élémentaires
-- contient 1 ou plusieurs électrons
-
-* Les chocs sont d'autant plus efficaces que
-
-- La concentration des réactifs est grande
-+ La température est grande
-- La concentration des réactifs est faible
-- La température est basse
-</script>
-
-<script type="application/x-qcm" id="raw-dynamique">
-* La première loi de Newton s'écrit :
-
-
-- $\overrightarrow{a}=\overrightarrow{g}$
-- $m\times \overrightarrow{a}=\overrightarrow{F_1}+\overrightarrow{F_2}+...$
-- Si le mouvement est rectiligne uniforme alors le vecteur vitesse est constant
-+ Si le mouvement est rectiligne uniforme alors la somme vectorielle des forces est nulle
-
-** Un livre de 300 g est posé, immobile, sur un plan incliné d'un angle $\alpha=30$ degré par rapport à l'horizontal. L'action du support $\overrightarrow{R}$ se décompose en deux vecteur $\overrightarrow{T}$ (tangent au plan) et $\overrightarrow{N}$ (perpendiculaire au plan). g = 10 N/kg.
-
-+ N = 2,6 N
-- N = 1,5 N 
-+ R = 3,0 N
-- R = 3000 N
-- T = - 1,5 N
-- T = 2,6 N
-
-* La seconde loi de Newton s'écrit: Dans un référentiel galiléen... 
-
-+ $m \overrightarrow{a}= \sum \overrightarrow{F}$
-- $m \overrightarrow{a} = \overrightarrow{P}$
-- $\overrightarrow{P} = m \overrightarrow{g}$
-- $\sum \overrightarrow{F}= \overrightarrow{0} \Leftrightarrow \overrightarrow{v}= \overrightarrow{Cste}$
-
-* Un système subit une seule force $\overrightarrow{F}$. On peut affirmer que 
-
-+ $\overrightarrow{F}$ est colinéaire et de même sens que $\overrightarrow{a}$.
-- $\overrightarrow{F}$ n'est pas colinéaire et de même sens que $\overrightarrow{a}$.
-- $\overrightarrow{F}$ est perpendiculaire à $\overrightarrow{a}$.
-- $\overrightarrow{F}$ est tangent à la trajectoire.
-
-** On repère le centre de masse d'une moto en mouvement par sa position $x$ sur l'axe Ox confondu avec la route horizontale. A tout instant t $x(t)= 2,3 \times t^2$. La masse du système est 100 kg et g=10 $m/s^2$. L'action du support $\overrightarrow{R}$ se décompose en deux vecteur $\overrightarrow{T}$ (tangent au plan) et $\overrightarrow{N}$ 
-
-- Les forces se compensent.
-- La vitesse est constante
-+ L'accélération est constante
-- N = 1000 N
-- On peut pas calculer N
-+ T = 460 N
-- T = 4,6 N
-- T = 1000 N
-
-** Soit un système dont le mouvement n'est pas rectiligne uniforme:
-+ le vecteur accélération a une valeur non nulle
-- le vecteur accélération est dans le sens du mouvement
-+ le vecteur vitesse est dans le sens du mouvement
-+ le vecteur vitesse est tangent à la trajectoire
-- le vecteur accélération est tangent à la trajectoire
-- La somme des intensités des forces est nulle
-+ La somme vectorielle des forces est non nulle
-</script>
-
-<script type="application/x-qcm" id="raw-forces_acide_base">
-** L'eau est une espèce amphotère cela signifie que
-
-- c'est un solvant pour les acides
-+ c'est à la fois un acide et une base
-- son pH est neutre contrairement aux acides et aux bases
-+ elle appartient à 2 couples acide/base
-- elle prédomine dans plusieurs valeurs de pH
-  
-
-* Le produit ionique de l'eau Ke
-
-- vaut $10^{14}$ dans toutes les solutions aqueuses
-- vaut $10^{14}$ dans l'eau pure
-- vaut $[H_3O^+] + [OH^-]$
-+ vaut $[H_3O^+] \times [OH^-]$
-- vaut $[H_3O^+] / [OH^-]$
-
-  
-* Dans une solution d'acide éthanoïque $CH_3COOH$ les espèces chimiques présentes sont:
-
-+ $CH_3COOH$, $CH_3COO^-$ , $H_3O^+$ , $H_2O$ et $OH^-$
-- $CH_3COOH$, $CH_3COO^-$ et $H_2O$
-- $CH_3COOH$ et $H_2O$
-- $CH_3COOH$
-
-  
-
-* Une solution d'éthanoïque a pour pH=5,5. Le pKa du couple $CH_3COOH$ / $CH_3COO^-$ vaut 4,8. L'espèce du couple qui prédomine est
-
-- $CH3COOH$
-+ $CH3COO^-$
-- $H_3O^+$
-- $OH^-$
-
-* L'espression de Ka est:
-
-- $$\frac{[AH]\times [A^-]}{[H_3O^+]}$$
-- $$\frac{[AH] + [A^-]}{[H_3O^+]}$$
-+ $$\frac{[H_3O^+][A^-]}{[AH]}$$
-- $$\frac{[H_3O^+][AH]}{[A^-]}$$
-</script>
-
-<script type="application/x-qcm" id="raw-lunette_astro">
-* Pour une lunette afocale :
-
-+ l'image d'un objet à l'infini est à l'infini
-- l'image d'un objet à l'infini n'existe pas
-- l'image d'un objet est toujours dans l'oeil 
-- l'image passant pas O n'est jamais déviée
-
-* On dispose d'une lunette afocale, formée de deux lentilles L1 (objectif) et L2 (oculaire)
-+ $F'1=F2$
-- $F1=F'2$
-- $F1=F2$
-- $F'1=F'2$
-
-* Quel est rayon ne sera pas dévié en traversant une lentille ?
-+ Celui passant pas O
-- Celui passant par F
-- Celui passant par F'
-- Celui parallèle à l'axe optique
-
-* Le grossissement G vaut:
-
-+ $\alpha ' / \alpha$
-- $\alpha / \alpha '$
-- $\alpha \times \alpha '$
-- $\tan \alpha / \tan \alpha '$
-
-** Soit $f'1$ la distance focale de l'objectf et $f'2$ la distance focale de l'oculaire, on a
-+ G = f'1 /f'2
-- G = f'2 /f'1
-- f'1 = f'2
-+ f'1 > f'2
-- f'1 < f'2
-
-** Dans une lunette afocale, l'image intermédiaire se forme 
-+ Dans le plan focal image de l'objectif
-+ Dans le plan focal objet de l'oculaire
-- Dans le plan focal objet de l'objectif
-- Dans le plan focal image de l'oculaire
-- Dans l'oeil !
-
-* L'image d'un point objet situé à l'infini d'une lentille se forme
-+ dans le plan focal image
-- dans le plan focal objet
-- à l'infini
-- dans l'oeil
-
-* L'image d'un point objet situé dans le plan focal d'une lentille se forme
-- dans le plan focal image
-- dans le plan focal objet
-+ à l'infini
-- dans l'oeil
-
-* La vergence d'une lentille de 10 cm de distance focale vaut
-+ 10 $\delta$
-- 1 mètre
-- 0,1 dioptrie
-- 1 dioptrie
-
-* Le foyer objet F et le foyer image F' d'une lentille sont
-+ symétriques par rapport à O
-- FF' a pour valeur la distance focale
-- $OF = 2\times OF'$
-- $OF' = 2\times OF$
-</script>
-
-<script type="application/x-qcm" id="raw-meca_fluides">
-* L'unité de la pression dans le Système International (SI) est :
-
-+ Le pascal (Pa)
-- Le newton (N)
-- Le joule (J)
-- Le bar (bar)
-
-* La poussée d'Archimède exercée sur un objet de volume immergé $V_{imm}$ dans un fluide de masse volumique $\rho_f$ vaut :
-
-+ $F_A = \rho_f \times V_{imm} \times g$
-- $F_A = \rho_{objet} \times V_{imm} \times g$
-- $F_A = \rho_f \times g / V_{imm}$
-- $F_A = m_{objet} \times g / V_{imm}$
-
-* Le débit volumique $D$ d'un fluide s'écoulant à la vitesse $v$ à travers une section droite $S$ est :
-
-+ $D = S \times v$
-- $D = S / v$
-- $D = v / S$
-- $D = S \times v^2$
-
-* La relation de Bernoulli le long d'une ligne de courant entre deux points A et B s'écrit (fluide incompressible, écoulement permanent) :
-
-+ $\frac{1}{2}\rho v_A^2 + \rho g z_A + P_A = \frac{1}{2}\rho v_B^2 + \rho g z_B + P_B$
-- $\frac{1}{2}\rho v_A^2 - \rho g z_A + P_A = \frac{1}{2}\rho v_B^2 - \rho g z_B + P_B$
-- $\rho v_A^2 + \rho g z_A + P_A = \rho v_B^2 + \rho g z_B + P_B$
-- $\frac{1}{2}\rho v_A^2 + \rho g z_A = \frac{1}{2}\rho v_B^2 + \rho g z_B$
-
-* En régime permanent pour un fluide incompressible, la conservation du débit entre deux sections $S_1$ (vitesse $v_1$) et $S_2$ (vitesse $v_2$) s'écrit :
-
-+ $S_1 v_1 = S_2 v_2$
-- $S_1 / v_1 = S_2 / v_2$
-- $S_1 v_1^2 = S_2 v_2^2$
-- $S_1 + v_1 = S_2 + v_2$
-
-** Un objet de volume $V = 200\ \text{cm}^3$ est totalement immergé dans l'eau ($g = 10\ \text{N/kg}$). Parmi les affirmations suivantes, lesquelles sont exactes ?
-
-+ La poussée d'Archimède vaut $F_A = 2\ \text{N}$
-- La poussée d'Archimède vaut $F_A = 20\ \text{N}$
-- La poussée d'Archimède vaut $F_A = 0{,}2\ \text{N}$
-+ La poussée d'Archimède est dirigée verticalement vers le haut
-- La poussée d'Archimède dépend de la masse volumique du matériau de l'objet
-- La poussée d'Archimède dépend de la forme extérieure de l'objet uniquement
-
-** L'effet Venturi se produit dans un tuyau horizontal dont la section se rétrécit. On dispose de deux points A (grande section) et B (petite section) situés sur une même ligne de courant à la même altitude. Parmi les affirmations suivantes, lesquelles sont exactes ?
-
-+ La conservation du débit implique $v_B > v_A$
-+ La relation de Bernoulli implique $P_B < P_A$
-- La relation de Bernoulli implique $P_B > P_A$
-- La conservation du débit implique $v_A > v_B$
-- La vitesse diminue là où la section diminue
-- Le débit volumique augmente dans la partie rétrécie
-
-** Un solide de masse $m = 500\ \text{g}$ et de volume $V = 400\ \text{cm}^3$ est suspendu à un dynamomètre et totalement immergé dans l'eau ($\rho_{eau} = 1000\ \text{kg/m}^3$, $g = 10\ \text{N/kg}$). Parmi les affirmations suivantes, lesquelles sont exactes ?
-
-+ Le poids du solide vaut $P = 5\ \text{N}$
-+ La poussée d'Archimède vaut $F_A = 4\ \text{N}$
-+ La valeur indiquée par le dynamomètre est $T = 1\ \text{N}$
-- La valeur indiquée par le dynamomètre est $T = 9\ \text{N}$
-- La poussée d'Archimède est supérieure au poids, donc le solide remonterait seul
-- Le dynamomètre indique la même valeur que si le solide est hors de l'eau
-
-** Une aile d'avion a une surface portante $S = 50\ \text{m}^2$. L'air ($\rho_{air} = 1{,}2\ \text{kg/m}^3$) circule à $v_{dessus} = 250\ \text{m/s}$ au-dessus de l'aile et à $v_{dessous} = 200\ \text{m/s}$ en dessous. Les points au-dessus et en dessous sont à la même altitude. La masse de l'avion est $m = 50\ 000\ \text{kg}$, $g = 10\ \text{N/kg}$. Parmi les affirmations suivantes, lesquelles sont exactes ?
-
-+ La pression est plus élevée sous l'aile qu'au-dessus ($P_{dessous} > P_{dessus}$)
-+ La différence de pression vaut $\Delta P = P_{dessous} - P_{dessus} = 13\ 500\ \text{Pa}$
-+ La force de portance vaut $F = \Delta P \times S = 675\ 000\ \text{N}$
-- La pression est plus élevée au-dessus de l'aile
-- La différence de pression vaut $\Delta P = 2\ 250\ \text{Pa}$
-- La portance est insuffisante pour soulever l'avion
-</script>
-
-<script type="application/x-qcm" id="raw-methodes_physiques">
+<script type="application/x-qcm" id="raw-01_methodes_physiques">
 * L'unité légale de mesure de la longueur d'onde est 
 + mètre
 - micromètre
@@ -771,7 +234,384 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 - 1 mol/L = 10^{-3} mol/$m^3$
 </script>
 
-<script type="application/x-qcm" id="raw-mvt_champ">
+<script type="application/x-qcm" id="raw-02_acide_base">
+* Une base selon Bronsted est une espèce chimique capable de
++ capter un ion $H^+$
+- céder un ion $H^+$
+- céder un électron
+- capter un électron
+
+* Un acide selon Bronsted est une espèce chimique capable de
+- capter un ion $H^+$
++ céder un ion $H^+$
+- céder un électron
+- capter un électron
+
+* La base conjuguée de l'eau est:
++ $OH^-$
+- $H_3O^+$
+- $H^+$
+- $H^-$
+
+* L'acide  conjuguée de l'eau est:
+- $OH^-$
++ $H_3O^+$
+- $AH^+$
+- $H^-$
+
+* L'ion hydrogénocarbonate $HCO_3^-$ est un amphotère
++ Vrai
+- Faux
+- ça dépend
+
+* On peut calculer la concentration en ion oxonium à partir du pH en utilisant la relation ($C^0=1$ mol/L):
++ $10^{-pH}\times C^0$
+- $10^{pH}\times C^0$
+- $-\log [H_3O^+]/C^0$
+- $\log [H_3O^+]/C^0$
+
+* On peut calculer le pH à partir de la concentration en ion oxonium en utilisant la relation ($C^0=1$ mol/L):
+- $10^{-pH}\times C^0$
+- $10^{pH}\times C^0$
++ $-\log [H_3O^+]/C^0$
+- $\log [H_3O^+]/C^0$
+
+* Le caractère basique de $NH_3$ se justifie par la présence de
++ un doublet non liant sur l'atome N
+- une lacune sur l'atome N
+- une lacune sur un atome d'H
+- un doublet non liant sur un atome d'H
+
+** L'ion $Na^+$ est 
++ n'a pas de caractère acide ou basique dans l'eau
+- un acide
+- une base
++ un cation
+- un anion
+</script>
+
+<script type="application/x-qcm" id="raw-03_titrages">
+#  QCM Titrages — Terminale Spécialité Physique-Chimie
+#  Source : 03_titrages.tex — BO Terminale (programme Bac 2024)
+#  Répartition : 12 connaissances pures / 4 raisonnement simple / 4 démarche complexe
+
+#  ── CONNAISSANCES PURES ──────────────────────────────────────────────────────
+
+* Un dosage par titrage direct est une technique qui permet de :
++ Déterminer précisément la concentration d'une espèce chimique dans une solution grâce à une réaction chimique avec une espèce de concentration connue
+- Séparer les espèces présentes dans un mélange par précipitation sélective
+- Identifier des groupes caractéristiques d'une molécule organique par spectroscopie infrarouge
+- Mesurer la masse d'un soluté par évaporation du solvant
+
+* Pour être utilisée comme support d'un titrage, une réaction chimique doit obligatoirement être :
++ Rapide, totale et univoque
+- Rapide, totale et réversible
+- Lente, totale et univoque
+- Rapide, partielle et spécifique
+
+* Dans un dispositif de titrage direct, la solution titrante est :
++ La solution de concentration connue avec précision, versée progressivement depuis la burette
+- La solution dont on veut déterminer la concentration, placée dans le bécher
+- La solution contenue dans la pipette jaugée lors du prélèvement de la prise d'essai
+- La solution préparée par dilution à partir d'une solution étalon
+
+* L'équivalence d'un titrage correspond à l'état du système pour lequel :
++ Les réactifs participant à la réaction de titrage ont été introduits en proportions stœchiométriques
+- La concentration du réactif titrant est égale à la concentration du réactif titré
+- Le pH de la solution est égal à 7
+- La conductivité de la solution est minimale
+
+* La méthode des tangentes pour déterminer le volume équivalent sur une courbe de titrage pH-métrique consiste à :
++ Tracer deux tangentes parallèles de part et d'autre du saut de pH, puis la droite médiane : l'équivalence est le point d'intersection de cette médiane avec la courbe
+- Tracer une unique tangente à la courbe au point d'inflexion du saut de pH
+- Chercher le point où la courbe pH = f(V) passe par un pH = 7
+- Tracer la courbe $\dfrac{d\text{pH}}{dV} = f(V)$ et repérer son maximum
+
+* Sur la courbe dérivée $\dfrac{d\text{pH}}{dV} = f(V)$ d'un titrage pH-métrique, l'équivalence est repérée :
++ Au maximum de la courbe dérivée
+- Au minimum de la courbe dérivée
+- À l'intersection de la courbe dérivée avec l'axe des abscisses
+- Au point où la courbe dérivée est la plus plate
+
+* Pour qu'un indicateur coloré acido-basique puisse être utilisé lors d'un titrage, sa zone de virage doit :
++ Être incluse dans le saut de pH à l'équivalence
+- Coïncider exactement avec un pH de 7
+- Être la plus étroite possible pour améliorer la précision
+- Se situer impérativement avant le saut de pH
+
+* La phénolphtaléine est un indicateur coloré dont la zone de virage est :
++ pH 8,2 – 10,0 : incolore en milieu acide, rose en milieu basique
+- pH 3,1 – 4,4 : rouge en milieu acide, jaune en milieu basique
+- pH 6,0 – 7,6 : jaune en milieu acide, bleu en milieu basique
+- pH 4,5 – 6,5 : incolore en milieu acide, orange en milieu basique
+
+* On titre une solution d'acide éthanoïque par une solution de soude. Le pH à l'équivalence vaut 9,0. On dispose des indicateurs suivants : hélianthine (zone de virage 3,1 – 4,4), BBT (zone de virage 6,0 – 7,6) et phénolphtaléine (zone de virage 8,2 – 10,0). L'indicateur adapté à ce titrage est :
++ La phénolphtaléine, car sa zone de virage (8,2 – 10,0) contient le pH à l'équivalence (9,0)
+- Le BBT, car sa zone de virage (6,0 – 7,6) est la plus proche du pH à l'équivalence
+- L'hélianthine, car elle vire en milieu acide, ce qui correspond à l'état du bécher avant l'équivalence
+- Tous les indicateurs conviennent dès lors que le titrage est acide-base
+
+* Sur la courbe $\sigma = f(V)$ d'un titrage conductimétrique, on repère l'équivalence :
++ À l'intersection de deux droites modélisant chaque partie du nuage de points, correspondant à un changement de pente
+- Au minimum de la conductivité
+- Au maximum de la conductivité
+- En appliquant la méthode des tangentes comme pour la pH-métrie
+
+* La conductivité d'une solution lors d'un titrage conductimétrique dépend :
++ De toutes les espèces ioniques présentes dans la solution, y compris les ions spectateurs
+- Uniquement des ions participant à la réaction de titrage
+- Uniquement des ions issus de la solution titrante versée depuis la burette
+- Uniquement du pH de la solution en cours de titrage
+
+** Parmi les propositions suivantes, lesquelles constituent des conditions nécessaires pour qu'une réaction chimique puisse servir de support à un titrage ?
++ Être rapide
++ Être totale (le réactif limitant est intégralement consommé)
++ Ne pas présenter de réactions parasites (être univoque)
+- Être nécessairement une réaction acide-base
+- Être exothermique
+
+#  ── RAISONNEMENT SIMPLE / APPLICATION DIRECTE ───────────────────────────────
+
+* On titre $V_A = 10,0$ mL d'une solution d'acide lactique (présent dans le yaourt) par une solution de soude ($Na^+ + HO^-$) à $C_B = 1,0 \times 10^{-2}$ mol·L$^{-1}$. La réaction support est $CH_3CHOHCOOH + HO^- \rightarrow CH_3CHOHCOO^- + H_2O$. Le volume équivalent est $V_{éq} = 15,0$ mL. La concentration $C_A$ de la solution d'acide lactique est :
++ $C_A = 1,5 \times 10^{-2}$ mol·L$^{-1}$
+- $C_A = 6,7 \times 10^{-3}$ mol·L$^{-1}$
+- $C_A = 3,0 \times 10^{-2}$ mol·L$^{-1}$
+- $C_A = 1,0 \times 10^{-2}$ mol·L$^{-1}$
+
+* On titre $V_A = 10,0$ mL d'une solution d'acide sulfurique $H_2SO_4$ par une solution de soude à $C_B = 0,050$ mol·L$^{-1}$. La réaction support est $H_2SO_4 + 2\,HO^- \rightarrow SO_4^{2-} + 2\,H_2O$. Le volume équivalent est $V_{éq} = 20,0$ mL. La concentration de l'acide sulfurique est :
++ $C_A = 5,0 \times 10^{-2}$ mol·L$^{-1}$
+- $C_A = 1,0 \times 10^{-1}$ mol·L$^{-1}$
+- $C_A = 2,0 \times 10^{-1}$ mol·L$^{-1}$
+- $C_A = 2,5 \times 10^{-2}$ mol·L$^{-1}$
+
+* On souhaite déterminer la teneur en vitamine C (acide ascorbique $C_6H_8O_6$) d'un jus de citron. On place $V_A = 30,0$ mL de jus de citron dans le bécher et on verse progressivement depuis la burette une solution de diiode $I_2$ de concentration $C_B = 5,0 \times 10^{-3}$ mol·L$^{-1}$ connue avec précision. L'espèce titrante est :
++ Le diiode $I_2$, car sa concentration est connue avec précision et il est versé depuis la burette
+- L'acide ascorbique $C_6H_8O_6$, car c'est l'espèce dont on veut déterminer la concentration
+- Le diiode $I_2$, car c'est un oxydant et l'acide ascorbique est un réducteur
+- L'acide ascorbique $C_6H_8O_6$, car il est présent en plus grande quantité dans le bécher
+
+** On titre $V_A = 20,0$ mL d'une solution de soude ($Na^+ + HO^-$, concentration $C_A$ inconnue) par une solution d'acide chlorhydrique ($H_3O^+ + Cl^-$) à $C_B = 0,10$ mol·L$^{-1}$. La réaction support est $H_3O^+ + HO^- \rightarrow 2\,H_2O$. Le volume équivalent est $V_{éq} = 10,0$ mL. Quand on a versé $V_B = 5,0$ mL d'acide (soit la moitié du volume équivalent), quelles affirmations sont correctes ?
++ $H_3O^+$ est le réactif limitant : il est entièrement consommé et il reste $5,0 \times 10^{-4}$ mol de $HO^-$ en excès dans le bécher
++ La solution est basique avant l'équivalence car $HO^-$ est en excès dans le bécher
+- $HO^-$ est le réactif limitant et la solution est acide avant l'équivalence
+- À ce stade, les quantités de $H_3O^+$ et de $HO^-$ restantes dans le bécher sont égales
+
+#  ── DÉMARCHE COMPLEXE ────────────────────────────────────────────────────────
+
+* Un vinaigre du commerce contient de l'acide éthanoïque $CH_3COOH$ ($M = 60,0$ g·mol$^{-1}$). On prélève $V_A = 10,0$ mL de vinaigre et on titre par une solution de soude ($Na^+ + HO^-$) à $C_B = 0,100$ mol·L$^{-1}$. La réaction support est $CH_3COOH + HO^- \rightarrow CH_3COO^- + H_2O$. Le volume équivalent est $V_{éq} = 12,5$ mL. La masse d'acide éthanoïque présente dans la prise d'essai est :
++ $m = 7,50 \times 10^{-2}$ g
+- $m = 1,50 \times 10^{-1}$ g
+- $m = 7,50 \times 10^{-1}$ g
+- $m = 3,75 \times 10^{-2}$ g
+
+** On titre une solution d'ammoniaque $NH_3$ par une solution d'acide chlorhydrique. La courbe pH-métrique montre un saut de pH entre pH = 4,5 et pH = 8,0. On dispose des indicateurs suivants : hélianthine (zone de virage pH 3,1 – 4,4), BBT (zone de virage pH 6,0 – 7,6) et phénolphtaléine (zone de virage pH 8,2 – 10,0). Quelles affirmations sont correctes ?
++ Le BBT est adapté car sa zone de virage (pH 6,0 – 7,6) est entièrement incluse dans le saut de pH (pH 4,5 – 8,0)
++ La phénolphtaléine est inadaptée car sa zone de virage (pH 8,2 – 10,0) débute en dehors du saut de pH
+- L'hélianthine est adaptée car elle vire en milieu acide, comme le milieu à l'équivalence de ce titrage
+- Tous les indicateurs colorés conviennent dès lors que le saut de pH est suffisamment large
+
+** On titre $V_A = 20,0$ mL d'une solution d'acide chlorhydrique ($H_3O^+$, $Cl^-$) par une solution de soude ($Na^+$, $HO^-$). On donne les conductivités molaires ioniques (en S·cm$^2$·mol$^{-1}$) : $\lambda(H_3O^+) = 350$, $\lambda(Na^+) = 50$, $\lambda(HO^-) = 200$, $\lambda(Cl^-) = 76$. Quelles affirmations expliquent correctement l'allure de la courbe conductimétrique $\sigma = f(V_\text{soude})$ ?
++ Avant l'équivalence, la conductivité diminue car les ions $H_3O^+$ (très conducteurs, $\lambda = 350$) sont consommés et remplacés par des ions $Na^+$ (peu conducteurs, $\lambda = 50$)
++ Après l'équivalence, la conductivité augmente car les ions $HO^-$ ($\lambda = 200$) s'accumulent en excès dans la solution
+- Avant l'équivalence, la conductivité augmente car on ajoute des ions $Na^+$ et $HO^-$ dans la solution
+- La conductivité est nulle à l'équivalence car tous les ions ont réagi entre eux
+
+* On dose l'acide acétylsalicylique (aspirine, $M = 180$ g·mol$^{-1}$) contenu dans un comprimé dissous dans $V_A = 50,0$ mL d'eau. On titre par une solution de soude ($Na^+ + HO^-$) à $C_B = 5,00 \times 10^{-2}$ mol·L$^{-1}$. La réaction support est : acide acétylsalicylique $+ HO^- \rightarrow$ ion acétylsalicylate $+ H_2O$ (coefficients stœchiométriques 1 et 1). Le volume équivalent est $V_{éq} = 25,0$ mL. La masse d'aspirine dans le comprimé est :
++ $m = 0,225$ g (soit 225 mg)
+- $m = 0,450$ g (soit 450 mg)
+- $m = 0,113$ g (soit 113 mg)
+- $m = 0,0225$ g (soit 22,5 mg)
+</script>
+
+<script type="application/x-qcm" id="raw-04_cinematique">
+* Pour calculer la valeur de la vitesse v à partir des coordonnées du vecteur vitesse $v_x$ et $v_y$ on calcule:
+
++ $\sqrt{v_x^2 + v_y^2}$
+- $\sqrt{v_x + v_y}$
+- $v_x^2 + v_y^2$
+- $\sqrt{v_x^{2} \times v_y^2}$
+
+** Le vecteur accélération 
+
+- s'obtient en dérivant le vecteur position
++ s'obtient en dérivant le vecteur vitesse
++ n'est pas toujours tangent à la trajectoire
+- est toujours dans le sens du mouvement
+
+* Lors d'une mouvement circulaire de rayon r, les coordonnées dans le repère de Frenet du vecteur accélération s'écrivent:
+
++ $a_t=\frac{dv}{dt}$ et $a_n=\frac{v^2}{r}$
+- $a_n=\frac{dv}{dt}$ et $a_t=\frac{v^2}{r}$
+- $a_t=\frac{d\vec{v}}{dt}$ et $a_n=\frac{v^2}{r}$
+- $a_t=\frac{d\vec{v}}{dt}$ et $a_n=\frac{\vec{v}}{r}$
+
+* L'abscisse d'un point mobile a pour équation horaire $x(t)=-5t^2+7t+1$ que vaut $v_x(t)$ ?
++ $-10t+7$
+- $-5t+7$
+- $-10t+8$
+- $-5+7+1=3$
+
+
+** Lors d'un mouvement circulaire uniforme
+
++ la valeur de l'accélération est constante
+- le vecteur accélération est constant
++ $\vec{a}$ est orienté vers le centre du cercle
+- $\vec{a}$ est orienté vers l'extérieur du cercle
+- $\vec{v}$ est constant 
+
+
+* L'abscisse d'un point mobile a pour équation horaire $x(t)=-5t^2+7t+1$ que vaut $a_x(t)$ ?
++ $-10$
+- $-10t+7$
+- $-5$
+- $5$
+- $10$
+
+** Un point mobile est lancé vers la droite selon la direction d'un axe (Ox). La coordonnée de son vecteur vitesse a pour expression: $v_x(t)= -3t +2$. Que peut-on affirmer ?
+
++ L'accélération a pour valeur 3 $m/s^2$
+- L'accélération a pour valeur -3 $m/s^2$
++ Le mouvement est ralenti.
+- La vitesse initiale est nulle.
+- Le vecteur accélération et le vecteur vitesse sont dans le même sens
+- Le mouvement est accéléré dans le sens de (Ox)
+</script>
+
+<script type="application/x-qcm" id="raw-05_dynamique">
+#  QCM Dynamique — Lois de Newton — Terminale Spécialité Physique-Chimie
+#  Source : 05_dynamique.tex — BO Terminale (programme Bac 2024)
+#  Répartition : 12 connaissances pures / 4 raisonnement simple / 4 démarche complexe
+
+#  ── CONNAISSANCES PURES ──────────────────────────────────────────────────────
+
+* Une force est une action mécanique modélisée par un vecteur. Pour la caractériser complètement, on doit préciser :
++ Son point d'application, sa direction, son sens et sa valeur
+- Sa direction, son sens, sa valeur et son unité
+- Son point d'application, sa direction, son sens et sa masse
+- Sa valeur, son unité, sa direction et le système qui la subit
+
+* Le poids $\vec{P}$ d'un objet de masse $m$ soumis à l'intensité de la pesanteur $g$ est :
++ De valeur $P = m \times g$, de direction verticale, de sens vers le bas, appliqué au centre d'inertie de l'objet
+- De valeur $P = m \times g$, de direction horizontale, appliqué à la surface de contact avec le sol
+- De valeur $P = m / g$, de direction verticale, de sens vers le bas
+- De valeur $P = m \times g^2$, appliqué au centre géométrique de l'objet
+
+* Pour un objet en contact sans frottement avec un support, la réaction normale $\overrightarrow{R_N}$ exercée par le support sur l'objet est :
++ Perpendiculaire au support, dirigée du support vers l'objet
+- Parallèle au support, dans le sens du mouvement de l'objet
+- Perpendiculaire au support, dirigée de l'objet vers le support
+- Verticale, de valeur toujours égale au poids de l'objet
+
+* Dans un référentiel galiléen, le principe d'inertie (1ère loi de Newton) stipule que :
++ $\sum \vec{F} = \vec{0} \Leftrightarrow \vec{v} = \vec{cste}$ : un système est en MRU ou immobile si et seulement si les forces qui s'exercent sur lui se compensent
+- $\sum \vec{F} = \vec{0} \Leftrightarrow \vec{a} = \vec{cste}$ : le mouvement est uniformément accéléré quand les forces se compensent
+- Un système isolé est nécessairement immobile
+- $\sum \vec{F} = m\vec{a}$ : c'est l'expression mathématique de la 1ère loi de Newton
+
+* Dans un référentiel galiléen, la deuxième loi de Newton (relation fondamentale de la dynamique) s'écrit :
++ $\sum \vec{F} = m \vec{a}$ : la somme vectorielle des forces est égale au produit de la masse par le vecteur accélération
+- $\sum \vec{F} = m \vec{v}$ : la somme des forces est égale à la quantité de mouvement $m\vec{v}$
+- $\sum F = m \times g$ : la somme des valeurs des forces est égale au poids
+- $\vec{a} = \sum \vec{F}$ : le vecteur accélération est égal à la somme des forces
+
+* Un parachutiste descend à vitesse constante (mouvement rectiligne uniforme). On peut conclure que :
++ La somme vectorielle des forces exercées sur le parachutiste est nulle : le poids est exactement compensé par la traînée de l'air
+- Le parachutiste n'est soumis à aucune force
+- Le poids du parachutiste est nul à cette altitude
+- La traînée de l'air est négligeable devant le poids
+
+* Un référentiel est dit galiléen si :
++ Le principe d'inertie y est vérifié : tout système isolé ou pseudo-isolé y est en mouvement rectiligne uniforme ou immobile
+- Il est nécessairement lié au centre de la Terre
+- Tous les objets y sont en chute libre
+- La somme des forces exercées sur tout objet y est toujours nulle
+
+* La tension $\vec{T}$ exercée par un fil sur un objet est :
++ Dirigée le long du fil, du point d'accroche de l'objet vers le fil (elle tire l'objet)
+- Dirigée perpendiculairement au fil, vers le bas
+- Dirigée le long du fil, du fil vers le point d'accroche (elle pousse l'objet)
+- Toujours verticale et égale au poids de l'objet suspendu
+
+* Le centre de masse G d'un système est :
++ Le point dont la position représente la position moyenne des masses du système et qui décrit la trajectoire la plus simple
+- Le point de masse maximale du système
+- Le centre géométrique du système, indépendamment de la répartition des masses
+- Le seul point où s'applique la réaction du support
+
+* D'après la deuxième loi de Newton $\sum \vec{F} = m\vec{a}$, l'unité SI de la force, le newton (N), est équivalente à :
++ $1$ N $= 1$ kg·m·s$^{-2}$
+- $1$ N $= 1$ kg·m$^{2}$·s$^{-2}$
+- $1$ N $= 1$ kg·m·s$^{-1}$
+- $1$ N $= 1$ g·m·s$^{-2}$
+
+** Un objet glisse sans frottement sur une table horizontale à vitesse constante $v = 2$ m·s$^{-1}$. Quelles affirmations sont correctes ?
++ La somme vectorielle de toutes les forces exercées sur l'objet est nulle
++ Le poids $\vec{P}$ et la réaction normale $\overrightarrow{R_N}$ du support se compensent
++ Le vecteur accélération de l'objet est nul
+- L'objet n'est soumis à aucune force puisqu'il glisse sans frottement
+- La réaction normale est nulle car il n'y a pas de frottement
+
+* D'après la troisième loi de Newton (principe des actions réciproques), si un objet A exerce une force $\overrightarrow{F_{A/B}}$ sur un objet B, alors :
++ L'objet B exerce sur A une force $\overrightarrow{F_{B/A}} = -\overrightarrow{F_{A/B}}$ : même valeur, même direction, sens opposé
+- L'objet B exerce sur A une force de même sens que $\overrightarrow{F_{A/B}}$
+- Les deux forces s'appliquent au même point et se compensent
+- La force $\overrightarrow{F_{B/A}}$ est nulle si A est en mouvement
+
+#  ── RAISONNEMENT SIMPLE / APPLICATION DIRECTE ───────────────────────────────
+
+* Un sprinter de masse $m = 80$ kg est soumis sur une piste horizontale à une force motrice $F = 400$ N dans le sens du mouvement et à une force de frottement $f = 80$ N opposée au mouvement. La valeur de l'accélération du sprinter est :
++ $a = 4$ m·s$^{-2}$
+- $a = 5$ m·s$^{-2}$
+- $a = 1$ m·s$^{-2}$
+- $a = 6$ m·s$^{-2}$
+
+* Une voiture de masse $m = 1000$ kg roule à vitesse constante $v = 30$ m·s$^{-1}$ sur une route horizontale. Les frottements exercent une résistance horizontale de valeur $f = 500$ N. La valeur de la force motrice $F_{mot}$ du moteur est :
++ $F_{mot} = 500$ N
+- $F_{mot} = 0$ N, car aucune force n'est nécessaire pour maintenir une vitesse constante
+- $F_{mot} = 1000$ N
+- $F_{mot} = 30000$ N
+
+* Un livre de masse $m = 0,5$ kg est posé immobile sur une table horizontale ($g = 10$ m·s$^{-2}$). La valeur de la réaction normale $R_N$ exercée par la table sur le livre est :
++ $R_N = 5$ N
+- $R_N = 0$ N, car l'objet est immobile
+- $R_N = 0,5$ N
+- $R_N = 50$ N
+
+** Un skateboard de masse $m = 4$ kg est en mouvement rectiligne uniforme sur une surface horizontale. Le skateur exerce une poussée horizontale $F = 20$ N dans le sens du mouvement ($g = 10$ m·s$^{-2}$). Quelles affirmations sont correctes ?
++ La somme vectorielle de toutes les forces exercées sur le skateboard est nulle
++ La force de frottement du sol sur le skateboard a une valeur de 20 N et est opposée au mouvement
+- La réaction normale du sol est nulle car la surface est horizontale
+- La valeur de l'accélération est $a = F/m = 5$ m·s$^{-2}$
+
+#  ── DÉMARCHE COMPLEXE ────────────────────────────────────────────────────────
+
+* Une voiture de masse $m = 800$ kg roule à $v_0 = 20$ m·s$^{-1}$ sur une route horizontale. Elle freine grâce à une force de freinage $F_{fren} = 4000$ N opposée au mouvement (autres frottements négligés). La durée nécessaire pour s'arrêter complètement est :
++ $t = 4$ s
+- $t = 8$ s
+- $t = 2$ s
+- $t = 0,25$ s
+
+* La position d'un objet de masse $m = 2$ kg est donnée par $x(t) = 3t^2 + 5t$ (en m, avec $t$ en s) dans un référentiel galiléen. La valeur de la somme des forces horizontales exercées sur cet objet est :
++ $\sum F = 12$ N
+- $\sum F = 6$ N
+- $\sum F = 10$ N
+- $\sum F = 22$ N
+
+** Une bille de masse $m = 0,1$ kg tombe verticalement dans un fluide visqueux. À un instant $t$, son accélération est $a = 4$ m·s$^{-2}$ dirigée vers le bas ($g = 10$ m·s$^{-2}$). Quelles affirmations sont correctes ?
++ Le poids de la bille vaut $P = 1$ N
++ La force de résistance du fluide sur la bille vaut $f = 0,6$ N, dirigée vers le haut
+- La force de résistance du fluide vaut $f = 1$ N, égale au poids
+- La bille atteint la vitesse limite lorsque son accélération vaut $g = 10$ m·s$^{-2}$
+
+* Un skieur de masse $m = 80$ kg descend une pente faisant un angle $\alpha = 30°$ avec l'horizontale. Les seules forces exercées sur le skieur sont son poids $\vec{P}$ et la réaction normale $\overrightarrow{R_N}$ (sans frottement). On donne $g = 10$ m·s$^{-2}$ et $\sin 30° = 0,5$. La valeur de l'accélération du skieur est :
++ $a = 5$ m·s$^{-2}$
+- $a = 10$ m·s$^{-2}$
+- $a = 2,5$ m·s$^{-2}$
+- $a = 0,5$ m·s$^{-2}$
+</script>
+
+<script type="application/x-qcm" id="raw-06_champ_uniforme">
 * Le champ de pesanteur est uniforme si
 
 + $\overrightarrow{g}$ ne dépend pas du point considéré
@@ -803,11 +643,189 @@ body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); co
 
 + $\frac{q}{m}\overrightarrow{E}$
 - $\overrightarrow{g}$
-_ $\frac{m}{q}\overrightarrow{E}$
-_ $\overrightarrow{E}$
+- $\frac{m}{q}\overrightarrow{E}$
+- $\overrightarrow{E}$
 </script>
 
-<script type="application/x-qcm" id="raw-ondes">
+<script type="application/x-qcm" id="raw-07_energie_mecanique">
+#  QCM Énergie mécanique — Terminale Spécialité Physique-Chimie
+#  Source : 07_Energie_mecanique.tex — BO Terminale (programme Bac 2024)
+#  Répartition : 12 connaissances pures / 4 raisonnement simple / 4 démarche complexe
+
+#  ── CONNAISSANCES PURES ──────────────────────────────────────────────────────
+
+* La formule du travail d'une force $\vec{F}$ sur un déplacement $\overrightarrow{AB}$, avec $\alpha$ l'angle entre les deux vecteurs, est :
++ $W = F \times AB \times \cos(\alpha)$
+- $W = F \times AB \times \sin(\alpha)$
+- $W = F + AB \times \cos(\alpha)$
+- $W = F \times AB^2 \times \cos(\alpha)$
+
+* Un travail est dit "résistant" lorsque la force $\vec{F}$ et le déplacement $\overrightarrow{AB}$ forment un angle $\alpha$ tel que :
++ $\alpha > 90°$ : le travail est négatif, la force s'oppose au déplacement
+- $\alpha < 90°$ : le travail est positif, la force aide au déplacement
+- $\alpha = 0°$ : force et déplacement sont colinéaires de même sens
+- $\alpha = 90°$ : le travail est nul car la force est perpendiculaire
+
+* La réaction normale $\vec{N}$ exercée par un support horizontal sur un objet se déplaçant horizontalement produit un travail :
++ Nul, car $\vec{N}$ est perpendiculaire au déplacement
+- Positif, car $\vec{N}$ s'oppose à la pesanteur
+- Négatif, car $\vec{N}$ résiste au mouvement
+- Égal à $N \times d$ où $d$ est la distance parcourue
+
+* Un ascenseur de masse $m$ monte d'un dénivelé $h$. Le travail du poids vaut :
++ $W(\vec{P}) = -mgh$ (travail résistant, le poids s'oppose à la montée)
+- $W(\vec{P}) = +mgh$ (travail moteur)
+- $W(\vec{P}) = mgh^2$
+- $W(\vec{P}) = 0$ J
+
+* Le travail du poids entre un point A (altitude $z_A$) et un point B (altitude $z_B$) s'écrit :
++ $W_{A \rightarrow B}(\vec{P}) = mg(z_A - z_B)$
+- $W_{A \rightarrow B}(\vec{P}) = mg(z_B - z_A)$
+- $W_{A \rightarrow B}(\vec{P}) = mg \times z_A$
+- $W_{A \rightarrow B}(\vec{P}) = g(z_A - z_B)$
+
+** Parmi les propositions suivantes sur les forces conservatives, lesquelles sont correctes ?
++ Le poids est une force conservative
++ La force électrique $\vec{F} = q\vec{E}$ est une force conservative
++ Le travail d'une force conservative entre A et B ne dépend pas du chemin suivi
+- La force de frottement est conservative car elle fait toujours le même travail
+- La réaction normale est toujours une force conservative
+
+* Un ion de charge $q$ se déplace de A vers B dans un champ électrique uniforme. Le travail de la force électrique vaut :
++ $W = q \times U_{AB}$
+- $W = q \times U_{BA}$
+- $W = q \times E \times AB$
+- $W = q^2 \times U_{AB}$
+
+* L'énergie cinétique d'un objet de masse $m$ se déplaçant à la vitesse $v$ est :
++ $E_c = \dfrac{1}{2}mv^2$
+- $E_c = mv^2$
+- $E_c = \dfrac{mv}{2}$
+- $E_c = \dfrac{m^2v^2}{2}$
+
+* Le théorème de l'énergie cinétique stipule que la variation d'énergie cinétique entre A et B est égale à :
++ La somme des travaux de toutes les forces agissant sur le système sur le trajet AB
+- Au travail du poids uniquement
+- À l'énergie potentielle en B
+- À la résultante des forces multipliée par la durée du trajet
+
+* L'unité du travail d'une force est :
++ Le joule (J), qui vaut N·m
+- Le newton (N)
+- Le watt (W)
+- Le joule par kilogramme (J·kg$^{-1}$)
+
+* L'énergie mécanique $E_m = E_c + E_{pp}$ d'un système est conservée lorsque :
++ Seules les forces conservatives travaillent (absence de frottements)
+- La vitesse du système est constante
+- L'altitude du système ne change pas
+- La masse du système est grande
+
+* Un objet descend verticalement d'une hauteur $h$. Le travail du poids est :
++ Positif : le poids est dans le même sens que le déplacement ($\alpha = 0°$)
+- Négatif : le poids s'oppose au déplacement vers le bas
+- Nul car le poids est une force verticale
+- Toujours négatif quelle que soit la direction du déplacement
+
+#  ── RAISONNEMENT SIMPLE / APPLICATION DIRECTE ───────────────────────────────
+
+* Un cycliste (vélo + cycliste) de masse $m = 80$ kg roule à $v = 5,0$ m·s$^{-1}$. Son énergie cinétique vaut :
++ $1000$ J
+- $400$ J
+- $2000$ J
+- $200$ J
+
+* Un objet de masse $m = 2,0$ kg est soulevé verticalement de $h = 3,0$ m ($g = 10$ m·s$^{-2}$). Le travail du poids sur cette montée vaut :
++ $-60$ J
+- $+60$ J
+- $-30$ J
+- $+20$ J
+
+* Un proton ($q = 1,6 \times 10^{-19}$ C) est accéléré sous une tension $U_{AB} = 10$ kV. Le travail de la force électrique vaut :
++ $1,6 \times 10^{-15}$ J
+- $1,6 \times 10^{-14}$ J
+- $6,4 \times 10^{-16}$ J
+- $1,0 \times 10^{-19}$ J
+
+** Une balle de masse $m = 0,50$ kg est lancée verticalement vers le haut avec $v_0 = 6,0$ m·s$^{-1}$ et monte de $h = 0,5$ m (sans frottement, $g = 10$ m·s$^{-2}$). Quelles affirmations sont correctes ?
++ L'énergie cinétique initiale vaut $\dfrac{1}{2} \times 0,50 \times 6,0^2 = 9,0$ J
++ Le travail du poids sur la montée de 0,5 m vaut $-mgh = -2,5$ J
++ En haut, l'énergie cinétique vaut $9,0 - 2,5 = 6,5$ J d'après le TEC
+- Le travail du poids est positif car la balle monte
+- La vitesse est nécessairement nulle en haut car la balle s'arrête momentanément
+
+#  ── DÉMARCHE COMPLEXE ────────────────────────────────────────────────────────
+
+* Une balle de masse $m = 0,20$ kg est lâchée sans vitesse initiale d'une hauteur $h = 5,0$ m (sans frottement, $g = 10$ m·s$^{-2}$). Sa vitesse au sol, obtenue par le TEC, vaut :
++ $10$ m·s$^{-1}$
+- $5,0$ m·s$^{-1}$
+- $20$ m·s$^{-1}$
+- $1,0$ m·s$^{-1}$
+
+* Un skieur de masse $m = 80$ kg descend une pente de dénivelé $h = 20$ m en partant du repos. Sa vitesse en bas est $v = 15$ m·s$^{-1}$ ($g = 10$ m·s$^{-2}$). Le travail des forces de frottement sur cette descente vaut :
++ $-7000$ J
+- $+7000$ J
+- $-16000$ J
+- $-9000$ J
+
+* Un proton ($m_p = 1,67 \times 10^{-27}$ kg ; $q = 1,6 \times 10^{-19}$ C) est accéléré depuis le repos par une tension $U_{AB} = 500$ V. Sa vitesse finale vaut environ :
++ $3,1 \times 10^5$ m·s$^{-1}$
+- $6,2 \times 10^5$ m·s$^{-1}$
+- $9,6 \times 10^{10}$ m·s$^{-1}$
+- $1,6 \times 10^{-16}$ m·s$^{-1}$
+
+** Un avion de masse $m = 5000$ kg accélère sur une piste horizontale de longueur $d = 500$ m en partant du repos. La poussée moteur est $F = 50000$ N et les frottements $f = 10000$ N. Quelles affirmations sont correctes ?
++ $W(\text{moteur}) = +2,5 \times 10^7$ J (force dans le sens du déplacement)
++ $W(\text{frottements}) = -5,0 \times 10^6$ J (force résistante)
++ L'énergie cinétique en bout de piste vaut $2,0 \times 10^7$ J, soit $v \approx 89$ m·s$^{-1}$
+- $W(\text{moteur}) = 50000$ J
+- L'énergie cinétique vaut $2,5 \times 10^7$ J car seule la poussée moteur travaille
+</script>
+
+<script type="application/x-qcm" id="raw-08_forces_acides_bases">
+** L'eau est une espèce amphotère cela signifie que
+
+- c'est un solvant pour les acides
++ c'est à la fois un acide et une base
+- son pH est neutre contrairement aux acides et aux bases
++ elle appartient à 2 couples acide/base
+- elle prédomine dans plusieurs valeurs de pH
+  
+
+* Le produit ionique de l'eau Ke
+
+- vaut $10^{14}$ dans toutes les solutions aqueuses
+- vaut $10^{14}$ dans l'eau pure
+- vaut $[H_3O^+] + [OH^-]$
++ vaut $[H_3O^+] \times [OH^-]$
+- vaut $[H_3O^+] / [OH^-]$
+
+  
+* Dans une solution d'acide éthanoïque $CH_3COOH$ les espèces chimiques présentes sont:
+
++ $CH_3COOH$, $CH_3COO^-$ , $H_3O^+$ , $H_2O$ et $OH^-$
+- $CH_3COOH$, $CH_3COO^-$ et $H_2O$
+- $CH_3COOH$ et $H_2O$
+- $CH_3COOH$
+
+  
+
+* Une solution d'éthanoïque a pour pH=5,5. Le pKa du couple $CH_3COOH$ / $CH_3COO^-$ vaut 4,8. L'espèce du couple qui prédomine est
+
+- $CH3COOH$
++ $CH3COO^-$
+- $H_3O^+$
+- $OH^-$
+
+* L'espression de Ka est:
+
+- $$\frac{[AH]\times [A^-]}{[H_3O^+]}$$
+- $$\frac{[AH] + [A^-]}{[H_3O^+]}$$
++ $$\frac{[H_3O^+][A^-]}{[AH]}$$
+- $$\frac{[H_3O^+][AH]}{[A^-]}$$
+</script>
+
+<script type="application/x-qcm" id="raw-09_ondes_diffraction">
 ** Le niveau sonore L
 + s'exprime en décibel
 + $L=10\log(I/I_0)$
@@ -882,7 +900,341 @@ _ $\overrightarrow{E}$
 - En M, les interférences sont deux fois plus fortes
 </script>
 
-<script type="application/x-qcm" id="raw-radioactivite">
+<script type="application/x-qcm" id="raw-10_kepler_gravitation">
+#  QCM Lois de Kepler et gravitation — Terminale Spécialité Physique-Chimie
+#  Source : 10_Kepler.tex — BO Terminale (programme Bac 2024)
+#  Répartition : 12 connaissances pures / 4 raisonnement simple / 4 démarche complexe
+
+#  ── CONNAISSANCES PURES ──────────────────────────────────────────────────────
+
+* L'expression de la force gravitationnelle exercée par la Terre (masse $M_T$) sur un satellite (masse $m$) situé à une distance $r$ du centre de la Terre est :
++ $F = \mathcal{G}\dfrac{mM_T}{r^2}$
+- $F = \mathcal{G}\dfrac{mM_T}{r}$
+- $F = \mathcal{G}\dfrac{m + M_T}{r^2}$
+- $F = \dfrac{mM_T}{r^2}$
+
+* Le référentiel héliocentrique, utilisé pour décrire le mouvement des planètes autour du Soleil, est :
++ Centré sur le Soleil, avec des axes dirigés vers des étoiles éloignées considérées fixes ; il est galiléen
+- Centré sur la Terre avec des axes fixes par rapport aux étoiles
+- Centré sur le Soleil avec des axes liés à la rotation solaire sur lui-même
+- Identique au référentiel géocentrique à une translation près
+
+* Le référentiel géocentrique est :
++ Centré sur la Terre avec des axes fixes par rapport aux étoiles lointaines ; il est considéré galiléen
+- Centré sur la Terre avec des axes liés à la rotation terrestre (24 h)
+- Centré sur le Soleil avec des axes fixes
+- Le référentiel d'un observateur situé au sol, en rotation avec la Terre
+
+* La première loi de Kepler (loi des orbites) stipule que, dans le référentiel héliocentrique :
++ La trajectoire d'une planète est une ellipse dont le Soleil occupe l'un des foyers
+- La trajectoire d'une planète est un cercle dont le Soleil est le centre
+- Le rayon planète-Soleil balaie des aires égales pendant des durées égales
+- La trajectoire est une parabole si l'énergie mécanique de la planète est nulle
+
+* La deuxième loi de Kepler (loi des aires) stipule que :
++ Le segment reliant la planète au Soleil balaie des aires égales pendant des durées égales
+- La trajectoire d'une planète est une ellipse dont le Soleil est un foyer
+- $T^2/a^3$ est une constante identique pour toutes les planètes
+- La vitesse d'une planète est constante tout au long de son orbite
+
+* La troisième loi de Kepler (loi des périodes) s'écrit, avec $T$ la période de révolution et $a$ le demi-grand axe :
++ $\dfrac{T^2}{a^3} = \text{constante}$
+- $\dfrac{T^3}{a^2} = \text{constante}$
+- $\dfrac{T}{a^2} = \text{constante}$
+- $T \times a^3 = \text{constante}$
+
+* Si un satellite est en mouvement circulaire uniforme (MCU) autour de la Terre, alors :
++ Sa vitesse est constante et son accélération est centripète (dirigée vers le centre de la Terre)
+- Sa vitesse est nulle car il est en orbite stable
+- Son accélération est tangentielle et constante
+- Il n'est soumis à aucune force
+
+* Un satellite géostationnaire est un satellite dont :
++ La période de révolution est d'environ 24 h et l'orbite est équatoriale ; il paraît immobile depuis la Terre
+- La période de révolution est d'environ 90 min (orbite basse)
+- La distance au centre de la Terre est égale au rayon terrestre ($R_T \approx 6400$ km)
+- La masse est très grande pour rester fixe par rapport au sol
+
+* La vitesse d'un satellite en MCU à une distance $r$ du centre de la Terre (masse $M_T$) vaut :
++ $v = \sqrt{\dfrac{\mathcal{G}M_T}{r}}$
+- $v = \sqrt{\mathcal{G}M_T \times r}$
+- $v = \dfrac{\mathcal{G}M_T}{r^2}$
+- $v = \sqrt{\dfrac{\mathcal{G}m}{r}}$
+
+* La période de révolution d'un satellite en MCU de rayon $r$ autour de la Terre est :
++ $T = 2\pi\sqrt{\dfrac{r^3}{\mathcal{G}M_T}}$
+- $T = 2\pi\sqrt{\dfrac{r^2}{\mathcal{G}M_T}}$
+- $T = \sqrt{\dfrac{4\pi^2 r}{\mathcal{G}M_T}}$
+- $T = \dfrac{2\pi r}{v^2}$
+
+* D'après la deuxième loi de Kepler, une planète en orbite elliptique :
++ A une vitesse plus grande lorsqu'elle est proche du Soleil (au périhélie)
+- A une vitesse constante le long de son orbite
+- A une vitesse plus grande lorsqu'elle est loin du Soleil (à l'aphélie)
+- Décrit des aires différentes pendant des intervalles de temps égaux
+
+* L'expression vectorielle de la force de gravitation exercée par la Terre sur un satellite S, avec $\overrightarrow{u_{ST}}$ le vecteur unitaire orienté de S vers T, est :
++ $\overrightarrow{F_{T/S}} = \mathcal{G}\dfrac{mM_T}{r^2}\overrightarrow{u_{ST}}$
+- $\overrightarrow{F_{T/S}} = \mathcal{G}\dfrac{mM_T}{r^2}\overrightarrow{u_{TS}}$
+- $\overrightarrow{F_{T/S}} = \mathcal{G}\dfrac{mM_T}{r}\overrightarrow{u_{ST}}$
+- $\overrightarrow{F_{T/S}} = -\mathcal{G}\dfrac{mM_T}{r^2}\overrightarrow{u_{ST}}$
+
+#  ── RAISONNEMENT SIMPLE / APPLICATION DIRECTE ───────────────────────────────
+
+* Un satellite est en MCU à $r = 7000$ km du centre de la Terre ($\mathcal{G} = 6,67 \times 10^{-11}$ SI ; $M_T = 6,0 \times 10^{24}$ kg). Sa vitesse vaut environ :
++ $7,6 \times 10^3$ m·s$^{-1}$
+- $5,7 \times 10^7$ m·s$^{-1}$
+- $3,8 \times 10^3$ m·s$^{-1}$
+- $1,5 \times 10^4$ m·s$^{-1}$
+
+* La Terre a un demi-grand axe $a_T$. Mars a un demi-grand axe $a_M = 1,52\,a_T$. D'après la troisième loi de Kepler, la période de Mars ($T_T = 1$ an pour la Terre) vaut :
++ $T_M = (1,52)^{3/2} \approx 1,87$ an
+- $T_M = 1,52$ an (proportionnelle au demi-grand axe)
+- $T_M = (1,52)^2 \approx 2,31$ ans
+- $T_M = 0,66$ an
+
+* Un satellite est en MCU à $r = 8000$ km du centre de la Terre ($\mathcal{G} = 6,67 \times 10^{-11}$ SI ; $M_T = 6,0 \times 10^{24}$ kg). La valeur de son accélération vaut :
++ $6,3$ m·s$^{-2}$
+- $3,0 \times 10^{-2}$ m·s$^{-2}$
+- $50$ m·s$^{-2}$
+- $9,8$ m·s$^{-2}$
+
+** En appliquant la deuxième loi de Newton à un satellite en MCU de rayon $r$, quelles relations peut-on établir ?
++ $m\dfrac{v^2}{r} = \mathcal{G}\dfrac{mM_T}{r^2}$, ce qui donne $v = \sqrt{\dfrac{\mathcal{G}M_T}{r}}$
++ L'accélération tangentielle est nulle : $a_T = \dfrac{dv}{dt} = 0$, le mouvement est uniforme
+- La composante normale de l'accélération est nulle car la trajectoire est circulaire
+- $m\dfrac{v^2}{r} = mg$ uniquement pour les satellites rasants ($r \approx R_T$)
+
+#  ── DÉMARCHE COMPLEXE ────────────────────────────────────────────────────────
+
+* En combinant $v = \sqrt{\mathcal{G}M_T/r}$ et $T = 2\pi r/v$, on obtient pour $T^2/r^3$ :
++ $\dfrac{T^2}{r^3} = \dfrac{4\pi^2}{\mathcal{G}M_T}$, constante pour tous les satellites de la Terre : c'est la 3ème loi de Kepler
+- $\dfrac{T^2}{r^3} = \dfrac{4\pi^2}{\mathcal{G}m}$, qui dépend de la masse du satellite
+- $\dfrac{T^2}{r^3} = \dfrac{2\pi}{\mathcal{G}M_T}$
+- $\dfrac{T^2}{r^3} = \dfrac{4\pi^2 M_T}{\mathcal{G}}$
+
+* Un satellite géostationnaire a une période $T = 86400$ s. On donne $\mathcal{G} = 6,67 \times 10^{-11}$ SI et $M_T = 6,0 \times 10^{24}$ kg. Son rayon orbital vaut environ :
++ $4,2 \times 10^7$ m (soit environ 42000 km depuis le centre de la Terre)
+- $6,4 \times 10^6$ m (rayon de la Terre)
+- $3,8 \times 10^8$ m (distance Terre-Lune)
+- $1,5 \times 10^{11}$ m (distance Terre-Soleil)
+
+* La Lune effectue un tour de la Terre en $T = 27,3$ jours = $2,36 \times 10^6$ s sur une orbite quasi-circulaire de rayon $r = 3,84 \times 10^8$ m. Sa vitesse orbitale vaut :
++ $1,0 \times 10^3$ m·s$^{-1}$
+- $1,0 \times 10^6$ m·s$^{-1}$
+- $3,84 \times 10^8$ m·s$^{-1}$
+- $2,4 \times 10^9$ m·s$^{-1}$
+
+** La Terre ($T_T = 1$ an, $a_T = 1$ UA) et Jupiter ($T_J = 11,9$ ans) gravitent autour du Soleil. En appliquant la 3ème loi de Kepler, quelles affirmations sont correctes ?
++ La constante $T^2/a^3$ est la même pour la Terre et Jupiter car ils orbitent autour du même astre
++ $a_J = (T_J/T_T)^{2/3} \times a_T = (11,9)^{2/3} \approx 5,2$ UA
++ Plus le demi-grand axe est grand, plus la période de révolution est longue
+- $a_J = (T_J/T_T)^3 \times a_T \approx 1687$ UA
+- La constante $T^2/a^3$ dépend de la masse de la planète en orbite
+</script>
+
+<script type="application/x-qcm" id="raw-11_RC">
+#  QCM Dipôle RC — Terminale Spécialité Physique-Chimie
+#  Source : 11_RC.tex — BO Terminale (programme Bac 2024)
+#  Répartition : 12 connaissances pures / 4 raisonnement simple / 4 démarche complexe
+
+#  ── CONNAISSANCES PURES ──────────────────────────────────────────────────────
+
+* Un condensateur est un composant électronique constitué de :
++ Deux armatures conductrices séparées par un isolant (ou le vide)
+- Deux armatures conductrices en contact direct
+- Une armature conductrice entourée d'un matériau résistif
+- Une bobine enroulée autour d'un noyau ferromagnétique
+
+* L'unité SI de la capacité d'un condensateur est :
++ Le farad (F)
+- L'henry (H)
+- L'ohm (Ω)
+- Le siemens (S)
+
+** Parmi les relations suivantes, lesquelles caractérisent correctement un condensateur de capacité $C$ soumis à une tension $u_C$ ?
++ La charge portée par le condensateur est $q = C \times u_C$
++ L'intensité en régime variable est $i = C \times \dfrac{du_C}{dt}$
+- La charge portée est $q = \dfrac{u_C}{C}$
+- L'intensité en régime variable est $i = \dfrac{u_C}{RC}$
+
+* La constante de temps $\tau$ d'un circuit RC série est :
++ $\tau = R \times C$, ce qui donne $\tau$ en secondes si $R$ est en ohms et $C$ en farads
+- $\tau = \dfrac{R}{C}$
+- $\tau = \dfrac{C}{R}$
+- $\tau = R + C$
+
+* Lors de la charge d'un condensateur initialement déchargé dans un circuit RC série alimenté par une tension $E$, l'expression de $u_C(t)$ est :
++ $u_C(t) = E \left(1 - e^{-t/RC}\right)$
+- $u_C(t) = E \times e^{-t/RC}$
+- $u_C(t) = E \times e^{t/RC}$
+- $u_C(t) = E \left(1 + e^{-t/RC}\right)$
+
+* Lors de la décharge d'un condensateur initialement chargé à la tension $E$ dans un circuit RC série, l'expression de $u_C(t)$ est :
++ $u_C(t) = E \times e^{-t/RC}$
+- $u_C(t) = E \left(1 - e^{-t/RC}\right)$
+- $u_C(t) = E \times e^{t/RC}$
+- $u_C(t) = -E \times e^{-t/RC}$
+
+* Lors de la charge d'un condensateur, la tension $u_C$ à l'instant $t = \tau$ vaut :
++ $u_C(\tau) \approx 0,63 \times E$
+- $u_C(\tau) = E$
+- $u_C(\tau) \approx 0,37 \times E$
+- $u_C(\tau) = 0$
+
+* Lors de la décharge d'un condensateur chargé initialement à $E$, la tension $u_C$ à l'instant $t = \tau$ vaut :
++ $u_C(\tau) \approx 0,37 \times E$
+- $u_C(\tau) \approx 0,63 \times E$
+- $u_C(\tau) = 0$
+- $u_C(\tau) = E$
+
+** En régime permanent, après un temps $t \gg \tau$, lors de la charge d'un condensateur dans un circuit RC série alimenté par une tension $E$ :
++ La tension aux bornes du condensateur vaut $u_C = E$
++ L'intensité dans le circuit est nulle ($i = 0$)
+- L'intensité dans le circuit est $i = E/R$
+- La tension aux bornes du condensateur vaut $u_C = 0$
+- L'énergie stockée dans le condensateur est nulle
+
+* On considère qu'un condensateur est pratiquement chargé (ou déchargé) lorsque la durée écoulée dépasse :
++ $5\tau$
+- $\tau$
+- $2\tau$
+- $10\tau$
+
+* Pour déterminer graphiquement la constante de temps $\tau$ sur la courbe de charge $u_C(t)$, on utilise la méthode de la tangente à l'origine. Cette tangente :
++ Coupe la droite asymptote $u_C = E$ à l'abscisse $t = \tau$
+- Coupe l'axe des abscisses à $t = \tau$
+- Coupe la courbe $u_C(t)$ à l'abscisse $t = \tau$
+- Coupe la droite $u_C = E/2$ à $t = \tau$
+
+* Dans un circuit RC série comportant un générateur idéal de f.é.m. $E$, une résistance $R$ et un condensateur de tension $u_C$, la loi des mailles s'écrit :
++ $E = R \times i + u_C$
+- $E = R \times i \times u_C$
+- $E = R \times i - u_C$
+- $E = u_C - R \times i$
+
+#  ── RAISONNEMENT SIMPLE / APPLICATION DIRECTE ───────────────────────────────
+
+* Un circuit RC série est formé d'un condensateur de capacité $C = 100$ µF et d'une résistance $R = 2,0$ kΩ. La constante de temps $\tau$ du circuit vaut :
++ $\tau = 0,20$ s
+- $\tau = 20$ ms
+- $\tau = 2,0$ s
+- $\tau = 0,20$ ms
+
+* Un condensateur de capacité $C = 10$ µF est chargé sous une tension $u_C = 6,0$ V. La charge $q$ portée par le condensateur vaut :
++ $q = 6,0 \times 10^{-5}$ C
+- $q = 6,0 \times 10^{-4}$ C
+- $q = 6,0 \times 10^{-6}$ C
+- $q = 1,67 \times 10^{-6}$ C
+
+* Un condensateur de capacité $C = 500$ µF est chargé sous une tension $u_C = 200$ V (comme dans un défibrillateur cardiaque). L'énergie $E_C$ stockée dans le condensateur vaut :
++ $E_C = 10$ J
+- $E_C = 20$ J
+- $E_C = 0,050$ J
+- $E_C = 0,10$ J
+
+** Un condensateur est branché dans un circuit RC et on observe que la tension $u_C$ part de 0 et tend vers une valeur $E > 0$. Quelles affirmations sont correctes ?
++ Le condensateur est en cours de charge
++ L'intensité du courant est maximale en $t = 0$ puis décroît vers 0
+- Le condensateur est en cours de décharge
+- L'intensité du courant est nulle en $t = 0$ puis augmente vers un maximum
+
+#  ── DÉMARCHE COMPLEXE ────────────────────────────────────────────────────────
+
+* Lors de la charge d'un condensateur de capacité $C$ dans un circuit RC série de résistance $R$ alimenté par un générateur de f.é.m. $E$, l'équation différentielle vérifiée par $u_C$ est obtenue en appliquant la loi des mailles. Cette équation est :
++ $RC \dfrac{du_C}{dt} + u_C = E$
+- $RC \dfrac{du_C}{dt} + u_C = 0$
+- $RC \dfrac{du_C}{dt} - u_C = E$
+- $\dfrac{1}{RC} \dfrac{du_C}{dt} + u_C = E$
+
+* Lors de la charge d'un condensateur, on a $u_C(t) = E \left(1 - e^{-t/\tau}\right)$. L'expression de l'intensité $i(t) = C \dfrac{du_C}{dt}$ est :
++ $i(t) = \dfrac{E}{R} \times e^{-t/\tau}$
+- $i(t) = -\dfrac{E}{R} \times e^{-t/\tau}$
+- $i(t) = \dfrac{E}{R} \left(1 - e^{-t/\tau}\right)$
+- $i(t) = \dfrac{E}{RC} \times e^{-t/\tau}$
+
+* Lors de la charge d'un condensateur ($\tau = 1,0$ s, $E = 8,0$ V), on donne $e^{-2} \approx 0,14$. La valeur de $u_C$ à l'instant $t = 2,0$ s est :
++ $u_C \approx 6,9$ V
+- $u_C \approx 1,1$ V
+- $u_C \approx 4,0$ V
+- $u_C = 8,0$ V
+
+** On étudie la décharge d'un condensateur initialement chargé à $E = 9,0$ V dans un circuit RC. On mesure $u_C = 3,3$ V à $t_1 = 2,0$ ms. On donne $e^{-1} \approx 0,37$ et $0,37 \times 9,0 \approx 3,3$. Quelles affirmations sont correctes ?
++ $\dfrac{u_C(t_1)}{E} \approx 0,37 = e^{-1}$, donc $t_1 = \tau = 2,0$ ms
++ À $t = 5\tau = 10$ ms, le condensateur est considéré comme totalement déchargé
+- La constante de temps vaut $\tau = \dfrac{E}{u_C(t_1)} \times t_1 \approx 5,5$ ms
+- À $t = \tau$, la tension vaut $u_C(\tau) \approx 0,63 \times E \approx 5,7$ V
+</script>
+
+<script type="application/x-qcm" id="raw-12_cinetique_chimique">
+** On dispose d'une solution mère à 12 mol/L on veut fabriquer 100 mL de solution fille à 3 mol/L
+
++ Le facteur de dilution vaut 12/3= 4
+- Le facteur de dilution vaut 3/12 = 0,25
++ On utilise une pipette jaugée de 25 mL
+- On utilise une pipette jaugée de 20 mL
+- On utilise une pipette jaugée de 4 mL
+
+* Par définition lors d'une réaction $A\rightarrow B$ la vitesse de disparition de A vaut
++ $ - \frac{d[A]}{dt}$
+- d/t
+- $\frac{C_A}{\Delta t}$
+- $\frac{d[A]}{dt}$
+
+** Si la loi de vitesse est d'ordre 1 selon le réactif A. 
++ $v_{disp}(A)=k\times [A]_t$
++ $[A]_t=[A]_0\times e^{-kt}$
+- $[A]_t=[A]_0\times e^{kt}$
+- $v= - \frac{d[A]}{dt}$
+- $t_{1/2}$ est proportionnelle à la concentration initiale
++ $ln([A])$ est une fonction affine du temps
+
+** Retrouve les facteurs cinétiques
++ Concentration des réactifs
++ Température
+- Concentration des produits
+- Rapidité
+- Intermédiaire réactionnel
+
+* On définit le temps de demi-réaction par:
+
++ $x(t_{1/2})= \frac{x_f}{2}$
+- $t_{1/2}= \frac{x_f}{2}$
+- $x(x_f)= \frac{t_{1/2}}{2}$
+- $x(t_{1/2})= \frac{x_{max}}{2}$
+
+** Un catalyseur permet d'augmenter la vitesse de la réaction
+
++  sans figurer dans le bilan de la réaction
+- doit figurer dans le bilan de la réaction
+- n'intervient pas dans les actes élémentaires
++ doit être régénérer à la fin de la réaction
+- doit être une enzyme
+
+* Un intermédiaire réactionnel
+
+- est une espèce dont on peut se passer
+- augmente la vitesse
++ apparaît lors d'un acte élémentaire et disparaît à l'acte suivant
+- apparaît lors d'un acte élémentaire mais ne figure pas dans le bilan
+
+** La flèche courbe 
+
++ est orientée du site donneur vers le site accepteur
++ permet d'expliquer l'apparition et la rupture de liaisons
+- est orientée du site accepteur vers le site donneur
+- s'écrit à droite dans les actes élémentaires
+- contient 1 ou plusieurs électrons
+
+* Les chocs sont d'autant plus efficaces que
+
+- La concentration des réactifs est grande
++ La température est grande
+- La concentration des réactifs est faible
+- La température est basse
+</script>
+
+<script type="application/x-qcm" id="raw-13_radioactivite">
 * Le nombre de masse $A$ d'un noyau représente :
 
 + Le nombre total de nucléons (protons + neutrons) dans le noyau
@@ -934,42 +1286,35 @@ _ $\overrightarrow{E}$
 - Une particule alpha est simultanément émise
 - Le nombre de nucléons du noyau augmente
 
-** Un échantillon radioactif possède une activité initiale $A_0 = 800$ Bq et une constante radioactive $\lambda = 1{,}0 \times 10^{-3}\ \text{s}^{-1}$. On rappelle que $t_{1/2} = \ln 2 / \lambda$ et $A(t) = A_0 \times e^{-\lambda t}$. Parmi les affirmations suivantes, lesquelles sont exactes ?
+** Un échantillon radioactif possède une activité initiale $A_0 = 800$ Bq et une constante radioactive $\lambda = 1,0 \times 10^{-3}$ s$^{-1}$. On rappelle que $t_{1/2} = \ln 2 / \lambda$ et $A(t) = A_0 \times e^{-\lambda t}$. Parmi les affirmations suivantes, lesquelles sont exactes ?
 
-+ La demi-vie vaut $t_{1/2} \approx 693\ \text{s}$
-+ L'activité après $t = 693\ \text{s}$ vaut $400\ \text{Bq}$
-- L'activité après $t = 693\ \text{s}$ vaut $200\ \text{Bq}$
++ La demi-vie vaut $t_{1/2} \approx 693$ s
++ L'activité après $t = 693$ s vaut 400 Bq
+- L'activité après $t = 693$ s vaut 200 Bq
 - L'activité décroît linéairement au cours du temps
-+ L'activité après $t = 1386\ \text{s}$ vaut $200\ \text{Bq}$
++ L'activité après $t = 1386$ s vaut 200 Bq
 - L'activité est nulle après 2 demi-vies
 
-** Un archéologue analyse un fragment de bois. L'activité mesurée est $A = 56{,}5$ Bq ; pour un échantillon identique sur un arbre vivant, elle serait $A_0 = 226$ Bq. La constante radioactive du carbone-14 est $\lambda = 3{,}83 \times 10^{-12}\ \text{s}^{-1}$ (1 an $\approx 3{,}15 \times 10^7$ s). On rappelle que $A(t) = A_0 \times e^{-\lambda t}$ et $t_{1/2} = \ln 2 / \lambda$. Parmi les affirmations suivantes, lesquelles sont exactes ?
+** Un archéologue analyse un fragment de bois. L'activité mesurée est $A = 56,5$ Bq ; pour un échantillon identique sur un arbre vivant, elle serait $A_0 = 226$ Bq. La constante radioactive du carbone-14 est $\lambda = 3,83 \times 10^{-12}$ s$^{-1}$ (1 an $\approx 3,15 \times 10^7$ s). On rappelle que $A(t) = A_0 \times e^{-\lambda t}$ et $t_{1/2} = \ln 2 / \lambda$. Parmi les affirmations suivantes, lesquelles sont exactes ?
 
 + La relation permettant de calculer l'âge $t$ est $t = -\dfrac{\ln(A/A_0)}{\lambda}$
-+ L'âge du fragment est environ $11\,500\ \text{ans}$
-- L'âge du fragment est $5\,730\ \text{ans}$
-- L'âge du fragment est $22\,920\ \text{ans}$
++ L'âge du fragment est environ 11 500 ans
+- L'âge du fragment est 5 730 ans
+- L'âge du fragment est 22 920 ans
 - On ne peut pas calculer l'âge sans connaître $N_0$
 - L'âge vaut $t = \ln(A_0/A) \times \lambda$
 
-** Un échantillon de cobalt-60 ($\lambda = 4{,}2 \times 10^{-9}\ \text{s}^{-1}$, 1 an $= 3{,}15 \times 10^7$ s) contient initialement $N_0 = 6{,}0 \times 10^{20}$ noyaux. Une activité est jugée dangereuse si elle dépasse $10^{10}$ Bq. On veut savoir si l'échantillon est encore dangereux après $t = 10\ \text{ans}$. Parmi les affirmations suivantes, lesquelles sont exactes ?
+** Un échantillon de cobalt-60 ($\lambda = 4,2 \times 10^{-9}$ s$^{-1}$, 1 an $= 3,15 \times 10^7$ s) contient initialement $N_0 = 6,0 \times 10^{20}$ noyaux. Une activité est jugée dangereuse si elle dépasse $10^{10}$ Bq. On veut savoir si l'échantillon est encore dangereux après $t = 10$ ans. Parmi les affirmations suivantes, lesquelles sont exactes ?
 
-+ L'activité initiale vaut $A_0 \approx 2{,}5 \times 10^{12}\ \text{Bq}$
-+ L'activité après 10 ans vaut environ $6{,}7 \times 10^{11}\ \text{Bq}$
++ L'activité initiale vaut $A_0 \approx 2,5 \times 10^{12}$ Bq
++ L'activité après 10 ans vaut environ $6,7 \times 10^{11}$ Bq
 + L'échantillon est encore dangereux après 10 ans
-- L'activité après 10 ans vaut $A_0/2 \approx 1{,}25 \times 10^{12}\ \text{Bq}$
+- L'activité après 10 ans vaut $A_0/2 \approx 1,25 \times 10^{12}$ Bq
 - L'activité initiale vaut $A_0 = N_0 / \lambda$
 - L'activité est quasi nulle après 10 ans
 </script>
 
-<script type="application/x-qcm" id="raw-remix_meca_flu_thermo_radio">
-# Remix QCM — Mécanique des fluides / Thermodynamique / Radioactivité
-# Terminale Spécialité Physique-Chimie
-# 14 questions : 5 méca. fluides · 5 thermodynamique · 4 radioactivité
-# Niveaux : 8 restitution · 2 application directe · 3 raisonnement · 1 démarche complexe
-
-# ── MÉCANIQUE DES FLUIDES ─────────────────────────────────────────────────────
-
+<script type="application/x-qcm" id="raw-14_mecanique_fluides">
 * L'unité de la pression dans le Système International (SI) est :
 
 + Le pascal (Pa)
@@ -984,6 +1329,13 @@ _ $\overrightarrow{E}$
 - $F_A = \rho_f \times g / V_{imm}$
 - $F_A = m_{objet} \times g / V_{imm}$
 
+* Le débit volumique $D$ d'un fluide s'écoulant à la vitesse $v$ à travers une section droite $S$ est :
+
++ $D = S \times v$
+- $D = S / v$
+- $D = v / S$
+- $D = S \times v^2$
+
 * La relation de Bernoulli le long d'une ligne de courant entre deux points A et B s'écrit (fluide incompressible, écoulement permanent) :
 
 + $\frac{1}{2}\rho v_A^2 + \rho g z_A + P_A = \frac{1}{2}\rho v_B^2 + \rho g z_B + P_B$
@@ -991,96 +1343,185 @@ _ $\overrightarrow{E}$
 - $\rho v_A^2 + \rho g z_A + P_A = \rho v_B^2 + \rho g z_B + P_B$
 - $\frac{1}{2}\rho v_A^2 + \rho g z_A = \frac{1}{2}\rho v_B^2 + \rho g z_B$
 
-** Un objet de volume $V = 200\ \text{cm}^3$ est totalement immergé dans l'eau ($\rho_{eau} = 1000\ \text{kg/m}^3$, $g = 10\ \text{N/kg}$). Parmi les affirmations suivantes, lesquelles sont exactes ?
+* En régime permanent pour un fluide incompressible, la conservation du débit entre deux sections $S_1$ (vitesse $v_1$) et $S_2$ (vitesse $v_2$) s'écrit :
 
-+ La poussée d'Archimède vaut $F_A = 2\ \text{N}$
-- La poussée d'Archimède vaut $F_A = 20\ \text{N}$
-- La poussée d'Archimède vaut $F_A = 0{,}2\ \text{N}$
++ $S_1 v_1 = S_2 v_2$
+- $S_1 / v_1 = S_2 / v_2$
+- $S_1 v_1^2 = S_2 v_2^2$
+- $S_1 + v_1 = S_2 + v_2$
+
+** Un objet de volume $V = 200$ cm$^3$ est totalement immergé dans l'eau ($g = 10$ N/kg). Parmi les affirmations suivantes, lesquelles sont exactes ?
+
++ La poussée d'Archimède vaut $F_A = 2$ N
+- La poussée d'Archimède vaut $F_A = 20$ N
+- La poussée d'Archimède vaut $F_A = 0,2$ N
 + La poussée d'Archimède est dirigée verticalement vers le haut
 - La poussée d'Archimède dépend de la masse volumique du matériau de l'objet
 - La poussée d'Archimède dépend de la forme extérieure de l'objet uniquement
 
-** Un solide de masse $m = 500\ \text{g}$ et de volume $V = 400\ \text{cm}^3$ est suspendu à un dynamomètre et totalement immergé dans l'eau ($\rho_{eau} = 1000\ \text{kg/m}^3$, $g = 10\ \text{N/kg}$). Parmi les affirmations suivantes, lesquelles sont exactes ?
+** L'effet Venturi se produit dans un tuyau horizontal dont la section se rétrécit. On dispose de deux points A (grande section) et B (petite section) situés sur une même ligne de courant à la même altitude. Parmi les affirmations suivantes, lesquelles sont exactes ?
 
-+ Le poids du solide vaut $P = 5\ \text{N}$
-+ La poussée d'Archimède vaut $F_A = 4\ \text{N}$
-+ La valeur indiquée par le dynamomètre est $T = 1\ \text{N}$
-- La valeur indiquée par le dynamomètre est $T = 9\ \text{N}$
++ La conservation du débit implique $v_B > v_A$
++ La relation de Bernoulli implique $P_B < P_A$
+- La relation de Bernoulli implique $P_B > P_A$
+- La conservation du débit implique $v_A > v_B$
+- La vitesse diminue là où la section diminue
+- Le débit volumique augmente dans la partie rétrécie
+
+** Un solide de masse $m = 500$ g et de volume $V = 400$ cm$^3$ est suspendu à un dynamomètre et totalement immergé dans l'eau ($\rho_{eau} = 1000$ kg/m$^3$, $g = 10$ N/kg). Parmi les affirmations suivantes, lesquelles sont exactes ?
+
++ Le poids du solide vaut $P = 5$ N
++ La poussée d'Archimède vaut $F_A = 4$ N
++ La valeur indiquée par le dynamomètre est $T = 1$ N
+- La valeur indiquée par le dynamomètre est $T = 9$ N
 - La poussée d'Archimède est supérieure au poids, donc le solide remonterait seul
 - Le dynamomètre indique la même valeur que si le solide est hors de l'eau
 
-# ── THERMODYNAMIQUE ───────────────────────────────────────────────────────────
+** Une aile d'avion a une surface portante $S = 50$ m$^2$. L'air ($\rho_{air} = 1,2$ kg/m$^3$) circule à $v_{dessus} = 250$ m/s au-dessus de l'aile et à $v_{dessous} = 200$ m/s en dessous. Les points au-dessus et en dessous sont à la même altitude. La masse de l'avion est $m = 50000$ kg, $g = 10$ N/kg. Parmi les affirmations suivantes, lesquelles sont exactes ?
 
-* L'équation d'état d'un gaz parfait est :
-
-+ $PV = nRT$
-- $PV = mRT$
-- $P = \rho RT$
-- $PV = nRT^2$
-
-* Le premier principe de la thermodynamique, pour un système immobile à l'échelle macroscopique, s'écrit :
-
-+ $\Delta U = W + Q$
-- $\Delta U = W - Q$
-- $U = W + Q$
-- $\Delta U = W \times Q$
-
-* La résistance thermique $R_{th}$ d'une paroi plane d'épaisseur $e$, de surface $S$ et de conductivité thermique $\lambda$ est donnée par :
-
-+ $R_{th} = \dfrac{e}{\lambda S}$
-- $R_{th} = \lambda S e$
-- $R_{th} = \dfrac{\lambda}{eS}$
-- $R_{th} = \dfrac{eS}{\lambda}$
-
-** Parmi les propositions suivantes, lesquelles désignent un mode de transfert thermique ?
-
-+ La conduction
-+ La convection
-+ Le rayonnement
-- Le travail des forces de pression
-- La compression adiabatique
-
-* Un café initialement à $T_0 = 85\ °\text{C}$ refroidit dans une pièce à $T_e = 20\ °\text{C}$ selon $T(t) = T_e + (T_0 - T_e)\,e^{-t/\tau}$ avec $\tau = 10\ \text{min}$. Quelle est la température du café après 20 minutes ?
-
-+ $29\ °\text{C}$
-- $44\ °\text{C}$
-- $53\ °\text{C}$
-- $9\ °\text{C}$
-
-# ── RADIOACTIVITÉ ─────────────────────────────────────────────────────────────
-
-* L'expression de la loi de décroissance radioactive qui donne le nombre de noyaux radioactifs à l'instant $t$ est :
-
-+ $N(t) = N_0 \times e^{-\lambda t}$
-- $N(t) = N_0 \times e^{+\lambda t}$
-- $N(t) = N_0 \times (1 - \lambda t)$
-- $N(t) = \dfrac{N_0}{1 + \lambda t}$
-
-* La demi-vie $t_{1/2}$ d'un noyau radioactif est définie comme :
-
-+ La durée au bout de laquelle la moitié des noyaux radioactifs d'un échantillon se sont désintégrés
-- La durée au bout de laquelle tous les noyaux se sont désintégrés
-- La durée au bout de laquelle l'activité est nulle
-- La durée au bout de laquelle le nombre de noyaux vaut $N_0 / e$
-
-* On considère la transformation nucléaire : $^{238}_{92}\text{U} \longrightarrow ^{234}_{90}\text{Th} + X$. En appliquant les lois de conservation du nombre de charge et du nombre de masse, la particule $X$ est :
-
-+ $^4_2\text{He}$ (radioactivité $\alpha$)
-- $^0_{-1}e$ (radioactivité $\beta^-$)
-- $^0_{+1}e$ (radioactivité $\beta^+$)
-- $^1_0n$ (neutron)
-
-** Lors d'une désintégration $\beta^-$, on peut affirmer que :
-
-+ Un neutron du noyau se transforme en proton
-+ Le nombre de masse $A$ du noyau ne change pas
-+ Un électron $^0_{-1}e$ est émis
-- Le nombre de protons $Z$ reste inchangé
-- Une particule alpha est simultanément émise
-- Le nombre de nucléons du noyau augmente
++ La pression est plus élevée sous l'aile qu'au-dessus ($P_{dessous} > P_{dessus}$)
++ La différence de pression vaut $\Delta P = P_{dessous} - P_{dessus} = 13500$ Pa
++ La force de portance vaut $F = \Delta P \times S = 675000$ N
+- La pression est plus élevée au-dessus de l'aile
+- La différence de pression vaut $\Delta P = 2250$ Pa
+- La portance est insuffisante pour soulever l'avion
 </script>
 
-<script type="application/x-qcm" id="raw-thermodynamique">
+<script type="application/x-qcm" id="raw-15_piles_evolution_spontanee">
+#  QCM Évolution spontanée et Piles — Terminale Spécialité Physique-Chimie
+#  Source : 15_Evolution_Pile.tex — BO Terminale (programme Bac 2024)
+#  Répartition : 12 connaissances pures / 4 raisonnement simple / 4 démarche complexe
+
+#  ── CONNAISSANCES PURES ──────────────────────────────────────────────────────
+
+* Un système chimique est à l'équilibre dynamique lorsque :
++ Les vitesses des réactions directe et inverse sont égales et les concentrations sont stationnaires
+- La réaction s'est arrêtée et aucune espèce n'est présente
+- Toutes les espèces chimiques ont été consommées
+- Le quotient réactionnel est nul
+
+* Le quotient de réaction $Q_r$ pour la réaction $aA + bB \rightleftharpoons cC + dD$ est défini par :
++ $Q_r = \dfrac{\alpha(C)^c\,\alpha(D)^d}{\alpha(A)^a\,\alpha(B)^b}$
+- $Q_r = \dfrac{\alpha(A)^a\,\alpha(B)^b}{\alpha(C)^c\,\alpha(D)^d}$
+- $Q_r = \alpha(C)^c + \alpha(D)^d - \alpha(A)^a - \alpha(B)^b$
+- $Q_r = \dfrac{c + d}{a + b}$
+
+* L'activité d'une espèce chimique solide pure dans l'expression de $Q_r$ vaut :
++ 1 (les solides purs n'apparaissent pas dans l'expression de $Q_r$)
+- Sa concentration molaire divisée par $c^0 = 1$ mol·L$^{-1}$
+- Sa fraction molaire dans le mélange
+- 0 car elle est insoluble
+
+* Si le quotient réactionnel initial $Q_{ri}$ est inférieur à la constante d'équilibre $K$ :
++ Le système évolue dans le sens direct (formation des produits)
+- Le système évolue dans le sens inverse
+- Le système est déjà à l'équilibre
+- Le système ne peut pas évoluer
+
+* Le taux d'avancement final $\tau$ d'une réaction est défini par :
++ $\tau = \dfrac{x_f}{x_{max}}$
+- $\tau = \dfrac{x_{max}}{x_f}$
+- $\tau = x_f - x_{max}$
+- $\tau = \dfrac{x_f}{x_0}$
+
+* Dans une pile électrochimique, l'oxydation a lieu :
++ À l'anode, qui est le pôle négatif de la pile
+- À la cathode, qui est le pôle positif de la pile
+- Au pont salin
+- Indifféremment aux deux électrodes selon l'instant
+
+* Le pont salin dans une pile électrochimique assure :
++ La fermeture du circuit électrique en permettant la migration des ions entre les deux demi-piles
+- Le passage des électrons entre les deux électrodes
+- La catalyse de la réaction d'oxydo-réduction
+- L'isolation des deux compartiments pour éviter la réaction directe
+
+* Une pile est considérée comme usée lorsque :
++ Elle a atteint l'état d'équilibre chimique : $Q_{r,eq} = K$, la réaction ne peut plus évoluer
+- Ses électrodes ont entièrement fondu
+- Le pont salin est saturé en ions
+- La tension à ses bornes vaut 1,5 V
+
+* La capacité électrique $Q$ d'une pile (en coulombs), liée à l'intensité $I$ et à la durée de fonctionnement $\Delta t$, vaut :
++ $Q = I \times \Delta t$
+- $Q = I / \Delta t$
+- $Q = I^2 \times \Delta t$
+- $Q = I \times \Delta t^2$
+
+* La constante de Faraday $F = 9,65 \times 10^4$ C·mol$^{-1}$ représente :
++ La charge électrique d'une mole d'électrons
+- La constante universelle des gaz parfaits
+- La charge d'un seul électron
+- La capacité maximale d'une pile standard de 1 V
+
+* L'activité d'une espèce chimique X en solution de concentration $[X]$ vaut :
++ $\alpha(X) = \dfrac{[X]}{c^0}$ avec $c^0 = 1$ mol·L$^{-1}$
+- $\alpha(X) = [X]$
+- $\alpha(X) = [X] \times c^0$
+- $\alpha(X) = \log([X])$
+
+* Dans une pile Zn/Cu, les électrons circulent :
++ De la lame de zinc (anode, pôle $-$) vers la lame de cuivre (cathode, pôle $+$) dans le circuit extérieur
+- De la lame de cuivre vers la lame de zinc dans le circuit extérieur
+- Dans le pont salin uniquement
+- Des ions $Zn^{2+}$ vers les ions $Cu^{2+}$
+
+#  ── RAISONNEMENT SIMPLE / APPLICATION DIRECTE ───────────────────────────────
+
+* On mélange 1,0 mol d'acide éthanoïque avec de l'eau. À l'état final, $x_f = 0,04$ mol et $x_{max} = 1,0$ mol. Le taux d'avancement $\tau$ vaut :
++ $0,04$ (transformation non totale car $\tau \ll 1$)
+- $25$
+- $0,96$
+- $1,0$ (transformation totale)
+
+* Pour la réaction $A \rightleftharpoons B$, $K = 10^2$. Dans un état initial, $Q_{ri} = 10^4$. Le système va :
++ Évoluer dans le sens inverse (formation des réactifs) car $Q_{ri} > K$
+- Évoluer dans le sens direct car $Q_{ri} > K$
+- Rester à l'équilibre car $Q_{ri}$ est proche de $K$
+- Ne pas évoluer car $K$ est grand
+
+* Une pile lithium débite un courant de $I = 200$ mA pendant $\Delta t = 10$ h. Sa capacité électrique vaut :
++ $7200$ C
+- $2000$ C
+- $200$ C
+- $72000$ C
+
+* Une pile zinc-cuivre échange $n(e^-) = 0,50$ mol d'électrons pendant son fonctionnement. On donne $F = 9,65 \times 10^4$ C·mol$^{-1}$. Sa capacité électrique vaut :
++ $4,8 \times 10^4$ C
+- $9,65 \times 10^4$ C
+- $1,9 \times 10^5$ C
+- $2,6 \times 10^{-4}$ C
+
+#  ── DÉMARCHE COMPLEXE ────────────────────────────────────────────────────────
+
+* On mélange $[Zn^{2+}] = 0,10$ mol·L$^{-1}$ et $[Cu^{2+}] = 0,10$ mol·L$^{-1}$. La réaction est $Zn(s) + Cu^{2+}(aq) \rightleftharpoons Zn^{2+}(aq) + Cu(s)$ avec $K = 10^{37}$. Le sens d'évolution spontanée est :
++ Sens direct car $Q_{ri} = \dfrac{[Zn^{2+}]/c^0}{[Cu^{2+}]/c^0} = 1 \ll K = 10^{37}$
+- Sens inverse car $Q_{ri} > K$
+- Aucun sens : le système est déjà à l'équilibre
+- Impossible à prévoir sans connaître les masses de zinc et de cuivre
+
+** Une pile zinc-cuivre consomme $m = 2,0$ g de zinc ($M_{Zn} = 65$ g·mol$^{-1}$) selon $Zn \rightarrow Zn^{2+} + 2e^-$. On donne $F = 9,65 \times 10^4$ C·mol$^{-1}$. Quelles affirmations sont correctes ?
++ $n(e^-) = 2 \times \dfrac{2,0}{65} \approx 6,15 \times 10^{-2}$ mol d'électrons échangés
++ $Q = n(e^-) \times F \approx 5,9 \times 10^3$ C
++ Pour un courant $I = 50$ mA, la durée de fonctionnement est $\Delta t = Q/I \approx 33$ h
+- $n(e^-) = \dfrac{2,0}{65} \approx 3,1 \times 10^{-2}$ mol (oubli du coefficient stœchiométrique 2)
+- La capacité se calcule par $Q = I \times n(e^-)$
+
+* La réaction d'estérification a $K = 4,0$. On mélange 1,0 mol d'alcool et 1,0 mol d'acide ($x_{max} = 1,0$ mol). L'avancement à l'équilibre vérifie $Q_{r,eq} = x_f^2/(1-x_f)^2 = 4,0$. L'avancement final et le rendement valent :
++ $x_f \approx 0,67$ mol, soit $\tau \approx 67\%$
+- $x_f = 0,50$ mol car $K = 4$ implique un avancement de 50%
+- $x_f = 1,0$ mol (transformation totale) car $K > 1$
+- $x_f = 0,44$ mol
+
+** Dans une pile Cu/Zn, la réaction globale est $Zn(s) + Cu^{2+}(aq) \rightarrow Zn^{2+}(aq) + Cu(s)$. Quelles affirmations sont correctes ?
++ L'anode (pôle $-$) est la lame de zinc : $Zn \rightarrow Zn^{2+} + 2e^-$ (oxydation)
++ La cathode (pôle $+$) est la lame de cuivre : $Cu^{2+} + 2e^- \rightarrow Cu$ (réduction)
++ Les électrons circulent du zinc vers le cuivre dans le circuit extérieur
+- L'oxydation a lieu à la cathode (pôle positif)
+- Les ions se déplacent dans le circuit extérieur, les électrons dans le pont salin
+</script>
+
+<script type="application/x-qcm" id="raw-16_thermodynamique">
 #  QCM Thermodynamique — Terminale Spécialité Physique-Chimie
 #  Sources : 16_thermodynamique_1.tex et 16_thermodynamique_2.tex
 #  Répartition : 12 connaissances pures / 4 raisonnement simple / 4 démarche complexe
@@ -1136,11 +1577,11 @@ _ $\overrightarrow{E}$
 - Joule par kelvin (J·K$^{-1}$)
 - Pascal (Pa)
 
-* L'albédo terrestre $A = 0{,}34$ signifie que :
-+ 34 \% de la puissance solaire incidente est réfléchie par le système Terre-Atmosphère
-- 34 \% de la puissance solaire incidente est absorbée par la surface terrestre
-- La Terre réémet 34 \% de son rayonnement infrarouge directement vers l'espace
-- L'atmosphère absorbe 34 \% du rayonnement solaire incident
+* L'albédo terrestre $A = 0,34$ signifie que :
++ $34 \%$ de la puissance solaire incidente est réfléchie par le système Terre-Atmosphère
+- $34 \%$ de la puissance solaire incidente est absorbée par la surface terrestre
+- La Terre réémet $34 \%$ de son rayonnement infrarouge directement vers l'espace
+- L'atmosphère absorbe $34 \%$ du rayonnement solaire incident
 
 * La résistance thermique $R_{th}$ d'une paroi plane d'épaisseur $e$, de surface $S$ et de conductivité thermique $\lambda$ est donnée par :
 + $R_{th} = \dfrac{e}{\lambda S}$
@@ -1148,7 +1589,7 @@ _ $\overrightarrow{E}$
 - $R_{th} = \dfrac{\lambda}{eS}$
 - $R_{th} = \dfrac{eS}{\lambda}$
 
-* Dans la loi de refroidissement $T(t) = T_e + (T_0 - T_e)\,e^{-t/\tau}$, le temps caractéristique $\tau$ vaut :
+* Dans la loi de refroidissement $T(t) = T_e + (T_0 - T_e)e^{-t/\tau}$, le temps caractéristique $\tau$ vaut :
 + $\tau = \dfrac{C}{hS}$
 - $\tau = hSC$
 - $\tau = \dfrac{hS}{C}$
@@ -1157,16 +1598,16 @@ _ $\overrightarrow{E}$
 #  ── RAISONNEMENT SIMPLE / APPLICATION DIRECTE ───────────────────────────────
 
 * On chauffe 200 g d'eau ($c_\text{eau} = 4180$ J·kg$^{-1}$·K$^{-1}$) de 20 °C à 70 °C dans un récipient isolé. Quel est le transfert thermique reçu par l'eau ?
-+ $41\,800$ J
-- $4\,180$ J
-- $8\,360$ J
-- $209\,000$ J
++ $41800$ J
+- $4180$ J
+- $8360$ J
+- $209000$ J
 
-* Une fenêtre en verre ($\lambda = 1{,}0$ W·m$^{-1}$·K$^{-1}$) a une épaisseur de 4 mm et une surface de 2{,}0 m$^2$. Sa résistance thermique vaut :
-+ $2{,}0 \times 10^{-3}$ K·W$^{-1}$
-- $5{,}0 \times 10^{2}$ K·W$^{-1}$
-- $8{,}0 \times 10^{-3}$ K·W$^{-1}$
-- $2{,}5 \times 10^{-1}$ K·W$^{-1}$
+* Une fenêtre en verre ($\lambda = 1,0$ W·m$^{-1}$·K$^{-1}$) a une épaisseur de 4 mm et une surface de 2,0 m$^2$. Sa résistance thermique vaut :
++ $2,0 \times 10^{-3}$ K·W$^{-1}$
+- $5,0 \times 10^{2}$ K·W$^{-1}$
+- $8,0 \times 10^{-3}$ K·W$^{-1}$
+- $2,5 \times 10^{-1}$ K·W$^{-1}$
 
 * Un objet à $T = 60$ °C est immergé dans un fluide à $T_e = 20$ °C. Le flux convectif vaut $\Phi = h \cdot S \cdot (T_e - T)$. Ce flux est :
 + Négatif : $T_e < T$, donc l'objet cède de l'énergie au fluide
@@ -1182,13 +1623,13 @@ _ $\overrightarrow{E}$
 
 #  ── DÉMARCHE COMPLEXE ────────────────────────────────────────────────────────
 
-* En l'absence d'atmosphère, la Terre est à l'équilibre thermique : la puissance surfacique absorbée égale la puissance surfacique émise, soit $(1-A)\,P_S = \sigma T_0^4$. On donne : $P_S = 340$ W·m$^{-2}$, $A = 0{,}34$, $\sigma = 5{,}67 \times 10^{-8}$ W·m$^{-2}$·K$^{-4}$. La température $T_0$ de la Terre sans atmosphère est environ :
+* En l'absence d'atmosphère, la Terre est à l'équilibre thermique : la puissance surfacique absorbée égale la puissance surfacique émise, soit $(1-A)P_S = \sigma T_0^4$. On donne : $P_S = 340$ W·m$^{-2}$, $A = 0,34$, $\sigma = 5,67 \times 10^{-8}$ W·m$^{-2}$·K$^{-4}$. La température $T_0$ de la Terre sans atmosphère est environ :
 + $255$ K $\approx -18$ °C
 - $288$ K $\approx 15$ °C
 - $340$ K $\approx 67$ °C
 - $214$ K $\approx -59$ °C
 
-* Un café initialement à $T_0 = 85$ °C refroidit dans une pièce à $T_e = 20$ °C selon $T(t) = T_e + (T_0 - T_e)\,e^{-t/\tau}$ avec $\tau = 10$ min. Quelle est la température du café après 20 minutes ?
+* Un café initialement à $T_0 = 85$ °C refroidit dans une pièce à $T_e = 20$ °C selon $T(t) = T_e + (T_0 - T_e)e^{-t/\tau}$ avec $\tau = 10$ min. Quelle est la température du café après 20 minutes ?
 + $29$ °C
 - $44$ °C
 - $53$ °C
@@ -1196,58 +1637,619 @@ _ $\overrightarrow{E}$
 
 ** On plonge un bloc d'acier de 200 g à 80 °C dans 500 mL d'eau à 15 °C dans un récipient parfaitement isolant. On donne $c_\text{acier} = 500$ J·kg$^{-1}$·K$^{-1}$ et $c_\text{eau} = 4180$ J·kg$^{-1}$·K$^{-1}$. Quelles affirmations sont correctes ?
 + L'acier cède de l'énergie à l'eau : son transfert thermique est négatif
-+ La température finale vérifie $m_\text{acier}\,c_\text{acier}\,(T_f - 80) + m_\text{eau}\,c_\text{eau}\,(T_f - 15) = 0$
++ La température finale vérifie $m_\text{acier}c_\text{acier}(T_f - 80) + m_\text{eau}c_\text{eau}(T_f - 15) = 0$
 + La température finale est environ 18 °C
 - La température finale est environ 19 °C
 - La température finale est la moyenne des deux températures initiales, soit 47,5 °C
 - L'eau cède de l'énergie à l'acier car sa masse est plus grande
 </script>
 
-<script type="application/x-qcm" id="raw-titrage">
-* En général, lors d'un titrage suivi par conductimétrie, comment repère-t-on l'équivalence ?
-+ En utilisant la rupture de pente du graphique $\sigma=f(V)$
-- En utilisant un indicateur coloré
-- En utilisant la méthode des tangentes
-- La dérivée du pH
+<script type="application/x-qcm" id="raw-17_electrolyse">
+#  QCM Électrolyse — Terminale Spécialité Physique-Chimie
+#  Source : 17_electrolyse.tex — BO Terminale (programme Bac 2024, section « Forcer le sens d'évolution »)
+#  Répartition : 12 connaissances pures / 4 raisonnement simple / 4 démarche complexe
 
+#  ── CONNAISSANCES PURES ──────────────────────────────────────────────────────
 
-** On titre 20 mL d'une solution d'ammoniaque $NH_3$ par une solution d'acide chlorhydrique ($H_3O^+ + C\ell^-$) de concentration $10^{-2}$ mol/L.
+* L'électrolyse est :
++ Une transformation chimique forcée par le passage d'un courant électrique imposé par un générateur
+- Une transformation chimique spontanée qui produit un courant électrique
+- Un procédé de séparation de mélanges par distillation électrique
+- Une réaction acide-base déclenchée par un champ électrique
 
-- l'ammoniaque est la solution titrante
-+ l'acide chlorhydrique est la solution titrante
-- L'ammoniaque est dans la burette graduée
-+ L'ammoniaque est dans le bécher
-- L'acide chlorhydrique est dans la pipette graduée
+* Dans un électrolyseur, le rôle du générateur est de :
++ Imposer le sens du courant électrique et forcer le sens de l'évolution chimique
+- Mesurer la tension aux bornes des électrodes
+- Catalyser les réactions chimiques aux électrodes
+- Maintenir la concentration des espèces en solution constante
 
-* On titre une solution d'ammoniaque $NH_3$ par une solution d'acide chlorhydrique. La réaction de titrage est
-+ $H_3O^+ + NH_3 \longrightarrow NH_4^+ + H_2O$
-- $NH_4^+ + H_2O \longrightarrow H_3O^+ + NH_3$
-- $H_3O^+ + OH^- \longrightarrow 2H_2O$
-- $H_3O^+ + C\ell^- \longrightarrow HC\ell + H_2O$
+* Dans un électrolyseur, l'anode est :
++ L'électrode reliée à la borne positive du générateur, où se produit une oxydation
+- L'électrode reliée à la borne négative du générateur, où se produit une réduction
+- L'électrode reliée à la borne positive du générateur, où se produit une réduction
+- L'électrode reliée à la borne négative du générateur, où se produit une oxydation
 
-* Pour définir l'équivalence on peut dire
-+ C'est lorsque les réactifs participant à la réaction de titrage ont été introduits dans les proportions stoechiométriques
-- C'est lorsque le réactif limitant a été complètement consommé
-- C'est lorsque le réactif titrant et titré ont été introduits avec la même quantité.
-- C'est lorsqu'on observe un changement de couleur dans le bécher
+* Dans un électrolyseur, la cathode est :
++ L'électrode reliée à la borne négative du générateur, siège d'une réduction
+- L'électrode reliée à la borne positive du générateur, siège d'une réduction
+- L'électrode inerte ne participant à aucune réaction chimique
+- L'électrode reliée à la borne positive du générateur, siège d'une oxydation
 
+* Dans un électrolyseur, le sens de déplacement des électrons dans les conducteurs métalliques est :
++ De la borne négative du générateur vers la cathode, et de l'anode vers la borne positive du générateur
+- De la cathode vers la borne négative du générateur, et de la borne positive vers l'anode
+- De la cathode vers l'anode dans l'ensemble du circuit métallique
+- De l'anode vers la cathode dans la solution électrolytique
 
-* La conductivité d'une solution est directement liée à
+* La réaction se produisant à l'anode d'un électrolyseur est :
++ Une oxydation : des espèces chimiques cèdent des électrons à l'électrode
+- Une réduction : des espèces chimiques reçoivent des électrons de l'électrode
+- Une réaction acide-base entre les ions de la solution
+- Une précipitation des espèces présentes en solution
 
-- l'acidité de la solution
-- la coloration de la solution 
-+ aux concentrations des ions présents
-- au volume de la fiole
-- au volume de la pipette
+* La charge électrique $Q$ traversant un circuit pendant une durée $t$ sous une intensité $I$ est donnée par :
++ $Q = I \times t$
+- $Q = \dfrac{I}{t}$
+- $Q = I^2 \times t$
+- $Q = \dfrac{t}{I}$
 
+* La constante de Faraday $F$ représente :
++ La charge électrique totale portée par une mole d'électrons : $F \approx 96\,500$ C·mol$^{-1}$
+- La charge d'un seul électron : $e = 1{,}6 \times 10^{-19}$ C
+- La constante d'équilibre d'une réaction électrochimique
+- La tension minimale à appliquer aux bornes d'un électrolyseur pour déclencher l'électrolyse
 
-* On titre une solution d'acide chlorhydrique par la soude. Pendant le titrage, dans le bécher:
+* La quantité de matière d'électrons $n(e^-)$ ayant circulé lors d'une électrolyse de durée $t$ à l'intensité $I$ est :
++ $n(e^-) = \dfrac{I \times t}{F}$
+- $n(e^-) = I \times t \times F$
+- $n(e^-) = \dfrac{F}{I \times t}$
+- $n(e^-) = \dfrac{I}{t \times F}$
 
-+ La conductivité diminue puis augmente après l'équivalence
-- La conductivité augmente puis diminue après l'équivalence
-- Le pH diminue proportionnellement au volume versé
-- Le pH augmente proportionnellement au volume versé
-- L'absorbance augmente
+* Lors d'un dépôt électrolytique de zinc ($Zn^{2+} + 2e^- = Zn$), la relation entre la quantité de zinc déposé $n(Zn)$ et la quantité d'électrons ayant circulé $n(e^-)$ est :
++ $n(Zn) = \dfrac{n(e^-)}{2}$, car deux électrons sont nécessaires pour réduire un ion $Zn^{2+}$
+- $n(Zn) = 2 \times n(e^-)$, car le zinc est un métal divalent
+- $n(Zn) = n(e^-)$, quelle que soit la demi-équation considérée
+- $n(Zn) = \dfrac{n(e^-)}{F}$, par définition de la constante de Faraday
+
+* Lors de l'électrolyse d'une solution de chlorure d'étain(II), l'espèce chimique réduite à la cathode est :
++ L'ion étain $Sn^{2+}$, qui se dépose sous forme d'étain solide $Sn$
+- L'ion chlorure $Cl^-$, qui se transforme en dichlore gazeux $Cl_2$
+- L'eau, qui se réduit en dioxygène $O_2$
+- L'étain solide $Sn$, qui se dissout dans la solution
+
+** Parmi les propositions suivantes, lesquelles caractérisent correctement un électrolyseur ?
++ La transformation chimique est non spontanée et nécessite un apport d'énergie électrique
++ L'oxydation se produit à l'anode et la réduction à la cathode
++ Dans la solution, les cations migrent vers la cathode et les anions vers l'anode
+- L'électrolyseur convertit de l'énergie chimique en énergie électrique, comme une pile
+- Le courant conventionnel circule de la cathode vers l'anode dans la solution
+
+#  ── RAISONNEMENT SIMPLE / APPLICATION DIRECTE ───────────────────────────────
+
+* On fait passer un courant d'intensité $I = 2{,}0$ A pendant $t = 30$ min dans un électrolyseur. La charge électrique totale ayant traversé le circuit est :
++ $Q = 3\,600$ C
+- $Q = 60$ C
+- $Q = 1\,800$ C
+- $Q = 7\,200$ C
+
+* On fait passer un courant d'intensité $I = 2{,}0$ A pendant $t = 30$ min dans un électrolyseur ($Q = 3\,600$ C). La quantité de matière d'électrons ayant circulé est (on donne $F = 96\,500$ C·mol$^{-1}$) :
++ $n(e^-) \approx 3{,}73 \times 10^{-2}$ mol
+- $n(e^-) \approx 7{,}46 \times 10^{-2}$ mol
+- $n(e^-) \approx 1{,}86 \times 10^{-2}$ mol
+- $n(e^-) \approx 3{,}73 \times 10^{-3}$ mol
+
+* Lors de l'électrolyse d'une solution de sulfate de cuivre ($Cu^{2+} + 2e^- = Cu$), $n(e^-) = 0{,}10$ mol d'électrons ont circulé dans le circuit. La quantité de cuivre déposée à la cathode est :
++ $n(Cu) = 0{,}050$ mol, car il faut 2 mol d'électrons pour déposer 1 mol de cuivre
+- $n(Cu) = 0{,}10$ mol, car la quantité de produit est toujours égale à la quantité d'électrons
+- $n(Cu) = 0{,}20$ mol, car le cuivre est divalent et il faut multiplier par son degré d'oxydation
+- $n(Cu) = 0{,}010$ mol, car la constante de Faraday impose un facteur 10
+
+** Lors de l'électrolyse d'une solution de chlorure d'étain(II) ($Sn^{2+}$ et $Cl^-$), on dispose des demi-équations : anode : $2Cl^- = Cl_{2(g)} + 2e^-$ ; cathode : $Sn^{2+} + 2e^- = Sn_{(s)}$. Quelles affirmations sont correctes ?
++ Le dichlore $Cl_2$ gazeux se dégage à l'anode
++ L'étain solide $Sn$ se dépose à la cathode
++ L'oxydation des ions chlorure se produit à l'anode
+- L'ion $Sn^{2+}$ est oxydé à la cathode
+- Les électrons traversent la solution de l'anode vers la cathode
+
+#  ── DÉMARCHE COMPLEXE ────────────────────────────────────────────────────────
+
+* On veut déposer $m = 13{,}1$ g de zinc sur une plaque d'acier par électrolyse d'une solution de sulfate de zinc ($Zn^{2+} + 2e^- = Zn$) à $I = 2{,}0$ A. On donne $M(Zn) = 65{,}5$ g·mol$^{-1}$ et $F = 96\,500$ C·mol$^{-1}$. La durée nécessaire est :
++ $t \approx 1{,}93 \times 10^4$ s $\approx 5{,}4$ h
+- $t \approx 9{,}65 \times 10^3$ s $\approx 2{,}7$ h
+- $t \approx 3{,}86 \times 10^4$ s $\approx 10{,}7$ h
+- $t \approx 4{,}83 \times 10^3$ s $\approx 1{,}3$ h
+
+* On électrolyse une solution de sulfate de cuivre pendant $t = 1{,}00$ h avec $I = 3{,}00$ A. La demi-équation à la cathode est $Cu^{2+} + 2e^- = Cu$. On donne $M(Cu) = 63{,}5$ g·mol$^{-1}$ et $F = 96\,500$ C·mol$^{-1}$. La masse de cuivre déposée est :
++ $m \approx 3{,}56$ g
+- $m \approx 7{,}12$ g
+- $m \approx 1{,}78$ g
+- $m \approx 0{,}89$ g
+
+** On réalise l'électrolyse d'une solution contenant des ions $Sn^{2+}$ ($c_1 = 0{,}50$ mol·L$^{-1}$) et $Cl^-$ ($c_2 = 1{,}00$ mol·L$^{-1}$). La réaction globale est $2Cl^- + Sn^{2+} \longrightarrow Cl_{2(g)} + Sn_{(s)}$, de constante d'équilibre $K = 10^{-51}$. Les activités de $Cl_{2(g)}$ et de $Sn_{(s)}$ sont prises égales à 1. Quelles affirmations sont correctes ?
++ Le quotient réactionnel initial vaut $Q_{r,i} = \dfrac{1}{[Sn^{2+}]_i \times [Cl^-]_i^2} = \dfrac{1}{0{,}50 \times 1{,}00^2} = 2{,}0$
++ Comme $Q_{r,i} \gg K$, le sens d'évolution spontané est le sens inverse : $Cl_{2} + Sn \rightarrow 2Cl^- + Sn^{2+}$
++ L'électrolyse force la réaction dans le sens direct en apportant de l'énergie électrique
+- Comme $Q_{r,i} \gg K$, la réaction directe est spontanée et l'électrolyse n'est pas nécessaire
+- Le quotient réactionnel initial vaut $Q_{r,i} = [Sn^{2+}]_i \times [Cl^-]_i^2 = 0{,}50$ mol$^3$·L$^{-3}$
+
+** On dépose de l'argent par électrolyse ($Ag^+ + e^- = Ag$) pendant $t = 2{,}0$ h avec $I = 1{,}5$ A. On donne $M(Ag) = 108$ g·mol$^{-1}$ et $F = 96\,500$ C·mol$^{-1}$. Quelles affirmations sont correctes ?
++ La charge totale ayant traversé le circuit est $Q = 1{,}5 \times 7\,200 = 10\,800$ C
++ La quantité d'électrons échangés vaut $n(e^-) = 10\,800 / 96\,500 \approx 0{,}112$ mol
++ La masse d'argent déposée est $m = 0{,}112 \times 108 \approx 12{,}1$ g
+- La masse d'argent déposée est $m \approx 24{,}2$ g, car il faut 2 électrons par ion argent
+- La charge totale est $Q = 1{,}5 \times 2{,}0 = 3{,}0$ C, car $t$ s'exprime en heures
+</script>
+
+<script type="application/x-qcm" id="raw-18_lunette_astronomique">
+* Pour une lunette afocale :
+
++ l'image d'un objet à l'infini est à l'infini
+- l'image d'un objet à l'infini n'existe pas
+- l'image d'un objet est toujours dans l'oeil 
+- l'image passant pas O n'est jamais déviée
+
+* On dispose d'une lunette afocale, formée de deux lentilles L1 (objectif) et L2 (oculaire)
++ $F'1=F2$
+- $F1=F'2$
+- $F1=F2$
+- $F'1=F'2$
+
+* Quel est rayon ne sera pas dévié en traversant une lentille ?
++ Celui passant pas O
+- Celui passant par F
+- Celui passant par F'
+- Celui parallèle à l'axe optique
+
+* Le grossissement G vaut:
+
++ $\alpha ' / \alpha$
+- $\alpha / \alpha '$
+- $\alpha \times \alpha '$
+- $\tan \alpha / \tan \alpha '$
+
+** Soit $f'1$ la distance focale de l'objectf et $f'2$ la distance focale de l'oculaire, on a
++ G = f'1 /f'2
+- G = f'2 /f'1
+- f'1 = f'2
++ f'1 > f'2
+- f'1 < f'2
+
+** Dans une lunette afocale, l'image intermédiaire se forme 
++ Dans le plan focal image de l'objectif
++ Dans le plan focal objet de l'oculaire
+- Dans le plan focal objet de l'objectif
+- Dans le plan focal image de l'oculaire
+- Dans l'oeil !
+
+* L'image d'un point objet situé à l'infini d'une lentille se forme
++ dans le plan focal image
+- dans le plan focal objet
+- à l'infini
+- dans l'oeil
+
+* L'image d'un point objet situé dans le plan focal d'une lentille se forme
+- dans le plan focal image
+- dans le plan focal objet
++ à l'infini
+- dans l'oeil
+
+* La vergence d'une lentille de 10 cm de distance focale vaut
++ 10 $\delta$
+- 1 mètre
+- 0,1 dioptrie
+- 1 dioptrie
+
+* Le foyer objet F et le foyer image F' d'une lentille sont
++ symétriques par rapport à O
+- FF' a pour valeur la distance focale
+- $OF = 2\times OF'$
+- $OF' = 2\times OF$
+</script>
+
+<script type="application/x-qcm" id="raw-19_photon_quantique">
+#  QCM Photon et Effet photoélectrique — Terminale Spécialité Physique-Chimie
+#  Source : 19_photon.tex — BO Terminale (programme Bac 2024)
+#  Répartition : 12 connaissances pures / 4 raisonnement simple / 4 démarche complexe
+
+#  ── CONNAISSANCES PURES ──────────────────────────────────────────────────────
+
+* Un photon est :
++ Une particule de masse nulle associée à un rayonnement électromagnétique
+- Une particule chargée dont la masse est égale à celle de l'électron
+- Un atome d'un gaz rare émettant de la lumière
+- Un quantum d'énergie mécanique
+
+* L'énergie $E$ d'un photon de fréquence $\nu$ est donnée par :
++ $E = h\nu$
+- $E = h/\nu$
+- $E = h\nu^2$
+- $E = h\lambda$
+
+* L'existence d'une fréquence seuil en dessous de laquelle aucun électron n'est émis, même pour une très grande intensité lumineuse :
++ Ne peut pas être expliquée par le modèle ondulatoire ; elle a conduit Einstein à proposer le modèle corpusculaire du photon
+- S'explique par le modèle ondulatoire classique : plus la fréquence est basse, moins l'onde transporte d'énergie
+- Montre que la lumière est exclusivement une onde électromagnétique
+- Est due à la saturation progressive du matériau par l'intensité lumineuse
+
+* La relation entre la longueur d'onde $\lambda$, la fréquence $\nu$ et la célérité de la lumière $c$ dans le vide est :
++ $\nu = \dfrac{c}{\lambda}$
+- $\nu = c \times \lambda$
+- $\nu = \dfrac{\lambda}{c}$
+- $c = \dfrac{\nu}{\lambda}$
+
+* L'effet photoélectrique est :
++ L'émission d'électrons par un matériau soumis à un rayonnement électromagnétique dont la fréquence dépasse une fréquence seuil
+- L'émission de photons par un matériau soumis à un rayonnement
+- La diffusion de la lumière par un matériau
+- La fluorescence d'un matériau soumis à des UV
+
+* Pour l'effet photoélectrique, en dessous de la fréquence seuil $\nu_s$ :
++ Aucun électron n'est émis, quelle que soit l'intensité du rayonnement
+- Des électrons sont émis si l'intensité est suffisamment grande
+- Des photons sont émis en retour par le matériau
+- L'effet dépend uniquement de l'intensité lumineuse et non de la fréquence
+
+* Le bilan énergétique de l'effet photoélectrique s'écrit :
++ $h\nu = W_{extraction} + \dfrac{1}{2}mv^2$
+- $h\nu = W_{extraction} - \dfrac{1}{2}mv^2$
+- $h\nu + W_{extraction} = \dfrac{1}{2}mv^2$
+- $\dfrac{1}{2}mv^2 = h\nu \times W_{extraction}$
+
+* Le travail d'extraction $W_{extraction}$ d'un matériau représente :
++ L'énergie minimale à apporter à un électron pour le libérer du métal
+- L'énergie cinétique maximale de l'électron émis
+- La différence entre l'énergie du photon et la fréquence seuil
+- La masse de l'électron multipliée par la célérité de la lumière
+
+* L'interprétation de l'effet photoélectrique par Einstein :
++ A permis de valider le modèle corpusculaire de la lumière (photon) et lui a valu le prix Nobel de physique
+- A été proposée avant la théorie ondulatoire de la lumière
+- A été proposée par Max Planck en 1900
+- A démontré que la lumière est exclusivement une onde
+
+** Parmi les dispositifs suivants, lesquels mettent en jeu l'absorption de photons pour produire un courant électrique ?
++ Les cellules photovoltaïques (panneaux solaires)
++ Les photodiodes dans les capteurs d'appareils photo numériques
+- Les diodes électroluminescentes (DEL) en mode émission de lumière
+- Les lampes à incandescence
+- Les résistances chauffantes
+
+* Une diode électroluminescente (DEL) émet de la lumière car :
++ Des électrons excités se désexcitent en émettant des photons dont l'énergie dépend du matériau de la DEL
+- Des photons arrivent sur la DEL et arrachent des électrons par effet photoélectrique
+- L'effet Joule chauffe un filament qui rayonne de la lumière
+- Un courant inverse traverse la jonction de la diode
+
+* Le rendement $\eta$ d'une cellule photovoltaïque est défini par :
++ $\eta = \dfrac{\mathcal{P}_{élec}}{\mathcal{P}_{rayonnement}}$
+- $\eta = \dfrac{\mathcal{P}_{rayonnement}}{\mathcal{P}_{élec}}$
+- $\eta = h\nu \times \mathcal{P}_{élec}$
+- $\eta = \dfrac{E_{photon}}{W_{extraction}}$
+
+#  ── RAISONNEMENT SIMPLE / APPLICATION DIRECTE ───────────────────────────────
+
+* Un photon violet a une longueur d'onde $\lambda = 400$ nm. On donne $c = 3,0 \times 10^8$ m·s$^{-1}$ et $h = 6,63 \times 10^{-34}$ J·s. Son énergie vaut :
++ $5,0 \times 10^{-19}$ J
+- $2,5 \times 10^{-19}$ J
+- $1,0 \times 10^{-18}$ J
+- $6,63 \times 10^{-34}$ J
+
+* Un photon d'énergie $E = 8,0 \times 10^{-19}$ J frappe une plaque métallique dont le travail d'extraction est $W_{extraction} = 4,8 \times 10^{-19}$ J. L'énergie cinétique maximale de l'électron émis est :
++ $3,2 \times 10^{-19}$ J
+- $1,28 \times 10^{-37}$ J
+- $8,0 \times 10^{-19}$ J
+- $4,8 \times 10^{-19}$ J
+
+* Une cellule photovoltaïque de surface $S = 100$ cm² reçoit un rayonnement de puissance surfacique $E_r = 1000$ W·m$^{-2}$ et produit $\mathcal{P}_{élec} = 2,0$ W. Son rendement vaut :
++ $20\%$
+- $2,0\%$
+- $50\%$
+- $0,20\%$
+
+* La fréquence seuil $\nu_s$ du fer est liée à son travail d'extraction $W_{extraction} = 4,76$ eV. On donne $1$ eV $= 1,6 \times 10^{-19}$ J et $h = 6,63 \times 10^{-34}$ J·s. $\nu_s$ vaut :
++ $1,1 \times 10^{15}$ Hz
+- $7,6 \times 10^{-19}$ Hz
+- $3,2 \times 10^{14}$ Hz
+- $4,4 \times 10^{-49}$ Hz
+
+#  ── DÉMARCHE COMPLEXE ────────────────────────────────────────────────────────
+
+* Un photon d'énergie $E = 5,03$ eV frappe une plaque de fer ($W_{extraction} = 4,76$ eV). On donne $1$ eV $= 1,6 \times 10^{-19}$ J et $m_e = 9,1 \times 10^{-31}$ kg. La vitesse maximale de l'électron arraché vaut environ :
++ $3,1 \times 10^5$ m·s$^{-1}$
+- $1,0 \times 10^{14}$ m·s$^{-1}$
+- $9,5 \times 10^{10}$ m·s$^{-1}$
+- $9,5 \times 10^5$ m·s$^{-1}$
+
+** On compare un photon rouge ($\lambda = 800$ nm) et un photon violet ($\lambda = 400$ nm). On donne $h = 6,63 \times 10^{-34}$ J·s et $c = 3,0 \times 10^8$ m·s$^{-1}$. Quelles affirmations sont correctes ?
++ Le photon violet est deux fois plus énergétique que le photon rouge : $E_{violet} = 2\,E_{rouge}$
++ La fréquence du photon violet est deux fois celle du photon rouge
++ Un matériau avec $W_{extraction} = 3,0 \times 10^{-19}$ J n'émet pas d'électron sous lumière rouge mais peut le faire sous lumière violette
+- Le photon rouge est plus énergétique car sa longueur d'onde est plus grande
+- Les deux photons ont la même énergie car ils se propagent à la même célérité $c$
+
+** L'explication de l'effet photoélectrique par Einstein implique que :
++ L'énergie lumineuse est échangée par paquets discrets (photons) et non de manière continue
++ Doubler l'intensité lumineuse double le nombre d'électrons émis mais ne modifie pas l'énergie cinétique individuelle de chaque électron
++ En dessous de la fréquence seuil, aucun électron n'est émis quelle que soit l'intensité
+- Augmenter l'intensité lumineuse augmente l'énergie cinétique de chaque électron émis
+- La théorie ondulatoire classique explique correctement l'existence d'une fréquence seuil
+
+* Un panneau solaire reçoit une puissance totale $\mathcal{P}_{rayon} = 500$ W et a un rendement $\eta = 18\%$. Il alimente un appareil sous $U = 24$ V. L'intensité maximale disponible vaut :
++ $3,8$ A
+- $20,8$ A
+- $0,36$ A
+- $90$ A
+</script>
+
+<script type="application/x-qcm" id="raw-20_synthese_organique">
+#  QCM Synthèse organique (partie 1) — Terminale Spécialité Physique-Chimie
+#  Source : 20_synthese_organique.tex — BO Terminale (programme Bac 2024)
+#  Répartition : 12 connaissances pures / 4 raisonnement simple / 4 démarche complexe
+
+#  ── CONNAISSANCES PURES ──────────────────────────────────────────────────────
+
+* Le montage de Dean-Stark, utilisé lors de la synthèse d'un ester, permet de :
++ Éliminer l'eau produite au fur et à mesure de sa formation afin de déplacer l'équilibre vers la formation de l'ester
+- Chauffer le milieu réactionnel en évitant la perte des réactifs volatils par condensation des vapeurs
+- Mesurer en continu le volume d'ester produit pendant la réaction
+- Séparer l'ester de l'acide de départ grâce à leur différence de densité
+
+** Pour augmenter le rendement d'une synthèse organique dont la réaction est un équilibre, on peut :
++ Introduire l'un des réactifs en excès par rapport à la stœchiométrie
++ Éliminer un produit de la réaction au fur et à mesure de sa formation
+- Chauffer à reflux (cela augmente la vitesse de réaction mais pas le rendement)
+- Utiliser un catalyseur (cela augmente la vitesse de réaction mais pas le rendement)
+- Diminuer la concentration initiale des réactifs
+
+* Une réaction d'addition en chimie organique est caractérisée par le fait qu'une molécule possédant une double liaison :
++ S'associe avec une autre entité ; la double liaison disparaît dans le produit formé
+- Se fragmente en deux entités dont l'une possède une nouvelle double liaison
+- Subit le remplacement d'un atome par un autre sans modification du squelette carboné
+- Échange un proton avec une autre molécule en solution
+
+* Dans une réaction d'élimination :
++ La molécule se scinde en deux entités, dont l'une présente une double liaison nouvellement formée
+- Une molécule s'ajoute à une double liaison existante
+- Un groupe fonctionnel est remplacé par un autre sans formation de double liaison
+- Deux molécules échangent des électrons par oxydoréduction
+
+* Dans une réaction de substitution :
++ Un atome ou un groupe d'atomes d'une molécule est remplacé par un autre atome ou groupe d'atomes
+- Une double liaison s'ouvre pour accueillir l'ajout d'une entité
+- La molécule se fragmente en formant une nouvelle insaturation
+- La molécule est oxydée avec perte d'un atome d'hydrogène
+
+* Dans une stratégie de synthèse multi-étapes, l'étape de protection d'un groupe fonctionnel consiste à :
++ Bloquer temporairement la réactivité d'un groupe que l'on souhaite conserver intact lors d'une étape ultérieure
+- Activer un groupe fonctionnel pour augmenter sa réactivité vis-à-vis du réactif suivant
+- Augmenter le rendement en éliminant les sous-produits de réaction
+- Modifier définitivement la nature du groupe fonctionnel pour faciliter la purification
+
+* L'étape de déprotection, en fin de synthèse multi-étapes, consiste à :
++ Régénérer le groupe fonctionnel qui avait été temporairement modifié lors de l'étape de protection
+- Protéger un second groupe fonctionnel différent
+- Purifier le produit final par distillation ou recristallisation
+- Éliminer définitivement le groupe protecteur en conservant sa transformation
+
+** Les principes de la chimie verte préconisent, lors d'une synthèse organique, de :
++ Réduire la quantité de déchets en développant des réactions à haut rendement atomique
++ Utiliser des solvants moins toxiques ou biodégradables en remplacement de solvants dangereux
+- Maximiser le nombre d'étapes de synthèse pour améliorer la pureté du produit
+- Travailler systématiquement à haute température pour accélérer toutes les réactions
+
+* La réaction d'estérification (alcool + acide carboxylique $\rightleftharpoons$ ester + eau) est :
++ Lente, limitée par un équilibre (constante $K = 4,0$), athermique ; le rendement est environ 67% en conditions stœchiométriques 1:1
+- Rapide, totale et fortement exothermique
+- Lente, totale et endothermique
+- Rapide, limitée par un équilibre et ne produit pas d'eau comme sous-produit
+
+* Le réactif limitant dans une synthèse chimique est :
++ Celui dont la quantité de matière est entièrement consommée en premier, fixant ainsi l'avancement maximal $x_{max}$
+- Celui dont la concentration molaire initiale est la plus faible
+- Celui dont la masse molaire est la plus grande parmi les réactifs
+- Celui introduit en excès pour déplacer l'équilibre vers les produits
+
+* La séquence correcte d'une synthèse organique utilisant la stratégie de protection est :
++ Protection du groupe à préserver → réaction sur le groupe ciblé → déprotection pour régénérer le groupe initial
+- Réaction sur le groupe ciblé → protection → déprotection
+- Protection → déprotection → réaction sur le groupe ciblé
+- Déprotection → réaction → protection
+
+* La réaction entre le bromoéthane ($CH_3CH_2Br$) et l'ion hydroxyde ($OH^-$) donnant l'éthanol ($CH_3CH_2OH$) et l'ion bromure ($Br^-$) est :
++ Une substitution : le groupe $Br$ est remplacé par le groupe $OH$ sans modification du squelette carboné
+- Une addition : $OH^-$ s'ajoute à une double liaison $C=C$
+- Une élimination : formation d'une double liaison $C=C$ dans le produit
+- Une réaction acido-basique : échange d'un proton $H^+$ entre les réactifs
+
+#  ── RAISONNEMENT SIMPLE / APPLICATION DIRECTE ───────────────────────────────
+
+* On synthétise un ester de masse molaire $M = 130$ g·mol$^{-1}$. Le réactif limitant est l'acide éthanoïque ($n_{max} = 0,100$ mol). On obtient $m_f = 7,8$ g d'ester. Le rendement vaut :
++ $60\%$
+- $78\%$
+- $46\%$
+- $30\%$
+
+* On chauffe du 2-bromopropane en présence d'une base forte concentrée. Le produit est le propène ($CH_3{-}CH=CH_2$). Le type de réaction est :
++ Une élimination : une double liaison $C=C$ s'est formée avec départ simultané d'un halogène et d'un proton
+- Une substitution : l'atome de brome est remplacé par un groupe hydroxyle
+- Une addition : une entité s'est ajoutée sur la double liaison du propène
+- Une oxydoréduction : échange d'électrons entre les réactifs
+
+* Lors d'une synthèse avec montage Dean-Stark, on recueille 2,2 mL d'eau dans la colonne ($\rho_{eau} = 1,0$ g·mL$^{-1}$, $M_{eau} = 18$ g·mol$^{-1}$). La quantité d'eau extraite vaut :
++ $0,122$ mol
+- $0,061$ mol
+- $39,6$ mol
+- $1,2 \times 10^{-4}$ mol
+
+* Pour la réaction d'estérification en conditions stœchiométriques ($K = 4,0$ ; 1,0 mol d'alcool et 1,0 mol d'acide), le rendement est 67%. On introduit maintenant 1,0 mol d'alcool et 5,0 mol d'acide ; le rendement passe à 94%. Cette augmentation s'explique par :
++ L'excès d'acide déplace l'équilibre vers la formation de l'ester en augmentant la probabilité de chocs efficaces entre réactifs
+- L'excès d'acide joue le rôle de catalyseur et abaisse l'énergie d'activation
+- La constante d'équilibre $K$ a augmenté car la concentration d'acide est plus grande
+- L'excès d'acide élimine l'eau formée de la même façon qu'un Dean-Stark
+
+#  ── DÉMARCHE COMPLEXE ────────────────────────────────────────────────────────
+
+* On prépare de l'éthanoate d'isoamyle par estérification de l'acide éthanoïque ($n_{acide} = 0,149$ mol, réactif limitant) par le 3-méthylbutan-1-ol. Le Dean-Stark extrait 2,2 mL d'eau ($\rho = 1,0$ g·mL$^{-1}$, $M_{eau} = 18$ g·mol$^{-1}$). Le rendement vaut :
++ $82\%$ : $n_{eau} = 2,2/18 = 0,122$ mol $= n_{ester}$, donc $\eta = \dfrac{0,122}{0,149} \approx 82\%$
+- $67\%$ : rendement attendu sans Dean-Stark en conditions stœchiométriques ($K = 4,0$)
+- $75\%$ : rendement obtenu avec un léger excès de réactif sans Dean-Stark
+- $100\%$ : le Dean-Stark ne garantit pas un rendement total
+
+** Dans une synthèse multi-étapes, une molécule possède à la fois un groupe cétone et un groupe ester. On souhaite réduire uniquement le groupe ester en alcool à l'aide d'un réducteur non sélectif. Quelles affirmations décrivent la stratégie correcte ?
++ Il faut d'abord protéger le groupe cétone, puis réduire l'ester, puis déprotéger le groupe cétone
++ Sans étape de protection, le réducteur non sélectif agirait sur les deux groupes fonctionnels
++ L'étape de déprotection finale régénère le groupe cétone d'origine sans modifier le groupe alcool nouvellement formé
+- Il suffit d'utiliser le réducteur directement car l'ester est toujours plus réactif que la cétone
+- La protection bloque définitivement la réactivité du groupe cétone
+
+* On réalise la synthèse de l'aspirine. Le salicylate de méthyle possède une fonction alcool (–OH). La réaction avec l'anhydride éthanoïque transforme le groupe –OH en ester –OOCCH$_3$. Il s'agit d'une :
++ Substitution : le groupe –H de la fonction alcool est remplacé par le groupe acyle –COCH$_3$
+- Addition : l'anhydride s'ajoute à une double liaison de la molécule
+- Élimination : la réaction forme une double liaison $C=C$ au niveau de la fonction alcool
+- Réaction acido-basique : un proton est échangé entre l'alcool et l'anhydride
+
+** On compare trois protocoles pour synthétiser un ester par estérification ($K = 4,0$). A : stœchiométrie 1:1, 25°C, sans catalyseur (rendement 67%). B : acide en excès 5:1, 25°C, sans catalyseur (rendement 94%). C : stœchiométrie 1:1 avec Dean-Stark et chauffage (rendement 82%). Quelles affirmations sont correctes ?
++ Dans les protocoles B et C, $K$ n'a pas changé ; c'est le déplacement de l'équilibre (excès de réactif ou élimination d'un produit) qui augmente le rendement
++ Le protocole B donne le meilleur rendement car l'excès d'acide déplace davantage l'équilibre vers les produits
++ Le rendement de 67% du protocole A correspond bien au taux d'avancement théorique pour $K = 4,0$ en conditions stœchiométriques
+- Dans le protocole C, le rendement supérieur à A est dû à l'augmentation de $K$ provoquée par le chauffage
+- Utiliser un catalyseur augmenterait à la fois la vitesse et le rendement de la réaction
+</script>
+
+<script type="application/x-qcm" id="raw-21_chimie_organique_suite">
+#  QCM Synthèse organique (partie 2) — Terminale Spécialité Physique-Chimie
+#  Source : 21_orga_suite.tex — BO Terminale (programme Bac 2024)
+#  Répartition : 12 connaissances pures / 4 raisonnement simple / 4 démarche complexe
+
+#  ── CONNAISSANCES PURES ──────────────────────────────────────────────────────
+
+* Deux espèces chimiques sont des isomères de constitution si :
++ Elles ont la même formule brute mais des formules développées (ou semi-développées) différentes
+- Elles ont la même formule développée mais des formules brutes différentes
+- Elles ont la même température d'ébullition car leur masse molaire est identique
+- Elles ont les mêmes propriétés chimiques car elles contiennent les mêmes types d'atomes
+
+* Des isomères de constitution présentent généralement :
++ Des propriétés physiques et chimiques différentes car leurs structures moléculaires sont différentes
+- Des propriétés physiques identiques car leur formule brute est identique
+- Exactement les mêmes températures d'ébullition
+- Les mêmes réactivités chimiques puisqu'ils contiennent les mêmes atomes
+
+* Un polymère est :
++ Une macromolécule constituée d'un enchaînement répété d'un même motif appelé monomère, reliés par des liaisons covalentes
+- Une molécule de faible masse molaire (inférieure à 100 g·mol$^{-1}$) possédant plusieurs groupes fonctionnels
+- Un mélange de plusieurs monomères différents non liés chimiquement entre eux
+- Une molécule possédant obligatoirement un groupe fonctionnel ester
+
+* Le monomère du polystyrène est :
++ Le styrène ($C_8H_8$)
+- L'éthylène ($C_2H_4$)
+- Le chlorure de vinyle ($C_2H_3Cl$)
+- Le propylène ($C_3H_6$)
+
+** Parmi les polymères suivants, lesquels sont d'origine naturelle ?
++ La cellulose (présente dans les fibres végétales et le papier)
++ Le cis-polyisoprène (présent dans le latex des hévéas)
+- Le polychlorure de vinyle (PVC)
+- Le polystyrène
+
+* Le PVC (polychlorure de vinyle) est un polymère :
++ D'origine synthétique, utilisé notamment dans les revêtements de sol et les canalisations
+- D'origine naturelle, extrait directement du latex des hévéas
+- D'origine naturelle, présent dans les fibres des plantes
+- D'origine synthétique, utilisé uniquement dans l'industrie pharmaceutique
+
+** Pour augmenter la vitesse de formation d'un produit lors d'une synthèse organique, on peut :
++ Chauffer le milieu réactionnel avec un montage à reflux pour éviter les pertes de réactifs volatils
++ Augmenter la concentration des réactifs en solution
++ Utiliser un catalyseur introduit en petite quantité dans le milieu réactionnel
+- Introduire un réactif en excès (technique qui augmente le rendement, pas la vitesse)
+- Éliminer un produit de la réaction (technique qui augmente le rendement, pas la vitesse)
+
+* Le rendement $\eta$ d'une synthèse chimique est défini par :
++ $\eta = \dfrac{n_f}{n_{max}}$ où $n_f$ est la quantité de produit obtenu et $n_{max}$ la quantité maximale théorique
+- $\eta = \dfrac{n_{max}}{n_f}$
+- $\eta = n_f \times n_{max}$
+- $\eta = \dfrac{n_i(\text{réactif limitant})}{n_f}$ où $n_i$ est la quantité initiale de réactif
+
+* Dans une synthèse organique, le montage à reflux permet de :
++ Chauffer le milieu réactionnel tout en condensant les vapeurs pour les faire retourner dans le ballon, évitant ainsi les pertes
+- Éliminer l'eau produite lors de la réaction pour augmenter le rendement
+- Mesurer la quantité de produit formé en temps réel grâce à la colonne graduée
+- Réduire la pression du système pour abaisser la température d'ébullition des réactifs
+
+* Un catalyseur utilisé lors d'une synthèse organique :
++ Augmente la vitesse de réaction sans modifier le rendement final ni la constante d'équilibre $K$ ; il n'est pas consommé
+- Augmente à la fois la vitesse et le rendement de la réaction
+- Est consommé au cours de la réaction et doit être régénéré en fin de synthèse
+- Modifie la valeur de la constante d'équilibre $K$ de la réaction
+
+* Un alcool est une molécule caractérisée par la présence du groupe fonctionnel :
++ –OH lié à un carbone saturé (groupe hydroxyle sur carbone $sp^3$)
+- –COOH (groupe carboxyle des acides carboxyliques)
+- –CHO (groupe aldéhyde)
+- –CO– lié à deux carbones (groupe cétone)
+
+* La famille des acides carboxyliques est caractérisée par le groupe fonctionnel :
++ –COOH (groupe carboxyle : carbonyle lié à un hydroxyle)
+- –OH lié à un carbone saturé
+- –COO– reliant deux chaînes carbonées
+- –CHO en bout de chaîne
+
+#  ── RAISONNEMENT SIMPLE / APPLICATION DIRECTE ───────────────────────────────
+
+** Parmi les espèces suivantes, lesquelles ont la formule brute $C_3H_6O_2$ et constituent donc des isomères de constitution ?
++ L'acide propanoïque ($CH_3CH_2COOH$)
++ Le méthanoate d'éthyle ($HCOOCH_2CH_3$)
++ L'éthanoate de méthyle ($CH_3COOCH_3$)
+- L'acide éthanoïque ($CH_3COOH$) dont la formule brute est $C_2H_4O_2$
+- Le propan-1-ol ($CH_3CH_2CH_2OH$) dont la formule brute est $C_3H_8O$
+
+* On mélange 1,0 mol d'éthanol et 1,0 mol d'acide éthanoïque pour synthétiser de l'éthanoate d'éthyle ($K = 4,0$). À l'état final, on obtient 0,67 mol d'ester. Le rendement vaut :
++ $67\%$
+- $50\%$
+- $33\%$
+- $94\%$
+
+* On souhaite synthétiser du propanoate d'éthyle ($M = 102$ g·mol$^{-1}$) avec un rendement de 75%. Le réactif limitant (acide propanoïque) est introduit avec $n_{max} = 0,050$ mol. La masse d'ester obtenu vaut :
++ $3,8$ g
+- $5,1$ g
+- $1,9$ g
+- $2,6$ g
+
+* On compare deux protocoles pour synthétiser un ester par estérification : (A) 25°C, stœchiométrie 1:1, sans catalyseur ; (B) 70°C à reflux, même stœchiométrie 1:1, avec catalyseur acide. Que peut-on dire du protocole B par rapport à A ?
++ La réaction est plus rapide avec B ; le rendement final est identique (même $K$, même stœchiométrie)
+- B donne à la fois une réaction plus rapide et un rendement plus élevé car le chauffage modifie $K$
+- Le rendement est plus élevé avec B car le catalyseur augmente la valeur de $K$
+- Aucune différence : température et catalyseur n'ont aucun effet sur la réaction d'estérification
+
+#  ── DÉMARCHE COMPLEXE ────────────────────────────────────────────────────────
+
+* On synthétise de l'éthanoate d'éthyle ($M = 88$ g·mol$^{-1}$) à partir de 0,100 mol d'acide éthanoïque (réactif limitant). On obtient $m_f = 5,3$ g d'ester. Le rendement vaut :
++ $60\%$ : $n_f = \dfrac{5,3}{88} = 0,060$ mol, donc $\eta = \dfrac{0,060}{0,100} = 60\%$
+- $67\%$ : rendement théorique pour $K = 4,0$ en conditions stœchiométriques 1:1
+- $88\%$ : erreur utilisant $M = 60$ g·mol$^{-1}$ (masse molaire de l'acide) à la place de 88
+- $53\%$ : erreur utilisant $M = 100$ g·mol$^{-1}$ à la place de 88
+
+* Le polyéthylène est obtenu par polymérisation de l'éthylène ($H_2C=CH_2$). La réaction de polymérisation est :
++ Une addition répétée : la double liaison $C=C$ de chaque monomère s'ouvre pour former des liaisons simples $C{-}C$ avec les unités voisines
+- Une substitution : les atomes d'hydrogène sont progressivement remplacés par des liaisons $C{-}C$
+- Une estérification : les monomères réagissent entre eux par formation d'un groupe ester
+- Une élimination : des atomes H sont éliminés pour créer des doubles liaisons entre les unités
+
+** Pour la formule brute $C_3H_6O_2$, on identifie trois isomères : l'acide propanoïque, le méthanoate d'éthyle et l'éthanoate de méthyle. Quelles affirmations sont correctes ?
++ Ils ont tous la même formule brute $C_3H_6O_2$ mais des formules développées différentes (definition de l'isomérie de constitution)
++ Leurs propriétés physiques (température d'ébullition, solubilité) sont différentes malgré la même formule brute
++ L'acide propanoïque appartient à la famille des acides carboxyliques, les deux autres à la famille des esters
+- Ces trois composés ont les mêmes propriétés chimiques car ils contiennent les mêmes atomes
+- Ce ne sont pas de vrais isomères car leurs propriétés physiques sont différentes
+
+** On étudie une réaction d'estérification ($K = 4,0$). On teste deux modifications par rapport au protocole de référence A (stœchiométrie 1:1, 25°C, sans catalyseur, rendement 67%) : (B) introduction de l'acide en excès 5:1, 25°C, sans catalyseur ; (C) protocole A avec chauffage à 70°C et catalyseur acide. Quelles affirmations sont correctes ?
++ Le protocole B augmente le rendement (environ 94%) car l'excès d'acide déplace l'équilibre vers les produits sans modifier $K$
++ Le protocole C accélère la réaction mais le rendement final reste 67% (même $K$, même stœchiométrie 1:1)
++ Pour maximiser à la fois la vitesse et le rendement, on peut combiner chauffage à reflux, catalyseur et réactif en excès
+- Dans le protocole C, le rendement augmente car le chauffage augmente la constante $K$
+- Dans le protocole B, le catalyseur acide présent dans l'excès d'acide augmente le rendement
 </script>
 
 <!-- ═══════════ APP HTML ═══════════ -->
@@ -1255,6 +2257,7 @@ _ $\overrightarrow{E}$
 
   <div id="screen-mode" class="screen">
     <div class="app-header">
+      <a href="index.html" class="portal-link">← Retour au portail</a>
       <h1> Quiz Physique-Chimie</h1>
       <p class="subtitle">Terminale Spécialité — Quiz de 10 questions</p>
     </div>
@@ -1322,22 +2325,27 @@ _ $\overrightarrow{E}$
 'use strict';
 
 const CHAPTER_NAMES = {
-  'RC': 'Circuit RC',
-  'Thermo_electrolyse': 'Thermodynamique & Électrolyse',
-  'acide_base': 'Acides et bases',
-  'cinematique': 'Cinématique',
-  'cinetique': 'Cinétique chimique',
-  'dynamique': 'Dynamique',
-  'forces_acide_base': 'Équilibres acide-base',
-  'lunette_astro': 'Lunette astronomique',
-  'meca_fluides': 'Mécanique des fluides',
-  'methodes_physiques': 'Méthodes physiques',
-  'mvt_champ': 'Mouvement dans un champ',
-  'ondes': 'Ondes',
-  'radioactivite': 'Radioactivité',
-  'remix_meca_flu_thermo_radio': 'Remix Meca Flu Thermo Radio',
-  'thermodynamique': 'Thermodynamique',
-  'titrage': 'Titrages',
+  '01_methodes_physiques': 'Méthodes physiques',
+  '02_acide_base': 'Acides et bases',
+  '03_titrages': 'Titrages',
+  '04_cinematique': 'Cinématique',
+  '05_dynamique': 'Dynamique',
+  '06_champ_uniforme': 'Mouvement dans un champ uniforme',
+  '07_energie_mecanique': 'Énergie mécanique',
+  '08_forces_acides_bases': 'Forces des acides et bases',
+  '09_ondes_diffraction': 'Ondes et diffraction',
+  '10_kepler_gravitation': 'Lois de Kepler et gravitation',
+  '11_RC': 'Circuit RC',
+  '12_cinetique_chimique': 'Cinétique chimique',
+  '13_radioactivite': 'Radioactivité',
+  '14_mecanique_fluides': 'Mécanique des fluides',
+  '15_piles_evolution_spontanee': 'Piles et évolution spontanée',
+  '16_thermodynamique': 'Thermodynamique',
+  '17_electrolyse': 'Électrolyse',
+  '18_lunette_astronomique': 'Lunette astronomique',
+  '19_photon_quantique': 'Photon et effet photoélectrique',
+  '20_synthese_organique': 'Synthèse organique (partie 1)',
+  '21_chimie_organique_suite': 'Synthèse organique (partie 2)',
 };
 
 function parseAMC(text) {
@@ -1355,8 +2363,8 @@ function parseAMC(text) {
     } else if (/^\+/.test(line) && cur) {
       const t = line.replace(/^\+\s*/, '');
       if (t && !t.includes('\\includegraphics')) cur.answers.push({ text: t, correct: true });
-    } else if (/^[-_]/.test(line) && cur) {
-      const t = line.replace(/^[-_]\s*/, '');
+    } else if (/^-/.test(line) && cur) {
+      const t = line.replace(/^-\s*/, '');
       if (t && !t.includes('\\includegraphics')) cur.answers.push({ text: t, correct: false });
     } else if (cur) {
       if (line.includes('\\includegraphics')) cur.text += '\n[📊 Figure non disponible]';
@@ -1498,7 +2506,7 @@ function startQuiz() {
 function showQuestion(idx) {
   const q = S.quiz[idx], total = S.quiz.length;
   document.getElementById('q-num').textContent = idx + 1;
-  document.getElementById('progress-bar-fill').style.width = (idx / total * 100) + '%';
+  document.getElementById('progress-bar-fill').style.width = ((idx + 1) / total * 100) + '%';
   document.getElementById('q-chapter-tag').textContent = q.chapter || '';
   const shuffled = shuffle(q.answers.map((a, i) => ({ ...a, oi: i })));
   const isMulti = q.type === 'multiple';
