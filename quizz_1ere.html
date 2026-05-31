@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Physique-Chimie – Première</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<style>
+:root {
+  --primary: #2563eb;
+  --primary-dk: #1d4ed8;
+  --secondary: #7c3aed;
+  --success: #16a34a;
+  --error: #dc2626;
+  --warn: #d97706;
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --radius: 14px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+#app { max-width: 820px; margin: 0 auto; padding: 20px 16px 48px; }
+.screen { animation: fadeUp .28s ease; }
+.hidden { display: none !important; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+/* HEADER */
+.app-header { text-align: center; padding: 40px 0 36px; }
+.app-header h1 { font-size: 2.4rem; font-weight: 900;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.app-header .subtitle { color: var(--muted); font-size: 1.05rem; margin-top: 6px; }
+.bank-info { text-align: center; color: var(--muted); font-size: .8rem; margin-top: 28px; }
+
+/* MODE CARDS */
+.mode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.mode-card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius);
+  padding: 30px 20px; text-align: center; cursor: pointer; transition: all .2s ease; }
+.mode-card:hover { border-color: var(--primary); transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(37,99,235,.14); }
+.mode-icon { font-size: 2.6rem; margin-bottom: 14px; }
+.mode-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 8px; }
+.mode-desc { font-size: .85rem; color: var(--muted); line-height: 1.55; }
+
+/* NAV */
+.nav-bar { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+.nav-bar h2 { font-size: 1.2rem; font-weight: 700; }
+.btn-back { background: none; border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px 14px; cursor: pointer; font-size: .9rem; color: var(--text); transition: background .15s; }
+.btn-back:hover { background: var(--bg); }
+
+/* CHAPTER GRID */
+.chapter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(175px, 1fr)); gap: 10px; margin-bottom: 20px; }
+.ch-item { background: var(--card); border: 2px solid var(--border); border-radius: 10px;
+  padding: 14px 16px; cursor: pointer; transition: all .15s; position: relative; }
+.ch-item:hover { border-color: var(--primary); }
+.ch-item.selected { border-color: var(--primary); background: #eff6ff; }
+.ch-item.selected::after { content: '✓'; position: absolute; top: 8px; right: 10px;
+  color: var(--primary); font-weight: 800; font-size: .9rem; }
+.ch-name { font-size: .85rem; font-weight: 600; color: var(--text); }
+.ch-count { font-size: .72rem; color: var(--muted); margin-top: 5px; }
+.selection-bar { display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 0; border-top: 1px solid var(--border); gap: 12px; }
+.selection-info { font-size: .875rem; color: var(--muted); }
+
+/* BUTTONS */
+.btn-primary { background: var(--primary); color: #fff; border: none; border-radius: 10px;
+  padding: 12px 26px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all .15s; white-space: nowrap; }
+.btn-primary:hover:not(:disabled) { background: var(--primary-dk); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: .38; cursor: not-allowed; }
+.btn-secondary { background: #fff; color: var(--primary); border: 2px solid var(--primary); border-radius: 10px;
+  padding: 12px 26px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background .15s; }
+.btn-secondary:hover { background: #eff6ff; }
+
+/* QUIZ HEADER */
+.quiz-top { margin-bottom: 22px; }
+.quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.quiz-counter { font-size: .875rem; font-weight: 700; color: var(--muted); }
+.chapter-tag { font-size: .72rem; font-weight: 700; color: var(--primary);
+  background: #dbeafe; border-radius: 999px; padding: 3px 10px; }
+.btn-quit { background: none; border: none; color: var(--muted); font-size: .8rem;
+  cursor: pointer; padding: 4px 0; transition: color .15s; flex-shrink: 0; }
+.btn-quit:hover { color: var(--text); }
+.progress-bar { height: 7px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary));
+  border-radius: 99px; transition: width .35s ease; }
+
+/* QUESTION CARD */
+.question-card { background: var(--card); border-radius: var(--radius);
+  padding: 28px; box-shadow: 0 2px 14px rgba(0,0,0,.07); margin-bottom: 18px; }
+.q-type-badge { display: inline-block; font-size: .68rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .06em; padding: 3px 9px; border-radius: 4px; margin-bottom: 14px; }
+.badge-single { background: #dbeafe; color: #1e40af; }
+.badge-multi  { background: #ede9fe; color: #5b21b6; }
+.q-text { font-size: 1.05rem; line-height: 1.75; font-weight: 500; margin-bottom: 22px; white-space: pre-wrap; }
+.answers-list { display: flex; flex-direction: column; gap: 9px; }
+.ans-item { display: flex; align-items: flex-start; gap: 12px; padding: 13px 16px;
+  border: 2px solid var(--border); border-radius: 10px; cursor: pointer;
+  transition: all .15s; user-select: none; }
+.ans-item:hover { border-color: var(--primary); background: #f8fafc; }
+.ans-item.selected { border-color: var(--primary); background: #eff6ff; }
+.ans-item input { margin-top: 3px; flex-shrink: 0; accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
+.ans-text { font-size: .95rem; line-height: 1.55; flex: 1; }
+.quiz-bottom { display: flex; justify-content: flex-end; }
+
+/* RESULTS */
+.results-title { font-size: 1.9rem; font-weight: 900; text-align: center; margin-bottom: 24px; }
+.score-block { text-align: center; margin-bottom: 36px; }
+.score-card { display: inline-flex; flex-direction: column; align-items: center;
+  background: var(--card); border-radius: 20px; padding: 30px 60px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.09); }
+.score-emoji { font-size: 2.4rem; margin-bottom: 10px; }
+.score-num { font-size: 3.8rem; font-weight: 900; line-height: 1; }
+.score-denom { font-size: 2rem; font-weight: 400; color: #94a3b8; }
+.score-pct { font-size: .95rem; color: var(--muted); margin-top: 10px; font-weight: 600; }
+.results-list { display: flex; flex-direction: column; gap: 14px; margin-bottom: 32px; }
+.res-item { background: var(--card); border-radius: var(--radius);
+  padding: 20px 22px; border-left: 5px solid var(--border); }
+.res-ok   { border-left-color: var(--success); }
+.res-fail { border-left-color: var(--error); }
+.res-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+.res-chapter { font-size: .7rem; font-weight: 700; color: var(--primary);
+  background: #dbeafe; border-radius: 999px; padding: 2px 9px; display: inline-block; margin-bottom: 8px; }
+.res-q-text { font-size: .95rem; font-weight: 600; line-height: 1.55; flex: 1; white-space: pre-wrap; }
+.res-icon { font-size: 1.3rem; flex-shrink: 0; }
+.res-answers { display: flex; flex-direction: column; gap: 5px; margin-top: 8px; }
+.res-ans { font-size: .82rem; padding: 5px 10px; border-radius: 6px;
+  display: flex; align-items: flex-start; gap: 6px; line-height: 1.45; }
+.ra-ok   { background: #f0fdf4; color: #15803d; }
+.ra-err  { background: #fef2f2; color: #dc2626; }
+.ra-miss { background: #fffbeb; color: #b45309; }
+.ra-icon { flex-shrink: 0; font-weight: 700; }
+.results-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-portal { position: fixed; top: 14px; left: 14px; z-index: 100;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #fff; border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 7px 13px; font-size: .82rem; font-weight: 600; color: var(--text);
+  text-decoration: none; font-family: 'Segoe UI', system-ui, sans-serif;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08); transition: box-shadow .15s, border-color .15s; }
+.btn-portal:hover { border-color: var(--primary); box-shadow: 0 4px 14px rgba(99,102,241,.18); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ RAW QCM DATA (généré automatiquement) ═══════════ -->
+<script type="application/x-qcm" id="raw-01_mole_concentration">
+#  QCM Mole et concentrations — Physique-Chimie Première Spécialité
+#  Source : chapitre1_mole.tex — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Quantité de matière et nombre d'Avogadro
+
+* La quantité de matière s'exprime en :
++ mol
+- g
+- g/mol
+- L
+
+* Le nombre d'Avogadro $\mathcal{N}_A$ vaut :
++ $6,02 \times 10^{23}$ mol$^{-1}$
+- $6,02 \times 10^{-23}$ mol$^{-1}$
+- $6,02 \times 10^{23}$ mol
+- $1,38 \times 10^{-23}$ mol$^{-1}$
+
+* La relation entre la quantité de matière $n$, le nombre de particules $N$ et le nombre d'Avogadro $\mathcal{N}_A$ est :
++ $n = \dfrac{N}{\mathcal{N}_A}$
+- $n = N \times \mathcal{N}_A$
+- $n = \dfrac{\mathcal{N}_A}{N}$
+- $n = N + \mathcal{N}_A$
+
+* La masse molaire $M$ d'une espèce chimique s'exprime en :
++ g/mol
+- mol/g
+- g/L
+- mol/L
+
+* La masse $m$ d'un échantillon contenant $n$ mol d'une espèce de masse molaire $M$ vaut :
++ $m = n \times M$
+- $m = \dfrac{n}{M}$
+- $m = \dfrac{M}{n}$
+- $m = n + M$
+
+* Le volume molaire $V_m$ d'un gaz à 25°C vaut environ :
++ 24,0 L/mol pour tous les gaz
+- 22,4 L/mol pour tous les gaz
+- 24,0 L/mol uniquement pour le dioxygène
+- une valeur qui dépend de la nature du gaz
+
+* La concentration molaire $c$ d'une solution de volume $V$ contenant une quantité de matière $n$ vaut :
++ $c = \dfrac{n}{V}$
+- $c = n \times V$
+- $c = \dfrac{V}{n}$
+- $c = \dfrac{m}{V}$
+
+* La concentration massique (ou titre massique) $t$ d'une solution s'exprime en :
++ g/L
+- mol/L
+- g/mol
+- mol/g
+
+* Pour réaliser une dilution, le matériel indispensable est :
++ une pipette jaugée et une fiole jaugée
+- une éprouvette graduée et un bécher
+- une burette et un erlenmeyer
+- une balance et un entonnoir
+
+# Raisonnement simple
+
+* On dissout 6,0 mol de chlorure de sodium dans de l'eau pour obtenir 3,0 L de solution. La concentration molaire de la solution vaut :
++ 2,0 mol/L
+- 18 mol/L
+- 0,5 mol/L
+- 3,0 mol/L
+
+* On prélève 20,0 mL d'une solution de glucose à 5,0 mol/L que l'on verse dans une fiole jaugée de 100 mL complétée avec de l'eau distillée. La concentration de la solution obtenue est :
++ 1,0 mol/L
+- 2,5 mol/L
+- 0,5 mol/L
+- 25 mol/L
+
+* La masse molaire du dioxyde de carbone CO$_2$ vaut ($M$(C) = 12 g/mol ; $M$(O) = 16 g/mol) :
++ 44 g/mol
+- 28 g/mol
+- 32 g/mol
+- 56 g/mol
+
+# Démarche complexe
+
+* On dispose de 0,50 L d'une solution de saccharose ($M$ = 342 g/mol) de concentration molaire $c = 0,10$ mol/L. La masse de saccharose dissout dans cette solution vaut :
++ 17 g
+- 34 g
+- 0,17 g
+- 1,7 g
+
+* Un gaz occupe un volume $V_1 = 4,0$ L à la pression $P_1$. On comprime ce gaz à température constante jusqu'à ce que sa pression double. La quantité de matière de gaz dans le volume final $V_2$ est :
++ la même que dans $V_1$ — la quantité de matière ne change pas lors d'une compression
+- divisée par 2
+- multipliée par 2
+- impossible à déterminer
+
+** Quelles affirmations sur la dilution sont correctes ?
++ La quantité de matière de soluté est conservée lors d'une dilution : $c_1 V_1 = c_2 V_2$
++ Le facteur de dilution $F = c_1/c_2$ est toujours supérieur ou égal à 1
+- La concentration de la solution fille est toujours supérieure à celle de la solution mère
+- On peut réaliser une dilution en ajoutant du soluté à la solution mère
+</script>
+
+<script type="application/x-qcm" id="raw-02_absorbance_beer_lambert">
+#  QCM Absorbance et loi de Beer-Lambert — Physique-Chimie Première Spécialité
+#  Source : chapitre2_absorbance.tex — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Couleur et spectre d'absorption
+
+* Un spectrophotomètre mesure :
++ l'absorbance d'une solution colorée
+- la masse volumique d'un liquide
+- la concentration massique directement
+- la température d'ébullition d'une solution
+
+* La longueur d'onde $\lambda_{max}$ correspond à :
++ la radiation la plus absorbée par la solution
+- la radiation la plus transmise par la solution
+- la radiation de plus haute énergie visible
+- la couleur émise par la solution
+
+* La couleur d'une solution est :
++ la couleur complémentaire de la lumière la plus absorbée
+- identique à la couleur de la lumière la plus absorbée
+- toujours du même domaine spectral que $\lambda_{max}$
+- indépendante de la concentration de la solution
+
+* Pour réaliser une mesure d'absorbance, la longueur d'onde de travail choisie est :
++ $\lambda_{max}$, la longueur d'onde d'absorbance maximale
+- une longueur d'onde quelconque du spectre visible
+- toujours 550 nm quelle que soit la solution
+- la longueur d'onde de la couleur complémentaire
+
+* La loi de Beer-Lambert relie l'absorbance $A$ et la concentration molaire $C$ d'une solution par :
++ $A = k \times C$ (relation de proportionnalité)
+- $A = k + C$
+- $A = \dfrac{k}{C}$
+- $A = k \times C^2$
+
+** Quelles conditions doivent être vérifiées pour que la loi de Beer-Lambert soit valide ?
++ La solution doit être assez diluée (concentration généralement inférieure à $10^{-2}$ mol/L)
++ La mesure doit être effectuée à la longueur d'onde $\lambda_{max}$
+- La solution peut être de n'importe quelle couleur, y compris incolore
+- La concentration peut être quelconque, sans limite supérieure
+
+* Pour établir une droite d'étalonnage, on prépare :
++ plusieurs solutions de concentrations connues, dites solutions étalons
+- une seule solution de concentration inconnue
+- des solutions de solvant pur
+- des solutions de concentrations toutes identiques
+
+* Lors d'un dosage par étalonnage, on mesure l'absorbance d'une solution inconnue, puis on :
++ lit sa concentration sur la droite d'étalonnage
+- calcule directement sa concentration à partir de $\lambda_{max}$
+- compare sa couleur à celle d'un indicateur coloré
+- dilue la solution jusqu'à absorbance nulle
+
+* La valeur de la constante $k$ dans la loi de Beer-Lambert dépend :
++ de la nature du soluté coloré et de la longueur d'onde de travail
+- uniquement du volume de la solution
+- de la température de la solution uniquement
+- de la couleur du solvant
+
+# Raisonnement simple
+
+* Une solution de permanganate de potassium absorbe principalement dans le vert ($\lambda_{max} \approx 540$ nm). Sa couleur est :
++ violette (couleur complémentaire du vert)
+- verte
+- bleue
+- rouge
+
+* Pour une solution de sulfate de cuivre, la droite d'étalonnage passe par les points (0 ; 0) et (0,10 mol/L ; 0,50). Une solution inconnue présente une absorbance de 0,30. Sa concentration est :
++ 0,060 mol/L
+- 0,15 mol/L
+- 0,30 mol/L
+- 0,060 g/L
+
+* En doublant la concentration d'une solution colorée (en restant dans le domaine de validité de Beer-Lambert), l'absorbance :
++ est multipliée par 2
+- reste inchangée
+- est divisée par 2
+- est multipliée par 4
+
+# Démarche complexe
+
+* On réalise un dosage par étalonnage d'une solution de bleu de méthylène. La droite d'étalonnage donne $A = 1200 \times C$ (avec $C$ en mol/L). La solution inconnue a une absorbance $A = 0,48$. La concentration de la solution inconnue est :
++ $4,0 \times 10^{-4}$ mol/L
+- $4,8 \times 10^{-4}$ mol/L
+- $5,76 \times 10^{-1}$ mol/L
+- $4,0 \times 10^{4}$ mol/L
+
+** Parmi les sources d'erreur possibles lors d'un dosage par étalonnage, lesquelles sont correctement identifiées ?
++ Mesurer à une longueur d'onde différente de $\lambda_{max}$ fausse le résultat car la loi de Beer-Lambert n'est plus vérifiée
++ Une solution trop concentrée sort du domaine de linéarité et conduit à une concentration sous-estimée
+- Une solution diluée donne toujours une absorbance nulle, ce qui empêche tout dosage
+- La taille de la cuve n'a aucune influence sur la mesure d'absorbance
+
+* On dispose d'une solution mère de colorant à $c_1 = 5,0 \times 10^{-3}$ mol/L. On réalise une dilution au 1/10 pour obtenir une solution fille. On mesure l'absorbance de la solution fille : $A = 0,60$. La valeur de la constante $k$ dans la loi de Beer-Lambert est :
++ $k = 1200$ L/mol
+- $k = 120$ L/mol
+- $k = 3,0$ L/mol
+- $k = 3,0 \times 10^{-3}$ L/mol
+</script>
+
+<script type="application/x-qcm" id="raw-03_oxydoreduction">
+#  QCM Oxydoréduction — Physique-Chimie Première Spécialité
+#  Source : chapitre4_oxydoreduction.tex — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Définitions et couples
+
+* Un oxydant est une espèce chimique qui :
++ gagne des électrons lors d'une réaction
+- perd des électrons lors d'une réaction
+- donne des protons à une autre espèce
+- libère de l'énergie thermique
+
+* Un réducteur est une espèce chimique qui :
++ perd des électrons lors d'une réaction
+- gagne des électrons lors d'une réaction
+- accepte des protons d'une autre espèce
+- absorbe de la lumière
+
+* Dans un couple oxydant/réducteur noté Ox/Red, la demi-équation électronique s'écrit :
++ $\text{Ox} + n\,e^- = \text{Red}$
+- $\text{Red} + n\,e^- = \text{Ox}$
+- $\text{Ox} = \text{Red} + n\,e^-$
+- $\text{Ox} + \text{Red} = n\,e^-$
+
+* Dans le couple $Cu^{2+}/Cu$, l'espèce $Cu^{2+}$ est :
++ l'oxydant
+- le réducteur
+- ni oxydant ni réducteur
+- un catalyseur
+
+* Lors d'une réaction d'oxydoréduction, le nombre total d'électrons échangés est :
++ le même pour les deux demi-équations (conservation des électrons)
+- différent pour chaque demi-équation
+- toujours égal à 2
+- nul car les électrons ne peuvent pas exister libres en solution
+
+** Pour écrire une demi-équation électronique, quelles étapes sont correctes ?
++ Équilibrer l'oxygène avec des molécules d'eau $H_2O$
++ Équilibrer l'hydrogène avec des ions $H^+$
+- Équilibrer directement les charges sans tenir compte des atomes
+- Placer les électrons du côté des produits pour tous les couples
+
+* Dans la réaction entre le cuivre et les ions argent, l'espèce qui est oxydée est :
++ le cuivre Cu (il perd des électrons)
+- l'ion argent $Ag^+$ (il perd des électrons)
+- l'ion cuivre $Cu^{2+}$ (il gagne des électrons)
+- l'atome d'argent Ag (il gagne des électrons)
+
+* L'oxydant réagit avec le réducteur du couple :
++ dont le réducteur est le plus fort (réaction spontanée)
+- n'importe quel couple, sans condition
+- uniquement lorsque les deux couples ont le même nombre d'électrons échangés
+- uniquement en milieu acide
+
+* Dans la réaction $Cu + 2\,Ag^+ \longrightarrow Cu^{2+} + 2\,Ag$, le nombre d'électrons échangés est :
++ 2
+- 1
+- 3
+- 4
+
+# Raisonnement simple
+
+* Écrire la demi-équation du couple $H_3O^+/H_2$ sachant que $2\,H_3O^+ + 2\,e^- = H_2 + 2\,H_2O$. L'espèce $H_3O^+$ joue le rôle de :
++ oxydant (il reçoit des électrons)
+- réducteur (il perd des électrons)
+- solvant (il n'est pas modifié)
+- catalyseur (il n'apparaît pas dans le bilan)
+
+* Pour équilibrer la réaction entre $MnO_4^-$ et $Fe^{2+}$, sachant que $MnO_4^-$ échange 5 électrons et $Fe^{2+}$ en échange 1, le coefficient devant $Fe^{2+}$ dans l'équation bilan est :
++ 5
+- 1
+- 2
+- 10
+
+* On plonge un fil de zinc dans une solution de sulfate de cuivre CuSO$_4$. On observe un dépôt de cuivre sur le zinc. Le réducteur dans cette réaction est :
++ le zinc Zn
+- le cuivre $Cu^{2+}$
+- l'ion sulfate $SO_4^{2-}$
+- l'eau
+
+# Démarche complexe
+
+* On donne les couples : $I_2/I^-$ et $S_4O_6^{2-}/S_2O_3^{2-}$. La demi-équation de $I_2/I^-$ est $I_2 + 2\,e^- = 2\,I^-$ et celle de $S_4O_6^{2-}/S_2O_3^{2-}$ est $S_4O_6^{2-} + 2\,e^- = 2\,S_2O_3^{2-}$. Dans la réaction entre $I_2$ et $S_2O_3^{2-}$, l'équation bilan est :
++ $I_2 + 2\,S_2O_3^{2-} \longrightarrow 2\,I^- + S_4O_6^{2-}$
+- $I_2 + S_2O_3^{2-} \longrightarrow 2\,I^- + S_4O_6^{2-}$
+- $2\,I^- + S_4O_6^{2-} \longrightarrow I_2 + 2\,S_2O_3^{2-}$
+- $I_2 + 2\,S_4O_6^{2-} \longrightarrow 2\,I^- + S_2O_3^{2-}$
+
+** Dans la réaction entre $MnO_4^-$ et $Fe^{2+}$ en milieu acide, quelles affirmations sont correctes ?
++ $MnO_4^-$ est l'oxydant : il capte 5 électrons pour donner $Mn^{2+}$
++ 5 ions $Fe^{2+}$ sont oxydés pour chaque ion $MnO_4^-$ réduit
+- $Fe^{2+}$ est l'oxydant car il cède son électron à $MnO_4^-$
+- La réaction n'a pas lieu car les deux espèces ont des charges de même signe
+
+* On fait réagir 10 mL d'une solution de $KMnO_4$ à $0,020$ mol/L avec une solution de $FeSO_4$. La demi-équation de $MnO_4^-/Mn^{2+}$ échange 5 électrons, celle de $Fe^{3+}/Fe^{2+}$ en échange 1. À l'équivalence, la quantité de matière de $Fe^{2+}$ consommée est :
++ $1,0 \times 10^{-3}$ mol
+- $2,0 \times 10^{-4}$ mol
+- $4,0 \times 10^{-3}$ mol
+- $2,0 \times 10^{-3}$ mol
+</script>
+
+<script type="application/x-qcm" id="raw-04_avancement_titrage">
+#  QCM Tableau d'avancement et titrage — Physique-Chimie Première Spécialité
+#  Source : chapitre5_tableau_avancement.tex — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Tableau d'avancement
+
+* L'avancement $x$ d'une réaction chimique s'exprime en :
++ mol
+- mol/L
+- g
+- sans unité
+
+* Le réactif limitant est :
++ le réactif entièrement consommé en premier, qui provoque l'arrêt de la réaction
+- le réactif en plus grande quantité au départ
+- le réactif qui produit le plus de chaleur
+- le produit formé en plus grande quantité
+
+* L'avancement maximal $x_{max}$ correspond à :
++ la valeur maximale que peut atteindre l'avancement si la réaction est totale
+- la valeur de l'avancement à l'état initial
+- la quantité de matière totale des réactifs
+- la somme des coefficients stœchiométriques
+
+* Pour une réaction $aA + bB \longrightarrow cC$, le mélange initial est stœchiométrique lorsque :
++ $\dfrac{n_0(A)}{a} = \dfrac{n_0(B)}{b}$
+- $n_0(A) = n_0(B)$
+- $n_0(A) \times a = n_0(B) \times b$
+- $n_0(A) + n_0(B) = a + b$
+
+* Lorsque la réaction est totale, la valeur de l'avancement final $x_f$ est :
++ égale à $x_{max}$
+- inférieure à $x_{max}$
+- supérieure à $x_{max}$
+- nulle
+
+* Pour une réaction non totale (équilibre chimique), à l'état final :
++ aucun réactif n'a été entièrement consommé et $x_f < x_{max}$
+- les réactifs sont entièrement consommés
+- l'avancement vaut $x_{max}$
+- la réaction se poursuit indéfiniment
+
+* Dans un titrage colorimétrique direct, l'équivalence est repérée par :
++ un changement de couleur de la solution due au changement de réactif limitant
+- la fin de l'ajout de solution titrante
+- l'apparition d'un précipité blanc
+- la valeur maximale de l'absorbance
+
+* À l'équivalence d'un titrage, les réactifs sont introduits :
++ en proportions stœchiométriques (ni l'un ni l'autre n'est en excès)
+- avec le titré en excès
+- avec le titrant en excès
+- dans un rapport quelconque selon le titrage
+
+** Quelles affirmations sur le titrage sont correctes ?
++ Le titrant est la solution de concentration connue que l'on ajoute avec la burette
++ L'équivalence correspond au changement de réactif limitant
+- Le volume équivalent est la quantité de matière de titrant ajouté
+- On peut utiliser n'importe quelle réaction chimique pour un titrage, même lente
+
+# Raisonnement simple
+
+* Pour la réaction $CH_4 + 2\,O_2 \longrightarrow CO_2 + 2\,H_2O$, on part de 3 mol de $CH_4$ et 3 mol de $O_2$. Quelle espèce est le réactif limitant ?
++ Le dioxygène $O_2$ (il faudrait 6 mol de $O_2$ pour 3 mol de $CH_4$)
+- Le méthane $CH_4$ (il est en plus petite quantité)
+- Les deux réactifs sont limitants simultanément
+- Aucun, le mélange est stœchiométrique
+
+* Pour la réaction $A + 2B \longrightarrow C$, on part de $n_0(A) = 2$ mol et $n_0(B) = 3$ mol. L'avancement maximal est :
++ $x_{max} = 1,5$ mol (limité par B)
+- $x_{max} = 2$ mol
+- $x_{max} = 3$ mol
+- $x_{max} = 1$ mol
+
+* On titre $V_0 = 20,0$ mL d'une solution de $Fe^{2+}$ par une solution de $KMnO_4$ à $c = 0,020$ mol/L. La réaction est $MnO_4^- + 5\,Fe^{2+} \longrightarrow \ldots$ À l'équivalence, $V_E = 10,0$ mL de titrant ont été versés. La concentration en $Fe^{2+}$ est :
++ $5,0 \times 10^{-2}$ mol/L
+- $1,0 \times 10^{-2}$ mol/L
+- $2,0 \times 10^{-2}$ mol/L
+- $1,0 \times 10^{-3}$ mol/L
+
+# Démarche complexe
+
+* Pour la combustion $C_3H_8 + 5\,O_2 \longrightarrow 3\,CO_2 + 4\,H_2O$, on part de 2,0 mol de propane et 8,0 mol de $O_2$. À l'état final (réaction totale), la quantité de matière de $CO_2$ produite est :
++ 6,0 mol
+- 3,0 mol
+- 8,0 mol
+- 4,0 mol
+
+* On titre 25,0 mL d'une solution d'eau de Javel contenant des ions hypochlorite $ClO^-$ par une solution de thiosulfate à $c_T = 0,10$ mol/L. La réaction utilisée est $ClO^- + 2\,S_2O_3^{2-} \longrightarrow Cl^- + S_4O_6^{2-} + H_2O$. Le volume à l'équivalence est $V_E = 15,0$ mL. La concentration en $ClO^-$ est :
++ $3,0 \times 10^{-2}$ mol/L
+- $6,0 \times 10^{-2}$ mol/L
+- $1,5 \times 10^{-2}$ mol/L
+- $6,0 \times 10^{-3}$ mol/L
+
+** Pour une réaction non totale $A + B \rightleftharpoons C + D$ avec $n_0(A) = n_0(B) = 1$ mol et $n_0(C) = n_0(D) = 0$ mol, on mesure $x_f = 0,7$ mol. Quelles affirmations sont correctes ?
++ La réaction est non totale car $x_f < x_{max} = 1$ mol
++ À l'état final, il reste $0,3$ mol de A et $0,3$ mol de B
+- À l'état final, $n(A) = 0$ car la réaction a bien eu lieu
+- Le taux d'avancement est égal à 1 car la réaction est à l'équilibre
+</script>
+
+<script type="application/x-qcm" id="raw-05_lewis_geometrie_polarite">
+#  QCM Lewis, géométrie et polarité — Physique-Chimie Première Spécialité
+#  Source : Chapitre 4 (lycee_adulte) — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Schémas de Lewis
+
+* Dans un schéma de Lewis, un doublet liant entre deux atomes est représenté par :
++ un trait entre les deux atomes
+- deux points entre les deux atomes
+- une flèche entre les deux atomes
+- un rectangle entre les deux atomes
+
+* Dans un schéma de Lewis, un doublet non liant est représenté par :
++ deux points (ou un trait) situés à côté de l'atome concerné
+- un trait entre deux atomes
+- une lacune électronique
+- un électron célibataire
+
+* Une lacune électronique dans un schéma de Lewis correspond à :
++ une sous-couche externe vide disponible pour former une liaison
+- un excès d'électrons sur la couche externe
+- un atome qui a cédé un électron
+- un doublet liant non partagé
+
+* La molécule d'eau H$_2$O possède dans son schéma de Lewis :
++ 2 liaisons O-H et 2 doublets non liants sur l'oxygène
+- 2 liaisons O-H et 1 doublet non liant sur l'oxygène
+- 2 liaisons O-H sans doublet non liant
+- 1 liaison O-H et 3 doublets non liants sur l'oxygène
+
+# Géométrie des molécules
+
+* La géométrie d'une molécule est déterminée par :
++ le nombre de doublets liants et non liants autour de l'atome central
+- uniquement le nombre de liaisons de l'atome central
+- la masse molaire de la molécule
+- la température de la solution
+
+* Une molécule dont l'atome central est entouré de 4 doublets liants et 0 doublet non liant a une géométrie :
++ tétraédrique
+- linéaire
+- coudée
+- pyramidale triangulaire
+
+* La molécule NH$_3$ (azote entouré de 3 doublets liants et 1 doublet non liant) a une géométrie :
++ pyramidale triangulaire
+- tétraédrique
+- triangulaire plane
+- linéaire
+
+* La molécule H$_2$O (oxygène entouré de 2 doublets liants et 2 doublets non liants) a une géométrie :
++ coudée
+- linéaire
+- tétraédrique
+- triangulaire plane
+
+# Polarité
+
+* L'électronégativité d'un atome caractérise :
++ sa capacité à attirer les électrons d'une liaison vers lui
+- sa capacité à céder des électrons
+- sa masse atomique relative
+- sa position dans la colonne du tableau périodique
+
+* Une liaison covalente est dite polarisée lorsque :
++ la différence d'électronégativité entre les deux atomes est supérieure à 0,4
+- les deux atomes sont identiques
+- la liaison est une double liaison
+- la différence d'électronégativité est nulle
+
+# Raisonnement simple
+
+* La liaison C-O est polarisée ($\chi_O > \chi_C$). Dans cette liaison, l'atome qui porte la charge partielle $\delta^-$ est :
++ l'oxygène, car il est plus électronégatif
+- le carbone, car il est plus électronégatif
+- les deux portent $\delta^-$ simultanément
+- aucun des deux, la liaison C-O est apolaire
+
+* La molécule CCl$_4$ possède 4 liaisons C-Cl polarisées. Pourtant, la molécule est apolaire car :
++ les barycentres des charges $\delta^+$ et $\delta^-$ coïncident grâce à la symétrie tétraédrique
+- les liaisons C-Cl ne sont pas réellement polarisées
+- la molécule n'a pas de doublets non liants
+- les charges partielles se compensent par annihilation
+
+* La molécule CO$_2$ est linéaire avec deux liaisons C=O polarisées. Elle est :
++ apolaire, car sa symétrie linéaire rend les barycentres $G^+$ et $G^-$ confondus
+- polaire, car ses liaisons sont polarisées
+- ionique, car la différence d'électronégativité est grande
+- non polaire car le carbone est central
+
+# Démarche complexe
+
+** Parmi les affirmations suivantes sur la polarité des molécules, lesquelles sont correctes ?
++ La molécule H$_2$O est polaire car elle est coudée avec des liaisons O-H polarisées et $G^+ \neq G^-$
++ Une molécule peut avoir des liaisons polarisées et être globalement apolaire si sa géométrie est symétrique
+- Toute molécule possédant des liaisons polarisées est nécessairement polaire
+- La molécule N$_2$ est polaire car l'azote est plus électronégatif que l'hydrogène
+
+* Pour établir le schéma de Lewis de l'ion ammonium NH$_4^+$, on part de l'azote (5 électrons de valence) et de 4 hydrogènes (1 électron chacun), moins 1 electron pour la charge positive. Le schéma correct est :
++ N entouré de 4 doublets liants N-H, sans doublet non liant (géométrie tétraédrique)
+- N entouré de 3 doublets liants N-H et 1 doublet non liant
+- N entouré de 4 doublets liants et 1 doublet non liant supplémentaire
+- N entouré de 2 doublets liants et 2 doublets non liants
+
+* La molécule de méthanol CH$_3$OH possède une liaison O-H. Sa géométrie autour de l'oxygène est coudée et ses liaisons O-H et C-O sont polarisées. La molécule est :
++ polaire, car sa géométrie non symétrique autour de l'oxygène entraîne $G^+ \neq G^-$
+- apolaire, comme toutes les molécules organiques
+- ionique, car elle contient un groupement OH
+- apolaire, car les liaisons C-H compensent la polarité du groupement OH
+</script>
+
+<script type="application/x-qcm" id="raw-06_cohesion_dissolution">
+#  QCM Cohésion, dissolution et extraction — Physique-Chimie Première Spécialité
+#  Source : Chapitre 5 (lycee_adulte) — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Cohésion des solides
+
+* Un solide ionique est constitué de :
++ cations et anions organisés régulièrement, liés par des interactions électrostatiques
+- molécules organisées liées par des liaisons covalentes
+- atomes liés uniquement par des liaisons hydrogène
+- molécules apolaires en interaction de Van der Waals
+
+* Les interactions de Van der Waals sont :
++ des interactions faibles entre dipôles, plus ou moins intenses selon la polarité des entités
+- des liaisons covalentes entre deux atomes différents
+- des interactions plus fortes que les liaisons hydrogène
+- des liaisons ioniques entre cations et anions
+
+* Une liaison hydrogène se forme entre :
++ un atome H lié à un atome électronégatif et un autre atome électronégatif portant un doublet non liant
+- deux atomes d'hydrogène d'une même molécule
+- un cation et un anion de charges opposées
+- deux atomes apolaires de même nature
+
+* En termes d'intensité, le classement correct des interactions est :
++ liaisons covalentes > liaisons hydrogène > interactions de Van der Waals
+- interactions de Van der Waals > liaisons hydrogène > liaisons covalentes
+- liaisons hydrogène > liaisons covalentes > interactions de Van der Waals
+- tous ces types d'interactions ont la même intensité
+
+# Dissolution et solubilité
+
+* La dissolution d'un solide ionique dans un solvant polaire comme l'eau implique :
++ la rupture des liaisons ioniques et la solvatation des ions par les molécules d'eau
+- uniquement la dissolution des anions, les cations restant dans le solide
+- la formation de nouvelles liaisons covalentes entre les ions et l'eau
+- un dégagement de gaz systématique
+
+* Un solide ionique est soluble dans :
++ un solvant polaire (eau, éthanol) car les interactions soluté-solvant compensent les interactions ioniques
+- un solvant apolaire comme le cyclohexane
+- tout solvant, quelle que soit sa polarité
+- uniquement l'eau distillée
+
+* Un solide moléculaire polaire est soluble dans :
++ un solvant polaire (principe : les similaires dissolvent les similaires)
+- un solvant apolaire
+- tout solvant sans distinction
+- uniquement les solvants huileux
+
+* L'équation de dissolution du chlorure de sodium NaCl dans l'eau s'écrit :
++ $NaCl_{(s)} \xrightarrow{H_2O} Na^+_{(aq)} + Cl^-_{(aq)}$
+- $NaCl_{(s)} \longrightarrow Na_{(aq)} + Cl_{(aq)}$
+- $NaCl_{(s)} + H_2O \longrightarrow NaOH_{(aq)} + HCl_{(aq)}$
+- $NaCl_{(s)} \xrightarrow{H_2O} NaCl_{(aq)}$
+
+# Extraction liquide-liquide
+
+* L'extraction liquide-liquide consiste à :
++ transférer une espèce chimique d'un solvant A vers un solvant B non miscible avec A, en exploitant la différence de solubilité
+- filtrer une solution sur papier filtre pour séparer un précipité
+- distiller un mélange de liquides miscibles
+- chromatographier les composés d'un mélange sur colonne
+
+* Une molécule amphiphile possède :
++ une partie hydrophile (polaire) et une partie hydrophobe (apolaire)
+- uniquement une partie hydrophile
+- uniquement une partie hydrophobe
+- aucune polarité définie
+
+# Raisonnement simple
+
+* L'iode $I_2$ est une espèce apolaire. Elle est plus soluble dans :
++ le cyclohexane (solvant apolaire) que dans l'eau (solvant polaire)
+- l'eau que dans le cyclohexane
+- l'eau salée que dans l'eau pure
+- les deux solvants de façon identique
+
+* On réalise une extraction liquide-liquide du diiode $I_2$ dissous dans l'eau, en utilisant du cyclohexane (non miscible à l'eau). Après agitation et décantation :
++ la phase cyclohexanique (supérieure) se colore en violet-rose : c'est là que se trouve l'iode
+- la phase aqueuse reste colorée, le cyclohexane n'extrait pas l'iode
+- les deux phases ont la même teinte
+- le diiode précipite au fond de l'ampoule à décanter
+
+* Le savon est une molécule amphiphile constituée d'une longue chaîne carbonée apolaire (queue lipophile) et d'un groupement carboxylate chargé (tête hydrophile). Son action nettoyante est due au fait que :
++ la queue lipophile s'insère dans les graisses tandis que la tête hydrophile reste en contact avec l'eau, formant des micelles
+- le savon réagit chimiquement avec les graisses pour les dissoudre
+- le savon augmente la température de l'eau
+- la tête hydrophobe attire les particules de graisse vers l'eau
+
+# Démarche complexe
+
+* On dissout 5,85 g de NaCl ($M$ = 58,5 g/mol) dans l'eau pour obtenir 500 mL de solution. La concentration en ions $Na^+$ dans cette solution est :
++ 0,20 mol/L
+- 0,10 mol/L
+- 0,40 mol/L
+- 1,00 mol/L
+
+** Parmi les affirmations suivantes sur les interactions intermoléculaires, lesquelles sont correctes ?
++ L'eau peut former des liaisons hydrogène avec elle-même car les liaisons O-H sont polarisées et l'oxygène porte des doublets non liants
++ Les molécules apolaires n'interagissent entre elles que par des forces de Van der Waals, plus faibles que les liaisons hydrogène
+- Les solides ioniques sont solubles dans les solvants apolaires car les ions sont attirés par les dipôles non permanents
+- Les liaisons hydrogène sont plus fortes que les liaisons covalentes
+
+* On réalise une extraction du vanilline (polaire) dissous dans 50 mL d'eau, avec 20 mL d'éther diéthylique (peu miscible à l'eau, polaire). La vanilline se retrouve majoritairement dans la phase éthérique. Si on répète l'extraction une seconde fois avec 20 mL d'éther frais, c'est parce que :
++ deux extractions successives avec de petits volumes sont plus efficaces qu'une seule extraction avec le volume total
+- la vanilline est restée dans la phase aqueuse lors de la première extraction
+- l'éther saturé peut encore extraire autant de vanilline que la première fois
+- la deuxième extraction sert uniquement à purifier l'éther
+</script>
+
+<script type="application/x-qcm" id="raw-07_chimie_organique">
+#  QCM Chimie organique — groupes, nomenclature, IR, synthèse — Physique-Chimie Première Spécialité
+#  Source : Nomenclature existant, BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Groupes caractéristiques et familles
+
+* Le groupe caractéristique -OH porté par un carbone non doublement lié est le groupe :
++ hydroxyle — caractéristique des alcools
+- carbonyle des aldéhydes
+- carboxyle des acides carboxyliques
+- ester
+
+* Un aldéhyde possède le groupe fonctionnel :
++ -CHO (carbonyle en bout de chaîne, lié à un hydrogène)
+- -CO- (carbonyle entre deux carbones)
+- -COOH (carboxyle)
+- -OH sur un carbone en bout de chaîne
+
+* Une cétone possède le groupe :
++ -CO- (carbonyle situé entre deux atomes de carbone)
+- -CHO (carbonyle terminal)
+- -COOH (carboxyle)
+- -OH (hydroxyle)
+
+* Un acide carboxylique est caractérisé par le groupe :
++ -COOH (carboxyle, en bout de chaîne)
+- -CO- (carbonyle interne)
+- -CHO (aldéhyde)
+- -OH (alcool)
+
+* La famille des alcools se nomme en ajoutant le suffixe :
++ -ol au nom de l'alcane correspondant
+- -al au nom de l'alcane
+- -one au nom de l'alcane
+- -ique au nom de l'alcane
+
+* Le propan-1-ol est un alcool dont la fonction -OH est portée par :
++ le carbone n°1 de la chaîne propane
+- le carbone n°2 de la chaîne propane
+- le carbone central
+- les deux carbones terminaux
+
+# Nomenclature
+
+* Le butan-2-one est :
++ une cétone à 4 carbones avec le groupe carbonyle sur le carbone 2
+- un alcool à 4 carbones
+- un aldéhyde à 4 carbones
+- un acide carboxylique à 4 carbones
+
+* L'acide propanoïque contient :
++ 3 carbones et le groupe -COOH en position terminale
+- 3 carbones et le groupe -CHO
+- 2 carbones et le groupe -COOH
+- 3 carbones et le groupe -OH sur le carbone 2
+
+# Spectroscopie infrarouge
+
+* En spectroscopie infrarouge, une large bande d'absorption autour de 2500-3300 cm$^{-1}$ est caractéristique du groupe :
++ -OH d'un acide carboxylique (bande large due aux liaisons hydrogène)
+- C=O d'une cétone
+- C-H d'un alcane
+- C=C d'un alcène
+
+* En infrarouge, une absorption intense vers 1700-1750 cm$^{-1}$ correspond à :
++ la liaison C=O (carbonyle) présente dans les aldéhydes, cétones et acides
+- la liaison O-H des alcools
+- la liaison C-H des alcanes
+- la liaison C-C d'un alcane
+
+# Raisonnement simple
+
+* Un composé a pour formule semi-développée CH$_3$-CO-CH$_2$-CH$_3$. Il appartient à la famille :
++ des cétones, et se nomme butan-2-one
+- des aldéhydes, et se nomme butanal
+- des alcools, et se nomme butan-2-ol
+- des acides, et se nomme acide butanoïque
+
+* On synthétise 8,0 g d'éthanoate d'éthyle ($M$ = 88 g/mol) alors que la masse théorique calculée est de 10,0 g. Le rendement de la synthèse est :
++ 80 %
+- 88 %
+- 8 %
+- 125 %
+
+* Le spectre infrarouge d'un composé montre une absorption à 1715 cm$^{-1}$ et l'absence de bande large autour de 2500-3300 cm$^{-1}$. Ce composé appartient à la famille :
++ des cétones ou des aldéhydes (C=O présent, pas d'acide carboxylique)
+- des acides carboxyliques
+- des alcools
+- des alcanes
+
+# Démarche complexe
+
+* On réalise la synthèse de l'acétate de butyle (ester, $M$ = 116 g/mol) par estérification. On part de 30,0 g d'acide acétique ($M_1$ = 60 g/mol) et d'un excès de butanol. La masse théorique d'ester formé si la réaction était totale serait :
++ 58 g
+- 30 g
+- 116 g
+- 15 g
+
+** Quelles affirmations sur les synthèses organiques sont correctes ?
++ Le rendement est toujours inférieur ou égal à 100 % en raison de pertes lors des étapes d'isolement et de purification
++ Le montage à reflux permet de chauffer longtemps sans perte de matière par évaporation
+- Un rendement de 100 % est courant en synthèse organique au lycée
+- La chromatographie sur couche mince (CCM) permet de mesurer le rendement d'une synthèse
+
+* Un composé organique a pour formule brute C$_4$H$_8$O et présente en IR une absorption à 1720 cm$^{-1}$ mais pas de bande large entre 2500-3300 cm$^{-1}$ ni de bande large vers 3200-3550 cm$^{-1}$. Parmi les propositions suivantes, celle qui est cohérente avec ces données est :
++ le butanal (aldéhyde : C=O vers 1720 cm$^{-1}$, pas de O-H libre)
+- le butan-1-ol (alcool : bande O-H vers 3300 cm$^{-1}$)
+- l'acide butanoïque (acide : bande large O-H vers 2500-3300 cm$^{-1}$)
+- le butane (pas de groupe fonctionnel oxygéné)
+</script>
+
+<script type="application/x-qcm" id="raw-08_combustion_energie_liaison">
+#  QCM Combustion et énergie de liaison — Physique-Chimie Première Spécialité
+#  Source : Chapitre 11 (lycee_adulte) — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Combustion
+
+* Une réaction de combustion est :
++ une réaction d'oxydoréduction entre un combustible et un comburant (généralement O$_2$)
+- une réaction acide-base
+- une réaction de synthèse organique
+- une réaction de précipitation
+
+* Le comburant habituel des réactions de combustion est :
++ le dioxygène O$_2$ de l'air
+- le dioxyde de carbone CO$_2$
+- l'eau H$_2$O
+- l'azote N$_2$
+
+* Les produits d'une combustion complète d'un hydrocarbure C$_x$H$_y$ sont :
++ uniquement CO$_2$ et H$_2$O
+- CO et H$_2$O
+- C et H$_2$O
+- CO$_2$ et H$_2$
+
+* Une combustion est dite complète lorsque :
++ les réactifs sont en proportions stœchiométriques ou avec un excès de comburant
+- le combustible est en excès par rapport au comburant
+- la température de la flamme est maximale
+- toute l'énergie est convertie en lumière
+
+* L'équation bilan de la combustion complète du méthane CH$_4$ est :
++ $CH_4 + 2\,O_2 \longrightarrow CO_2 + 2\,H_2O$
+- $CH_4 + O_2 \longrightarrow CO_2 + 2\,H_2$
+- $CH_4 + 2\,O_2 \longrightarrow CO + 2\,H_2O$
+- $2\,CH_4 + O_2 \longrightarrow 2\,CO + 4\,H_2$
+
+# Énergie de liaison
+
+* L'énergie molaire de liaison $E_l$ d'une liaison A-B représente :
++ l'énergie nécessaire pour rompre une mole de liaisons A-B (en J·mol$^{-1}$)
+- l'énergie libérée lors de la formation d'une mole de liaisons A-B
+- la chaleur de combustion d'une mole de A-B
+- l'énergie cinétique d'une mole de molécules A-B
+
+* Lors d'une réaction chimique, la rupture des liaisons des réactifs :
++ nécessite un apport d'énergie (endothermique)
+- libère de l'énergie (exothermique)
+- se produit spontanément sans échange d'énergie
+- est toujours simultanée à la formation des produits
+
+* L'énergie molaire de réaction $E_r$ se calcule par :
++ $E_r = \sum E_l(\text{réactifs}) - \sum E_l(\text{produits})$
+- $E_r = \sum E_l(\text{produits}) - \sum E_l(\text{réactifs})$
+- $E_r = \sum E_l(\text{réactifs}) + \sum E_l(\text{produits})$
+- $E_r = \dfrac{\sum E_l(\text{réactifs})}{\sum E_l(\text{produits})}$
+
+* Pour une réaction de combustion, $E_r$ est :
++ négative (exothermique) : les liaisons des produits sont plus stables que celles des réactifs
+- positive (endothermique) : il faut fournir de l'énergie
+- nulle car l'énergie se conserve
+- positive ou négative selon la température
+
+# Raisonnement simple
+
+* Le pouvoir calorifique massique (PC) d'un combustible est défini par :
++ $PC = E/m$ où $E$ est l'énergie dégagée par la combustion complète d'une masse $m$ de combustible
+- $PC = m \times E$
+- $PC = E \times V_m$
+- $PC = m/E$
+
+* La combustion complète du propane $C_3H_8$ donne : $C_3H_8 + 5\,O_2 \longrightarrow 3\,CO_2 + 4\,H_2O$. Pour brûler 44 g de propane ($M$ = 44 g/mol), la quantité de dioxygène nécessaire est :
++ 5,0 mol
+- 1,0 mol
+- 3,0 mol
+- 4,0 mol
+
+* L'énergie de liaison C-H vaut 415 kJ·mol$^{-1}$ et l'énergie de liaison C-C vaut 348 kJ·mol$^{-1}$. L'énergie totale nécessaire pour rompre toutes les liaisons d'une mole d'éthane C$_2$H$_6$ (6 liaisons C-H et 1 liaison C-C) est :
++ 2838 kJ·mol$^{-1}$
+- 763 kJ·mol$^{-1}$
+- 2490 kJ·mol$^{-1}$
+- 415 kJ·mol$^{-1}$
+
+# Démarche complexe
+
+* On brûle complètement 1,0 kg d'éthanol $C_2H_5OH$. Le pouvoir calorifique de l'éthanol est $PC = 29\,700$ kJ·kg$^{-1}$. L'énergie dégagée est :
++ $2,97 \times 10^4$ kJ
+- $2,97 \times 10^7$ kJ
+- $2,97 \times 10^1$ kJ
+- $2,97 \times 10^4$ J
+
+* Pour la combustion du méthane $CH_4 + 2\,O_2 \longrightarrow CO_2 + 2\,H_2O$, on donne : $E_l(C-H) = 415$ kJ·mol$^{-1}$, $E_l(O=O) = 497$ kJ·mol$^{-1}$, $E_l(C=O) = 799$ kJ·mol$^{-1}$, $E_l(O-H) = 463$ kJ·mol$^{-1}$. L'énergie de réaction $E_r$ (rompus : 4 C-H + 2 O=O ; formés : 2 C=O + 4 O-H) vaut :
++ $-808$ kJ·mol$^{-1}$ (exothermique)
+- $+808$ kJ·mol$^{-1}$ (endothermique)
+- $-416$ kJ·mol$^{-1}$
+- $+416$ kJ·mol$^{-1}$
+
+** Parmi les affirmations sur les combustibles et enjeux sociétaux, lesquelles sont correctes ?
++ Les hydrocarbures fossiles (pétrole, charbon, gaz) sont non renouvelables à l'échelle humaine
++ La combustion incomplète produit du monoxyde de carbone CO, gaz toxique
+- Le dioxyde de carbone CO$_2$ produit par les combustions est sans effet sur le climat
+- Les biocarburants sont produits à partir de pétrole raffiné
+</script>
+
+<script type="application/x-qcm" id="raw-09_interactions_champ">
+#  QCM Interactions fondamentales et champs — Physique-Chimie Première Spécialité
+#  Source : chapitre7_interactions.tex — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Interaction gravitationnelle
+
+* La loi de gravitation universelle (Newton) donne l'intensité de la force d'attraction entre deux objets de masse $m_A$ et $m_B$ séparés d'une distance $d$ :
++ $F = \mathcal{G} \dfrac{m_A \cdot m_B}{d^2}$
+- $F = \mathcal{G} \dfrac{m_A + m_B}{d^2}$
+- $F = \mathcal{G} \dfrac{m_A \cdot m_B}{d}$
+- $F = \mathcal{G} \dfrac{d^2}{m_A \cdot m_B}$
+
+* La constante de gravitation universelle $\mathcal{G}$ vaut environ :
++ $6,67 \times 10^{-11}$ N·m$^2$·kg$^{-2}$
+- $6,67 \times 10^{11}$ N·m$^2$·kg$^{-2}$
+- $9,8$ N·kg$^{-1}$
+- $6,02 \times 10^{23}$ N·m$^2$·kg$^{-2}$
+
+* Selon le principe des actions réciproques (3ème loi de Newton), les forces $\overrightarrow{F}_{A/B}$ et $\overrightarrow{F}_{B/A}$ sont :
++ de même intensité, de même direction, mais de sens opposés
+- de même intensité, de même direction et de même sens
+- de directions différentes
+- d'intensités différentes
+
+* Le champ de gravitation $\overrightarrow{g}$ en un point de l'espace créé par un astre de masse $M$ représente :
++ la force gravitationnelle par unité de masse exercée sur tout objet placé en ce point
+- la force gravitationnelle totale exercée sur un objet de masse $m$
+- l'accélération d'un objet en chute libre uniquement
+- la vitesse d'un satellite en orbite
+
+# Interaction électrostatique
+
+* La loi de Coulomb donne l'intensité de la force électrostatique entre deux charges $q_1$ et $q_2$ séparées d'une distance $d$ :
++ $F = k \dfrac{|q_1| \cdot |q_2|}{d^2}$ avec $k \approx 9,0 \times 10^9$ N·m$^2$·C$^{-2}$
+- $F = k \dfrac{|q_1| + |q_2|}{d^2}$
+- $F = k \dfrac{|q_1| \cdot |q_2|}{d}$
+- $F = k \dfrac{d^2}{|q_1| \cdot |q_2|}$
+
+* Deux charges de même signe exercent l'une sur l'autre une force :
++ répulsive
+- attractive
+- nulle
+- perpendiculaire à leur droite de jonction
+
+* Le champ électrostatique $\overrightarrow{E}$ en un point de l'espace est défini par :
++ la force électrostatique par unité de charge positive placée en ce point
+- la tension électrique entre deux points
+- la vitesse des électrons dans le conducteur
+- l'énergie potentielle électrique
+
+** Quelles analogies entre l'interaction gravitationnelle et l'interaction électrostatique sont correctes ?
++ Les deux interactions suivent une loi en $1/d^2$ (loi inverse du carré de la distance)
++ La gravitation est toujours attractive tandis que l'interaction électrostatique peut être attractive ou répulsive
+- Les deux constantes $\mathcal{G}$ et $k$ ont la même valeur numérique
+- Les deux forces ont la même intensité pour les mêmes distances et les mêmes valeurs de masse ou de charge
+
+# Raisonnement simple
+
+* La Terre (masse $M_T = 6,0 \times 10^{24}$ kg) exerce sur la Lune (masse $M_L = 7,3 \times 10^{22}$ kg) une force gravitationnelle. La Lune exerce sur la Terre une force de même intensité :
++ vraie — selon le principe des actions réciproques, les deux forces sont égales en intensité
+- fausse — la Terre est plus massive, elle exerce une force plus grande
+- vraie — car les deux corps ont des masses similaires
+- fausse — seul le corps le plus massif exerce une force gravitationnelle
+
+* Si on double la distance entre deux charges électriques, la force de Coulomb est :
++ divisée par 4 (la force varie en $1/d^2$)
+- divisée par 2
+- multipliée par 4
+- inchangée
+
+* Un électron (charge $q = -1,6 \times 10^{-19}$ C) et un proton (charge $q = +1,6 \times 10^{-19}$ C) séparés d'une distance $d = 5,3 \times 10^{-11}$ m s'attirent. L'intensité de cette force vaut ($k = 9,0 \times 10^9$ N·m$^2$·C$^{-2}$) :
++ $8,2 \times 10^{-8}$ N
+- $8,2 \times 10^{-19}$ N
+- $4,1 \times 10^{-8}$ N
+- $3,2 \times 10^{-29}$ N
+
+# Démarche complexe
+
+* On considère deux sphères chargées $q_1 = +2,0 \times 10^{-6}$ C et $q_2 = -3,0 \times 10^{-6}$ C séparées de $d = 0,30$ m. L'intensité de la force de Coulomb est ($k = 9,0 \times 10^9$ N·m$^2$·C$^{-2}$) :
++ 0,60 N
+- 0,18 N
+- 1,8 N
+- $6,0 \times 10^{-4}$ N
+
+* La Terre orbite autour du Soleil à une distance $d = 1,5 \times 10^{11}$ m. La masse du Soleil est $M_S = 2,0 \times 10^{30}$ kg et celle de la Terre $M_T = 6,0 \times 10^{24}$ kg ($\mathcal{G} = 6,67 \times 10^{-11}$ N·m$^2$·kg$^{-2}$). La force gravitationnelle Soleil-Terre a pour intensité :
++ $3,6 \times 10^{22}$ N
+- $3,6 \times 10^{33}$ N
+- $5,3 \times 10^{11}$ N
+- $8,9 \times 10^{10}$ N
+</script>
+
+<script type="application/x-qcm" id="raw-10_fluides_au_repos">
+#  QCM Fluides au repos — Physique-Chimie Première Spécialité
+#  Source : Chap7_Fluide_au_repos/cours.md — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Pression d'un fluide
+
+* La pression $P$ d'un fluide exercée sur une surface $S$ est reliée à la force pressante $F$ par :
++ $P = \dfrac{F}{S}$
+- $P = F \times S$
+- $P = \dfrac{S}{F}$
+- $P = F + S$
+
+* L'unité de la pression dans le système international est :
++ le pascal (Pa)
+- le newton (N)
+- le joule (J)
+- le kilogramme (kg)
+
+* La pression atmosphérique standard vaut environ :
++ $10^5$ Pa, soit 1 bar
+- $10^3$ Pa
+- $10^7$ Pa
+- $9,8$ Pa
+
+* La force pressante exercée par un fluide sur une surface s'exprime en :
++ newton (N)
+- pascal (Pa)
+- m$^2$
+- joule (J)
+
+# Loi de Mariotte
+
+* La loi de Mariotte stipule que, à température constante, pour une quantité de gaz fixée :
++ la pression et le volume sont inversement proportionnels : $P \times V = \text{cste}$
+- la pression et le volume sont proportionnels : $P / V = \text{cste}$
+- la pression ne dépend pas du volume
+- le volume est proportionnel à la température
+
+* Lorsqu'on comprime un gaz à température constante en divisant son volume par 2, sa pression :
++ est multipliée par 2
+- est divisée par 2
+- reste inchangée
+- est multipliée par 4
+
+# Loi fondamentale de la statique des fluides
+
+* Dans un fluide incompressible au repos, la loi fondamentale de la statique des fluides est :
++ $P_2 - P_1 = \rho g (z_1 - z_2)$ où $z_1$ et $z_2$ sont les altitudes des points 1 et 2
+- $P_2 - P_1 = \rho g (z_2 - z_1)$
+- $P_2 = P_1$ quelle que soit l'altitude
+- $P_2 - P_1 = \rho g / (z_1 - z_2)$
+
+* Dans un fluide en équilibre, deux points situés à la même altitude ont :
++ la même pression
+- des pressions différentes selon leur position horizontale
+- des pressions proportionnelles à leur distance horizontale
+- des pressions inversement proportionnelles à la masse volumique
+
+* La masse volumique de l'eau liquide est environ :
++ $1000$ kg·m$^{-3}$
+- $1,29$ kg·m$^{-3}$
+- $100$ kg·m$^{-3}$
+- $9800$ kg·m$^{-3}$
+
+# Raisonnement simple
+
+* Un gaz occupe un volume $V_1 = 2,0$ L à une pression $P_1 = 1,0 \times 10^5$ Pa. On le comprime à température constante jusqu'à $V_2 = 0,50$ L. La pression finale est :
++ $4,0 \times 10^5$ Pa
+- $2,5 \times 10^4$ Pa
+- $1,0 \times 10^5$ Pa
+- $2,0 \times 10^5$ Pa
+
+* Un plongeur se trouve à 10 m de profondeur dans l'eau ($\rho = 1000$ kg·m$^{-3}$, $g = 9,8$ m·s$^{-2}$, $P_0 = 1,0 \times 10^5$ Pa). La pression subie par le plongeur est :
++ $1,98 \times 10^5$ Pa $\approx$ 2,0 bar
+- $9,8 \times 10^4$ Pa
+- $1,0 \times 10^5$ Pa
+- $2,98 \times 10^5$ Pa
+
+* Une surface de $0,50$ m$^2$ supporte une force pressante de $5,0 \times 10^4$ N. La pression exercée sur cette surface est :
++ $1,0 \times 10^5$ Pa
+- $2,5 \times 10^4$ Pa
+- $2,5 \times 10^4$ N/m
+- $1,0 \times 10^{-1}$ Pa
+
+# Démarche complexe
+
+* L'eau dans un château d'eau se trouve à une hauteur $h = 20$ m au-dessus d'un robinet au sol ($\rho_{eau} = 1000$ kg·m$^{-3}$, $g = 9,8$ m·s$^{-2}$, pression à la surface libre $P_s = 1,0 \times 10^5$ Pa). La pression de l'eau au robinet est :
++ $2,96 \times 10^5$ Pa
+- $1,96 \times 10^5$ Pa
+- $1,0 \times 10^5$ Pa
+- $3,0 \times 10^5$ Pa
+
+** Parmi les affirmations sur la pression et les fluides, lesquelles sont correctes ?
++ La pression augmente quand on descend dans un fluide (altitude plus faible $\Rightarrow$ pression plus grande)
++ La pression atmosphérique s'exerce sur toutes les surfaces en contact avec l'air, y compris horizontalement
+- La pression dans un liquide est la même à toutes les profondeurs
+- Un gaz peut être incompressible comme un liquide
+
+* Un cylindre de seringue de section $S = 2,0$ cm$^2$ est fermé par un piston. Le gaz emprisonné est initialement à $P_1 = 1,0 \times 10^5$ Pa et $V_1 = 20$ mL. On pousse le piston jusqu'à $V_2 = 5,0$ mL à température constante. La force minimale qu'il faut exercer pour maintenir le piston en position est :
++ 8,0 N
+- 2,0 N
+- 40 N
+- 0,80 N
+</script>
+
+<script type="application/x-qcm" id="raw-11_mecanique_newton">
+#  QCM Mouvement et forces — Physique-Chimie Première Spécialité
+#  Source : chapitre9_mecanique_1.tex — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Vecteurs et forces
+
+* Les caractéristiques d'un vecteur force sont :
++ sa direction, son sens et son intensité (en N)
+- son intensité et sa couleur
+- sa direction et son énergie (en J)
+- son sens et sa masse (en kg)
+
+* L'unité SI de la force est :
++ le newton (N)
+- le joule (J)
+- le pascal (Pa)
+- le kilogramme (kg)
+
+* La relation entre le poids $P$ d'un objet de masse $m$ et l'intensité de pesanteur $g$ est :
++ $P = m \times g$
+- $P = m / g$
+- $P = m + g$
+- $P = g / m$
+
+* Selon le principe d'inertie (1ère loi de Newton), si la résultante des forces est nulle, l'objet :
++ est au repos ou en mouvement rectiligne uniforme
+- est nécessairement au repos
+- accélère dans le sens de la résultante
+- décrit un mouvement circulaire uniforme
+
+# Chronophotographie et mouvement
+
+* Sur une chronophotographie réalisée à intervalle de temps $\Delta t$ constant, des espacements égaux entre positions successives indiquent un mouvement :
++ rectiligne uniforme (vitesse constante en valeur et en direction)
+- uniformément accéléré
+- circulaire uniforme
+- décéléré
+
+* Sur une chronophotographie, si les distances entre positions successives augmentent régulièrement, le mouvement est :
++ rectiligne uniformément accéléré
+- rectiligne uniforme
+- rectiligne uniformément décéléré
+- circulaire
+
+* Le vecteur variation de vitesse entre les instants A et B est défini par :
++ $\Delta \overrightarrow{v} = \overrightarrow{v}_B - \overrightarrow{v}_A$
+- $\Delta \overrightarrow{v} = \overrightarrow{v}_A - \overrightarrow{v}_B$
+- $\Delta \overrightarrow{v} = \overrightarrow{v}_A + \overrightarrow{v}_B$
+- $\Delta \overrightarrow{v} = \overrightarrow{v}_B \div \overrightarrow{v}_A$
+
+# Deuxième loi de Newton
+
+* La deuxième loi de Newton (version approchée) relie la résultante des forces $\sum \overrightarrow{F}$ à la variation de vitesse $\Delta \overrightarrow{v}$ par :
++ $\sum \overrightarrow{F} \approx m \dfrac{\Delta \overrightarrow{v}}{\Delta t}$
+- $\sum \overrightarrow{F} \approx \dfrac{m}{\Delta \overrightarrow{v} \cdot \Delta t}$
+- $\sum \overrightarrow{F} \approx m \cdot \Delta t \cdot \overrightarrow{v}$
+- $\sum \overrightarrow{F} \approx \dfrac{\Delta \overrightarrow{v}}{m \cdot \Delta t}$
+
+* Lorsque la résultante des forces appliquées à un objet est non nulle, elle est :
++ de même direction et de même sens que le vecteur variation de vitesse $\Delta \overrightarrow{v}$
+- toujours perpendiculaire à la vitesse
+- toujours dirigée vers le bas
+- toujours opposée à la vitesse
+
+# Raisonnement simple
+
+* Un sac de masse $m = 5,0$ kg est posé sur un sol horizontal ($g = 9,8$ m·s$^{-2}$). L'intensité de son poids est :
++ 49 N
+- 5,0 N
+- 9,8 N
+- 0,51 N
+
+* Un objet de masse $m = 3,0$ kg est soumis à une résultante de forces $\sum F = 12$ N. L'intensité de son accélération est :
++ 4,0 m·s$^{-2}$
+- 36 m·s$^{-2}$
+- 0,25 m·s$^{-2}$
+- 15 m·s$^{-2}$
+
+* Une chronophotographie montre un objet avec $\Delta t = 50$ ms entre chaque position. Les distances entre positions consécutives sont toutes égales à 1,5 cm. La vitesse de l'objet est :
++ 0,30 m·s$^{-1}$
+- 30 m·s$^{-1}$
+- 3,0 m·s$^{-1}$
+- 0,030 m·s$^{-1}$
+
+# Démarche complexe
+
+* Un objet de masse $m = 0,20$ kg est en chute libre verticale. Entre deux instants séparés de $\Delta t = 0,10$ s, sa vitesse passe de $v_A = 2,0$ m·s$^{-1}$ à $v_B = 3,0$ m·s$^{-1}$ (vers le bas). La résultante des forces vaut :
++ 2,0 N dirigée vers le bas
+- 0,20 N dirigée vers le bas
+- 1,0 N dirigée vers le bas
+- 0,50 N dirigée vers le bas
+
+* Un objet de masse $m = 5,0$ kg part du repos et est soumis à une résultante constante $\sum F = 20$ N. Sa vitesse après $t = 2,0$ s est :
++ 8,0 m·s$^{-1}$
+- 40 m·s$^{-1}$
+- 4,0 m·s$^{-1}$
+- 0,50 m·s$^{-1}$
+
+** Parmi les affirmations suivantes sur les forces et le mouvement, lesquelles sont correctes ?
++ Si la résultante des forces est nulle, la vitesse est constante en valeur et en direction (principe d'inertie)
++ Pour une même force résultante, un objet plus massif a une accélération plus faible : $a = \sum F / m$
+- Une force nulle implique nécessairement une vitesse nulle
+- Un objet en mouvement est forcément soumis à une force non nulle dans le sens de son déplacement
+</script>
+
+<script type="application/x-qcm" id="raw-12_energie_mecanique">
+#  QCM Énergie mécanique — Physique-Chimie Première Spécialité
+#  Source : energie_mecanique.tex — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Énergie cinétique
+
+* L'énergie cinétique $E_c$ d'un objet de masse $m$ animé d'une vitesse $v$ vaut :
++ $E_c = \dfrac{1}{2} m v^2$
+- $E_c = m v^2$
+- $E_c = \dfrac{1}{2} m v$
+- $E_c = m g v$
+
+* L'unité de l'énergie dans le système international est :
++ le joule (J)
+- le watt (W)
+- le newton (N)
+- le pascal (Pa)
+
+# Énergie potentielle
+
+* L'énergie potentielle de pesanteur $E_p$ d'un objet de masse $m$ situé à l'altitude $z$ vaut :
++ $E_p = m g z$
+- $E_p = \dfrac{1}{2} m g z$
+- $E_p = m g / z$
+- $E_p = m z$
+
+* Pour calculer $E_p = mgz$, l'altitude $z$ est mesurée :
++ par rapport à un niveau de référence choisi librement (souvent le sol)
+- uniquement par rapport au centre de la Terre
+- toujours par rapport au point le plus haut de la trajectoire
+- par rapport au niveau de la mer uniquement
+
+# Énergie mécanique et conservation
+
+* L'énergie mécanique d'un objet est définie par :
++ $E_m = E_c + E_p$
+- $E_m = E_c - E_p$
+- $E_m = E_c \times E_p$
+- $E_m = E_c / E_p$
+
+* Un système est dit conservatif lorsque :
++ son énergie mécanique reste constante au cours du mouvement
+- son énergie cinétique reste constante
+- son énergie potentielle reste nulle
+- il est soumis uniquement à son poids
+
+* L'énergie mécanique se conserve si :
++ les seules forces qui travaillent sont des forces conservatives (poids, force électrique)
+- des frottements importants s'exercent sur l'objet
+- la vitesse reste constante
+- l'objet se déplace horizontalement
+
+# Travail d'une force
+
+* Le travail $W$ d'une force $\overrightarrow{F}$ lors d'un déplacement $\overrightarrow{AB}$ est donné par :
++ $W = ||\overrightarrow{F}|| \times ||\overrightarrow{AB}|| \times \cos \alpha$, où $\alpha$ est l'angle entre $\overrightarrow{F}$ et $\overrightarrow{AB}$
+- $W = ||\overrightarrow{F}|| \times ||\overrightarrow{AB}||$ (sans tenir compte de l'angle)
+- $W = ||\overrightarrow{F}|| + ||\overrightarrow{AB}||$
+- $W = ||\overrightarrow{F}|| / ||\overrightarrow{AB}||$
+
+* Le théorème de l'énergie cinétique stipule que :
++ $\Delta E_c = \sum W$ : la variation d'énergie cinétique est égale à la somme des travaux de toutes les forces
+- $\Delta E_c = -\sum W$ : la variation est l'opposé de la somme des travaux
+- $\Delta E_c = E_p$ : la variation d'énergie cinétique est égale à l'énergie potentielle
+- $\Delta E_c = E_m$ : la variation d'énergie cinétique est égale à l'énergie mécanique
+
+# Raisonnement simple
+
+* Un cycliste (vélo + pilote) de masse totale $m = 80$ kg roule à $v = 5,0$ m·s$^{-1}$. Son énergie cinétique est :
++ $1,0 \times 10^3$ J
+- $2,0 \times 10^3$ J
+- $4,0 \times 10^2$ J
+- $4,0 \times 10^3$ J
+
+* Un objet de masse $m = 2,0$ kg passe de l'altitude $z_A = 5,0$ m à l'altitude $z_B = 2,0$ m ($g = 9,8$ m·s$^{-2}$). Le travail du poids est :
++ 59 J
+- $-59$ J
+- 29 J
+- 19 J
+
+* Une force $F = 50$ N est appliquée sur un objet qui se déplace de $d = 4,0$ m. L'angle entre la force et le déplacement est $\alpha = 60°$. Le travail de cette force est :
++ 100 J
+- 200 J
+- 173 J
+- 400 J
+
+# Démarche complexe
+
+* Un objet de masse $m = 1,0$ kg est lâché sans vitesse initiale depuis $h = 5,0$ m (pas de frottements, $g = 9,8$ m·s$^{-2}$). Sa vitesse au moment d'atteindre le sol est :
++ 9,9 m·s$^{-1}$
+- 49 m·s$^{-1}$
+- 7,0 m·s$^{-1}$
+- 14 m·s$^{-1}$
+
+* Un objet de masse $m = 2,0$ kg part du repos. Une force résultante $F = 18$ N est appliquée horizontalement sur $d = 2,0$ m. La vitesse finale de l'objet est :
++ 6,0 m·s$^{-1}$
+- 18 m·s$^{-1}$
+- 4,2 m·s$^{-1}$
+- 36 m·s$^{-1}$
+
+** Parmi les affirmations suivantes sur l'énergie mécanique, lesquelles sont correctes ?
++ En l'absence de frottements, l'énergie cinétique et l'énergie potentielle se convertissent l'une en l'autre sans perte : $E_m$ est constante
++ Le travail d'une force de frottement est toujours négatif car elle s'oppose au déplacement
+- L'énergie cinétique peut être négative lorsque l'objet décélère
+- Le théorème de l'énergie cinétique ne s'applique qu'en l'absence de frottements
+</script>
+
+<script type="application/x-qcm" id="raw-13_energie_electrique">
+#  QCM Aspects énergétiques de l'électricité — Physique-Chimie Première Spécialité
+#  Source : Chapitre14_Aspects_energetique_electricite.pdf (lycee_adulte) — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Grandeurs électriques et lois de base
+
+* Un porteur de charge est une entité chargée pouvant circuler librement. Dans les métaux, les porteurs de charges sont :
++ des électrons
+- des protons
+- des neutrons
+- des ions positifs uniquement
+
+* L'intensité du courant électrique $I$ est reliée à la charge $Q$ qui traverse un conducteur pendant une durée $\Delta t$ par :
++ $I = \dfrac{Q}{\Delta t}$
+- $I = Q \times \Delta t$
+- $I = \dfrac{\Delta t}{Q}$
+- $I = Q + \Delta t$
+
+* La loi d'Ohm relie la tension $U$ aux bornes d'une résistance $R$ traversée par un courant $I$ :
++ $U = R \times I$
+- $U = R / I$
+- $U = R + I$
+- $U = I / R$
+
+* La loi des mailles stipule que dans un circuit en série avec un générateur de f.é.m. $E$ et deux récepteurs de tensions $U_1$ et $U_2$ :
++ $E = U_1 + U_2$
+- $E = U_1 - U_2$
+- $E = U_1 \times U_2$
+- $U_1 = U_2$ quelle que soit la résistance
+
+* La loi des nœuds stipule qu'en un nœud d'un circuit, la somme des intensités entrantes est :
++ égale à la somme des intensités sortantes
+- nulle
+- égale à l'intensité du générateur
+- toujours supérieure à celles des branches dérivées
+
+# Générateur réel et puissance
+
+* Un générateur réel de force électromotrice $E$ et de résistance interne $r$ débitant un courant $I$ a une tension aux bornes $U_g$ égale à :
++ $U_g = E - r I$
+- $U_g = E + r I$
+- $U_g = E \times r \times I$
+- $U_g = E / (r I)$
+
+* La puissance électrique $P$ fournie ou reçue par un dipôle de tension $U$ traversé par un courant $I$ est :
++ $P = U \times I$
+- $P = U + I$
+- $P = U / I$
+- $P = U^2 \times I$
+
+* L'énergie électrique $E_{elec}$ reçue par un dipôle de puissance $P$ pendant une durée $\Delta t$ vaut :
++ $E_{elec} = P \times \Delta t$
+- $E_{elec} = P / \Delta t$
+- $E_{elec} = P + \Delta t$
+- $E_{elec} = P^2 \times \Delta t$
+
+* L'effet Joule se produit dans une résistance $R$ traversée par un courant $I$ : la puissance dissipée sous forme de chaleur est :
++ $P_J = R I^2$
+- $P_J = R / I^2$
+- $P_J = R + I$
+- $P_J = R I$
+
+# Raisonnement simple
+
+* Une lampe de bureau fonctionne sous $U = 12$ V et est traversée par $I = 2,0$ A. La puissance électrique reçue par la lampe est :
++ 24 W
+- 6,0 W
+- 14 W
+- 48 W
+
+* Un radiateur électrique de puissance $P = 1000$ W fonctionne pendant $\Delta t = 3600$ s (1 heure). L'énergie électrique consommée est :
++ $3,6 \times 10^6$ J
+- $1,0 \times 10^3$ J
+- $2,8 \times 10^{-1}$ J
+- $3,6 \times 10^3$ J
+
+* Une résistance $R = 10$ $\Omega$ est traversée par un courant $I = 2,0$ A. La puissance dissipée par effet Joule est :
++ 40 W
+- 20 W
+- 5,0 W
+- 200 W
+
+# Démarche complexe
+
+* Un moteur électrique reçoit une puissance totale $P_{tot} = 200$ W. La puissance utile (mécanique) fournie est $P_u = 150$ W. Le rendement $\eta$ du moteur est :
++ 75 %
+- 50 %
+- 133 %
+- 25 %
+
+* Un générateur de f.é.m. $E = 12$ V et de résistance interne $r = 1,0$ $\Omega$ alimente une résistance $R = 5,0$ $\Omega$ en série. La tension aux bornes du générateur $U_g$ est :
++ 10 V
+- 12 V
+- 14 V
+- 2,0 V
+
+** Parmi les affirmations suivantes sur l'électricité, lesquelles sont correctes ?
++ L'effet Joule dissipe de l'énergie électrique sous forme de chaleur dans toute résistance traversée par un courant
++ La tension aux bornes d'un générateur réel est inférieure à sa f.é.m. $E$ lorsqu'il débite un courant ($U_g = E - rI < E$)
+- La loi d'Ohm s'écrit $U = R / I$
+- L'énergie électrique se mesure en watts (W)
+</script>
+
+<script type="application/x-qcm" id="raw-14_ondes_mecaniques">
+#  QCM Ondes mécaniques progressives — Physique-Chimie Première Spécialité
+#  Source : chapitre6_ondes_meca.tex — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Onde mécanique progressive
+
+* Une onde mécanique progressive est :
++ la propagation d'une perturbation dans un milieu matériel, sans transport de matière mais avec transport d'énergie
+- le déplacement d'une masse d'air d'un point à un autre
+- un phénomène qui ne peut se produire que dans les liquides
+- une propagation sans échange d'énergie
+
+* Parmi les exemples suivants, lequel est une onde mécanique ?
++ une vague à la surface de l'eau
+- la lumière visible
+- les rayons X
+- les ondes radio
+
+* La célérité d'une onde mécanique :
++ dépend du milieu dans lequel elle se propage
+- est toujours égale à $3,0 \times 10^8$ m·s$^{-1}$
+- est indépendante du milieu
+- est toujours identique à la vitesse du son dans l'air
+
+# Célérité et retard
+
+* La célérité $c$ du son dans l'air est approximativement :
++ 340 m·s$^{-1}$
+- 1480 m·s$^{-1}$
+- $3,0 \times 10^8$ m·s$^{-1}$
+- 5000 m·s$^{-1}$
+
+* La relation entre le retard $\Delta t$, la distance $d$ et la célérité $c$ est :
++ $\Delta t = \dfrac{d}{c}$
+- $\Delta t = d \times c$
+- $\Delta t = \dfrac{c}{d}$
+- $\Delta t = d + c$
+
+# Onde périodique : période, fréquence et longueur d'onde
+
+* La période temporelle $T$ d'une onde périodique est :
++ la plus petite durée au bout de laquelle le phénomène se reproduit identiquement, en seconde (s)
+- la distance entre deux points en phase de l'onde
+- la vitesse de propagation de l'onde
+- le nombre de vibrations par seconde
+
+* La fréquence $f$ est reliée à la période $T$ par :
++ $f = \dfrac{1}{T}$
+- $f = T$
+- $f = T^2$
+- $f = 2T$
+
+* La longueur d'onde $\lambda$ est définie comme :
++ la plus petite distance entre deux points successifs vibrant en phase (même état vibratoire à tout instant)
+- la durée d'une vibration complète
+- la vitesse de propagation de l'onde
+- la moitié de la période spatiale de l'onde
+
+* La relation entre la célérité $c$, la longueur d'onde $\lambda$ et la période $T$ est :
++ $c = \dfrac{\lambda}{T} = \lambda \times f$
+- $c = \lambda \times T$
+- $c = \dfrac{T}{\lambda}$
+- $c = \lambda + T$
+
+# Raisonnement simple
+
+* Deux microphones sont placés à $d = 680$ m l'un de l'autre. Une source sonore près du premier microphone émet un son. La célérité du son dans l'air est $c = 340$ m·s$^{-1}$. Le retard entre les deux microphones est :
++ 2,0 s
+- 4,0 s
+- 1,0 s
+- 0,50 s
+
+* Une onde sonore a une période $T = 0,020$ s. Sa fréquence est :
++ 50 Hz
+- 20 Hz
+- 100 Hz
+- 500 Hz
+
+* Une onde sonore de fréquence $f = 500$ Hz se propage dans l'air à $c = 340$ m·s$^{-1}$. Sa longueur d'onde est :
++ 0,68 m
+- 17 000 m
+- 0,68 km
+- 170 m
+
+# Démarche complexe
+
+* Un éclair est observé. Le tonnerre est entendu $\Delta t = 3,0$ s plus tard. La célérité du son dans l'air est $c = 340$ m·s$^{-1}$ (la lumière est supposée instantanée). La distance à l'orage est :
++ 1020 m
+- 340 m
+- 3060 m
+- 113 m
+
+* Une corde vibrante produit une onde de longueur d'onde $\lambda = 0,68$ m et de fréquence $f = 500$ Hz. La célérité de l'onde le long de la corde est :
++ 340 m·s$^{-1}$
+- 680 m·s$^{-1}$
+- 170 m·s$^{-1}$
+- 0,68 m·s$^{-1}$
+
+** Parmi les affirmations suivantes sur les ondes mécaniques, lesquelles sont correctes ?
++ Une onde mécanique transporte de l'énergie sans transporter de matière
++ La célérité du son est plus élevée dans l'eau ($\approx 1480$ m·s$^{-1}$) que dans l'air ($\approx 340$ m·s$^{-1}$)
+- Une onde mécanique peut se propager dans le vide
+- La longueur d'onde $\lambda$ est la durée nécessaire pour qu'un point revienne à son état initial (c'est $T$, pas $\lambda$)
+</script>
+
+<script type="application/x-qcm" id="raw-15_lentilles_couleurs">
+#  QCM Lentilles convergentes et couleurs — Physique-Chimie Première Spécialité
+#  Source : chapitre3_lentilles.tex + Chapitre17_Image_et_couleurs.pdf — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Lentille convergente : points remarquables et rayons
+
+* Une lentille convergente est définie par trois points remarquables, qui sont :
++ le centre optique O, le foyer objet F et le foyer image F'
+- le centre optique O, le foyer image F' et un point P quelconque
+- deux foyers images F' et F'' et un centre C
+- uniquement le centre optique O et la distance focale
+
+* La distance focale $f'$ d'une lentille convergente est :
++ la distance $\overline{OF'}$ du centre optique au foyer image, exprimée en mètre (m)
+- la distance entre l'objet et l'image
+- le rapport entre la taille de l'image et la taille de l'objet
+- la distance entre les deux foyers $F$ et $F'$
+
+* La vergence $C$ d'une lentille convergente est reliée à la distance focale $f'$ par :
++ $C = \dfrac{1}{f'}$ (exprimée en dioptries $\delta$)
+- $C = f'$
+- $C = \dfrac{1}{f'^2}$
+- $C = 2 f'$
+
+* Parmi les trois rayons remarquables d'une lentille convergente, lequel est correct ?
++ Un rayon passant par le centre optique O n'est pas dévié
+- Un rayon parallèle à l'axe optique ressort en passant par le foyer objet F
+- Un rayon passant par F' émerge parallèlement à l'axe optique
+- Tout rayon est dévié vers le foyer image F'
+
+# Image réelle et image virtuelle
+
+* Une image réelle formée par une lentille convergente :
++ peut être projetée sur un écran ; elle est renversée et se forme du côté opposé à l'objet ($\overline{OA'} > 0$)
+- se forme du même côté que l'objet et ne peut pas être projetée sur un écran
+- est toujours agrandie par rapport à l'objet
+- est obtenue uniquement quand l'objet est entre O et F
+
+* La relation de conjugaison d'une lentille convergente est :
++ $\dfrac{1}{\overline{OA'}} - \dfrac{1}{\overline{OA}} = \dfrac{1}{f'}$
+- $\dfrac{1}{\overline{OA'}} + \dfrac{1}{\overline{OA}} = \dfrac{1}{f'}$
+- $\overline{OA'} \times \overline{OA} = f'^2$
+- $\overline{OA'} - \overline{OA} = f'$
+
+* Le grandissement algébrique $\gamma$ d'une lentille est défini par :
++ $\gamma = \dfrac{\overline{OA'}}{\overline{OA}} = \dfrac{\overline{A'B'}}{\overline{AB}}$
+- $\gamma = \dfrac{\overline{OA}}{\overline{OA'}}$
+- $\gamma = \overline{OA'} \times \overline{OA}$
+- $\gamma = \dfrac{f'}{\overline{OA}}$
+
+# Couleurs
+
+* En synthèse additive de la lumière, les trois couleurs primaires sont :
++ rouge, vert et bleu (RVB)
+- rouge, jaune et bleu
+- cyan, magenta et jaune
+- rouge, orange et violet
+
+* La couleur perçue d'un objet éclairé en lumière blanche est :
++ la couleur qu'il réfléchit (les autres longueurs d'onde étant absorbées)
+- la couleur qu'il absorbe
+- toujours la même quelle que soit la couleur de l'éclairage
+- la complémentaire de la couleur de l'éclairage uniquement
+
+# Raisonnement simple
+
+* Une lentille convergente a une distance focale $f' = 25$ cm. Sa vergence est :
++ 4,0 $\delta$
+- 25 $\delta$
+- 0,25 $\delta$
+- 2,5 $\delta$
+
+* Un objet est placé à $\overline{OA} = -10$ cm d'une lentille, et son image se forme à $\overline{OA'} = +15$ cm. Le grandissement $\gamma$ vaut :
++ $-1,5$ (image réelle, renversée, agrandie)
+- $+1,5$
+- $-0,67$
+- $+0,67$
+
+* En synthèse additive, le mélange d'une lumière rouge et d'une lumière verte produit :
++ du jaune
+- du cyan
+- du magenta
+- du blanc
+
+# Démarche complexe
+
+* Un objet AB est placé à $\overline{OA} = -12$ cm d'une lentille convergente de distance focale $f' = 6,0$ cm. La position de l'image est :
++ $\overline{OA'} = +12$ cm (image réelle, renversée)
+- $\overline{OA'} = +4,0$ cm
+- $\overline{OA'} = -12$ cm
+- $\overline{OA'} = +18$ cm
+
+* Un objet $AB = 2,0$ cm est placé à $\overline{OA} = -15$ cm d'une lentille de distance focale $f' = 10$ cm. La taille de l'image $|A'B'|$ est :
++ 4,0 cm (image renversée)
+- 2,0 cm
+- 1,0 cm
+- 8,0 cm
+
+** Parmi les affirmations suivantes sur les lentilles et les couleurs, lesquelles sont correctes ?
++ Un objet qui paraît rouge sous lumière blanche réfléchit le rouge et absorbe le vert et le bleu
++ En synthèse additive, le mélange du rouge, du vert et du bleu produit de la lumière blanche
+- En synthèse soustractive, les couleurs primaires sont le rouge, le vert et le bleu
+- Une image virtuelle peut être projetée sur un écran placé derrière la lentille
+</script>
+
+<script type="application/x-qcm" id="raw-16_photon_niveaux_energie">
+#  QCM Modèles de la lumière — photon et niveaux d'énergie — Physique-Chimie Première Spécialité
+#  Source : Chapitre16_Modèles_lumiere.pdf (lycee_adulte) — BO Première (programme 2019)
+#  Répartition : 9 connaissances pures / 3 raisonnement simple / 3 démarche complexe
+
+# Modèle ondulatoire — spectre électromagnétique
+
+* Le spectre électromagnétique, classé par longueur d'onde croissante, est :
++ rayons $\gamma$ — rayons X — UV — visible — IR — micro-ondes — ondes radio
+- ondes radio — micro-ondes — IR — visible — UV — rayons X — rayons $\gamma$
+- UV — visible — IR — rayons X — rayons $\gamma$ — micro-ondes — ondes radio
+- visible — UV — IR — rayons X — rayons $\gamma$ — ondes radio — micro-ondes
+
+* Le domaine de la lumière visible correspond aux longueurs d'onde :
++ $\lambda \in [400\ \text{nm}\ ;\ 800\ \text{nm}]$
+- $\lambda \in [4\ \text{nm}\ ;\ 8\ \text{nm}]$
+- $\lambda \in [400\ \mu\text{m}\ ;\ 800\ \mu\text{m}]$
+- $\lambda \in [400\ \text{pm}\ ;\ 800\ \text{pm}]$
+
+* Pour une onde lumineuse de fréquence $\nu$ et de longueur d'onde $\lambda$ se propageant à la célérité $c = 3,0 \times 10^8$ m·s$^{-1}$, la relation entre ces grandeurs est :
++ $\lambda = \dfrac{c}{\nu}$
+- $\lambda = c \times \nu$
+- $\lambda = \dfrac{\nu}{c}$
+- $\lambda = c - \nu$
+
+# Modèle corpusculaire — le photon
+
+* Un photon est :
++ une particule de masse nulle transportant une quantité d'énergie $E = h\nu$
+- un électron accéléré dans un champ électrique
+- une particule chargée positivement
+- une onde mécanique de haute fréquence
+
+* La constante de Planck $h$ vaut :
++ $6,63 \times 10^{-34}$ J·s
+- $6,67 \times 10^{-11}$ N·m$^2$·kg$^{-2}$
+- $6,02 \times 10^{23}$ mol$^{-1}$
+- $1,6 \times 10^{-19}$ C
+
+* L'énergie d'un photon de fréquence $\nu$ ou de longueur d'onde $\lambda$ est :
++ $E = h\nu = \dfrac{hc}{\lambda}$
+- $E = \dfrac{h}{\nu} = \dfrac{h\lambda}{c}$
+- $E = h \times \lambda$
+- $E = \dfrac{c}{h\nu}$
+
+# Interaction lumière-matière
+
+* À l'échelle de l'atome, les niveaux d'énergie des électrons sont :
++ quantifiés (discrets) : un électron ne peut prendre que certaines valeurs bien précises d'énergie
+- continus : un électron peut avoir n'importe quelle énergie
+- tous identiques quel que soit l'élément chimique
+- négatifs uniquement pour les états excités
+
+* Lors de l'absorption d'un photon par un atome, l'électron :
++ monte d'un niveau d'énergie $E_i$ vers un niveau $E_f > E_i$ en absorbant un photon d'énergie $\Delta E = h\nu$
+- redescend vers son état fondamental en libérant de l'énergie
+- quitte définitivement l'atome (ionisation)
+- reste dans le même niveau d'énergie
+
+* Un spectre de raies sombres sur fond coloré continu (spectre d'absorption) est obtenu lorsque :
++ un gaz atomique froid est traversé par une lumière blanche — les atomes absorbent les longueurs d'onde correspondant à leurs transitions
+- un gaz chaud est excité et émet de la lumière
+- un corps solide est chauffé à haute température
+- un laser émet une lumière monochromatique intense
+
+# Raisonnement simple
+
+* Une radiation visible a une longueur d'onde $\lambda = 500$ nm. Sa fréquence est ($c = 3,0 \times 10^8$ m·s$^{-1}$) :
++ $6,0 \times 10^{14}$ Hz
+- $1,5 \times 10^{2}$ Hz
+- $6,0 \times 10^{7}$ Hz
+- $1,5 \times 10^{16}$ Hz
+
+* Un photon a une fréquence $\nu = 5,0 \times 10^{14}$ Hz ($h = 6,63 \times 10^{-34}$ J·s). Son énergie est :
++ $3,3 \times 10^{-19}$ J
+- $3,3 \times 10^{-20}$ J
+- $1,3 \times 10^{-48}$ J
+- $3,3 \times 10^{-18}$ J
+
+* Un spectre présente des raies brillantes colorées sur fond noir. Ce spectre est :
++ un spectre de raies d'émission d'un gaz chaud
+- un spectre d'absorption d'un gaz froid
+- un spectre continu d'un corps solide chauffé
+- un spectre de réflexion d'un miroir métallique
+
+# Démarche complexe
+
+* Un atome subit une transition d'énergie $\Delta E = 4,0 \times 10^{-19}$ J ($h = 6,63 \times 10^{-34}$ J·s, $c = 3,0 \times 10^8$ m·s$^{-1}$). La longueur d'onde du photon émis est :
++ 497 nm (domaine visible)
+- 248 nm (domaine UV)
+- 994 nm (domaine IR)
+- 66 nm (domaine UV lointain)
+
+* La raie jaune du sodium correspond à $\lambda = 589$ nm ($h = 6,63 \times 10^{-34}$ J·s, $c = 3,0 \times 10^8$ m·s$^{-1}$). L'énergie de la transition atomique correspondante est :
++ $3,4 \times 10^{-19}$ J
+- $1,7 \times 10^{-19}$ J
+- $6,8 \times 10^{-19}$ J
+- $3,4 \times 10^{-26}$ J
+
+** Parmi les affirmations suivantes sur les modèles de la lumière, lesquelles sont correctes ?
++ Un photon UV transporte plus d'énergie qu'un photon infrarouge car sa longueur d'onde est plus courte ($E = hc/\lambda$)
++ L'absorption d'un photon par un atome ne peut se produire que si son énergie correspond exactement à la différence d'énergie entre deux niveaux de l'atome
+- La lumière ne peut être décrite que par le modèle ondulatoire
+- Tous les photons de la lumière blanche ont la même énergie
+</script>
+
+<!-- ═══════════ APP HTML ═══════════ -->
+<a href="index.html" class="btn-portal">← Portail</a>
+<div id="app">
+
+  <div id="screen-mode" class="screen">
+    <div class="app-header">
+      <h1>⚗️ Quiz Physique-Chimie</h1>
+      <p class="subtitle">Première Spécialité — Quiz de 10 questions</p>
+    </div>
+    <div class="mode-grid">
+      <div class="mode-card" onclick="selectMode('random')">
+        <div class="mode-icon">🎲</div>
+        <div class="mode-title">Aléatoire</div>
+        <div class="mode-desc">10 questions tirées au hasard dans toute la banque</div>
+      </div>
+      <div class="mode-card" onclick="selectMode('single')">
+        <div class="mode-icon">📚</div>
+        <div class="mode-title">Chapitre</div>
+        <div class="mode-desc">Questions dans un chapitre de votre choix</div>
+      </div>
+      <div class="mode-card" onclick="selectMode('multi')">
+        <div class="mode-icon">🎯</div>
+        <div class="mode-title">Multi-chapitres</div>
+        <div class="mode-desc">10 questions réparties équitablement sur plusieurs chapitres</div>
+      </div>
+    </div>
+    <div class="bank-info" id="bank-info"></div>
+  </div>
+
+  <div id="screen-chapters" class="screen hidden">
+    <div class="nav-bar">
+      <button class="btn-back" onclick="goBack()">← Retour</button>
+      <h2 id="chapter-screen-title"></h2>
+    </div>
+    <div id="chapter-grid" class="chapter-grid"></div>
+    <div class="selection-bar">
+      <div id="selection-info" class="selection-info"></div>
+      <button id="btn-start" class="btn-primary" disabled onclick="startQuiz()">Démarrer →</button>
+    </div>
+  </div>
+
+  <div id="screen-quiz" class="screen hidden">
+    <div class="quiz-top">
+      <div class="quiz-nav">
+        <button class="btn-quit" onclick="goToMenu()">← Menu</button>
+        <span class="quiz-counter">Question <span id="q-num">1</span> / <span id="q-tot">10</span></span>
+        <span id="q-chapter-tag" class="chapter-tag"></span>
+      </div>
+      <div class="progress-bar"><div id="progress-bar-fill" class="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div id="question-card" class="question-card"></div>
+    <div class="quiz-bottom">
+      <button id="btn-next" class="btn-primary" onclick="nextQuestion()">Question suivante →</button>
+    </div>
+  </div>
+
+  <div id="screen-results" class="screen hidden">
+    <h2 class="results-title">Résultats</h2>
+    <div id="score-block" class="score-block"></div>
+    <div id="results-list" class="results-list"></div>
+    <div class="results-actions">
+      <button class="btn-secondary" onclick="startQuiz()">↺ Rejouer</button>
+      <button class="btn-primary" onclick="goToMenu()">🏠 Menu</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+<script>
+'use strict';
+
+const CHAPTER_NAMES = {
+  '01_mole_concentration': 'La mole et concentrations',
+  '02_absorbance_beer_lambert': 'Absorbance et Beer-Lambert',
+  '03_oxydoreduction': 'Oxydoréduction',
+  '04_avancement_titrage': 'Avancement et titrage',
+  '05_lewis_geometrie_polarite': 'Lewis, géométrie et polarité',
+  '06_cohesion_dissolution': 'Cohésion et dissolution',
+  '07_chimie_organique': 'Chimie organique',
+  '08_combustion_energie_liaison': 'Combustion et énergie de liaison',
+  '09_interactions_champ': 'Interactions et champs',
+  '10_fluides_au_repos': 'Fluides au repos',
+  '11_mecanique_newton': 'Mouvement et forces',
+  '12_energie_mecanique': 'Énergie mécanique',
+  '13_energie_electrique': 'Énergie électrique',
+  '14_ondes_mecaniques': 'Ondes mécaniques',
+  '15_lentilles_couleurs': 'Lentilles et couleurs',
+  '16_photon_niveaux_energie': 'Photon et niveaux d\'énergie',
+};
+
+function parseAMC(text) {
+  const questions = [];
+  let cur = null;
+  for (const rawLine of text.split('\n')) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith('#')) continue;
+    if (/^\*\*($|\s)/.test(line)) {
+      if (cur) questions.push(cur);
+      cur = { type: 'multiple', text: line.replace(/^\*\*\s*/, ''), answers: [] };
+    } else if (/^\*($|\s)/.test(line)) {
+      if (cur) questions.push(cur);
+      cur = { type: 'single', text: line.replace(/^\*\s*/, ''), answers: [] };
+    } else if (/^\+/.test(line) && cur) {
+      const t = line.replace(/^\+\s*/, '');
+      if (t && !t.includes('\\includegraphics')) cur.answers.push({ text: t, correct: true });
+    } else if (/^-/.test(line) && cur) {
+      const t = line.replace(/^-\s*/, '');
+      if (t && !t.includes('\\includegraphics')) cur.answers.push({ text: t, correct: false });
+    } else if (cur) {
+      if (line.includes('\\includegraphics')) cur.text += '\n[📊 Figure non disponible]';
+      else cur.text += '\n' + line;
+    }
+  }
+  if (cur) questions.push(cur);
+  return questions.filter(q => q.answers.length >= 2 && q.answers.some(a => a.correct));
+}
+
+const CHAPTERS = {};
+for (const id of Object.keys(CHAPTER_NAMES)) {
+  const el = document.getElementById('raw-' + id);
+  if (el) {
+    const qs = parseAMC(el.textContent);
+    if (qs.length > 0) CHAPTERS[id] = qs;
+  }
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function renderMath(el) {
+  if (typeof renderMathInElement === 'function') {
+    renderMathInElement(el, {
+      delimiters: [
+        { left: '$$', right: '$$', display: true },
+        { left: '$',  right: '$',  display: false },
+        { left: '\\(', right: '\\)', display: false },
+        { left: '\\[', right: '\\]', display: true },
+      ],
+      throwOnError: false,
+    });
+  }
+}
+
+const TOTAL = 10;
+const S = { mode: null, selected: [], quiz: [], cur: 0, userAnswers: [] };
+
+function buildQuiz() {
+  if (S.mode === 'random') {
+    const pool = [];
+    for (const [id, qs] of Object.entries(CHAPTERS))
+      qs.forEach(q => pool.push({ ...q, chapter: CHAPTER_NAMES[id] }));
+    return shuffle(pool).slice(0, Math.min(TOTAL, pool.length));
+  }
+  if (S.mode === 'single') {
+    const id = S.selected[0];
+    return shuffle(CHAPTERS[id] || [])
+      .slice(0, Math.min(TOTAL, (CHAPTERS[id] || []).length))
+      .map(q => ({ ...q, chapter: CHAPTER_NAMES[id] }));
+  }
+  const pools = S.selected
+    .filter(id => CHAPTERS[id]?.length > 0)
+    .map(id => ({ id, qs: shuffle([...CHAPTERS[id]]) }));
+  if (!pools.length) return [];
+  const n = pools.length;
+  const counts = pools.map(() => Math.floor(TOTAL / n));
+  let rem = TOTAL % n;
+  for (let i = 0; i < pools.length && rem > 0; i++) { counts[i]++; rem--; }
+  for (let i = 0; i < pools.length; i++) counts[i] = Math.min(counts[i], pools[i].qs.length);
+  let taken = counts.reduce((s, c) => s + c, 0);
+  for (let i = 0; i < pools.length && taken < TOTAL; i++) {
+    const add = Math.min(pools[i].qs.length - counts[i], TOTAL - taken);
+    counts[i] += add; taken += add;
+  }
+  const result = [];
+  for (let i = 0; i < pools.length; i++)
+    pools[i].qs.slice(0, counts[i]).forEach(q => result.push({ ...q, chapter: CHAPTER_NAMES[pools[i].id] }));
+  return shuffle(result);
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+  const el = document.getElementById(id);
+  el.classList.remove('hidden');
+  el.style.animation = 'none'; el.offsetHeight; el.style.animation = '';
+}
+
+function selectMode(mode) {
+  S.mode = mode; S.selected = [];
+  if (mode === 'random') { startQuiz(); return; }
+  document.getElementById('chapter-screen-title').textContent =
+    mode === 'single' ? 'Choisissez un chapitre' : 'Choisissez les chapitres';
+  document.getElementById('selection-info').textContent = '';
+  document.getElementById('btn-start').disabled = true;
+  buildChapterGrid(mode);
+  showScreen('screen-chapters');
+}
+
+function buildChapterGrid(mode) {
+  const grid = document.getElementById('chapter-grid');
+  grid.innerHTML = '';
+  for (const [id, name] of Object.entries(CHAPTER_NAMES)) {
+    const qs = CHAPTERS[id];
+    if (!qs) continue;
+    const item = document.createElement('div');
+    item.className = 'ch-item'; item.dataset.id = id;
+    item.innerHTML = `<div class="ch-name">${name}</div><div class="ch-count">${qs.length} question${qs.length > 1 ? 's' : ''}</div>`;
+    item.addEventListener('click', () => toggleChapter(id, mode, item));
+    grid.appendChild(item);
+  }
+}
+
+function toggleChapter(id, mode, el) {
+  if (mode === 'single') {
+    document.querySelectorAll('.ch-item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected'); S.selected = [id];
+    const n = Math.min(CHAPTERS[id].length, TOTAL);
+    document.getElementById('selection-info').textContent = `${n} question${n > 1 ? 's' : ''} dans ce chapitre`;
+    document.getElementById('btn-start').disabled = false;
+  } else {
+    const idx = S.selected.indexOf(id);
+    if (idx >= 0) { S.selected.splice(idx, 1); el.classList.remove('selected'); }
+    else           { S.selected.push(id);       el.classList.add('selected'); }
+    const nb = S.selected.length;
+    document.getElementById('selection-info').textContent =
+      nb ? `${nb} chapitre${nb > 1 ? 's' : ''} sélectionné${nb > 1 ? 's' : ''}` : '';
+    document.getElementById('btn-start').disabled = nb === 0;
+  }
+}
+
+function goBack() { showScreen('screen-mode'); }
+
+function startQuiz() {
+  S.quiz = buildQuiz();
+  if (!S.quiz.length) { alert('Aucune question disponible.'); return; }
+  S.cur = 0; S.userAnswers = S.quiz.map(() => new Set());
+  document.getElementById('q-tot').textContent = S.quiz.length;
+  showQuestion(0); showScreen('screen-quiz');
+}
+
+function showQuestion(idx) {
+  const q = S.quiz[idx], total = S.quiz.length;
+  document.getElementById('q-num').textContent = idx + 1;
+  document.getElementById('progress-bar-fill').style.width = ((idx + 1) / total * 100) + '%';
+  document.getElementById('q-chapter-tag').textContent = q.chapter || '';
+  const shuffled = shuffle(q.answers.map((a, i) => ({ ...a, oi: i })));
+  const isMulti = q.type === 'multiple';
+  const badge = isMulti
+    ? '<span class="q-type-badge badge-multi">Réponses multiples</span>'
+    : '<span class="q-type-badge badge-single">Réponse unique</span>';
+  const answersHTML = shuffled.map(a => `
+    <label class="ans-item" data-oi="${a.oi}">
+      <input type="${isMulti ? 'checkbox' : 'radio'}" name="${isMulti ? 'q'+idx+'a'+a.oi : 'q'+idx}" value="${a.oi}" onchange="handleAnswer(${idx},${a.oi},this)">
+      <span class="ans-text">${a.text}</span>
+    </label>`).join('');
+  const card = document.getElementById('question-card');
+  card.innerHTML = `${badge}<div class="q-text">${q.text.trim()}</div><div class="answers-list">${answersHTML}</div>`;
+  document.getElementById('btn-next').textContent = idx === total - 1 ? 'Voir les résultats →' : 'Question suivante →';
+  renderMath(card);
+}
+
+function handleAnswer(qIdx, oi, input) {
+  const q = S.quiz[qIdx], sel = S.userAnswers[qIdx];
+  if (q.type === 'single') {
+    sel.clear(); sel.add(oi);
+    document.querySelectorAll('#question-card .ans-item').forEach(el => el.classList.remove('selected'));
+    input.closest('.ans-item').classList.add('selected');
+  } else {
+    if (input.checked) { sel.add(oi); input.closest('.ans-item').classList.add('selected'); }
+    else               { sel.delete(oi); input.closest('.ans-item').classList.remove('selected'); }
+  }
+}
+
+function nextQuestion() {
+  S.cur++;
+  if (S.cur >= S.quiz.length) showResults(); else showQuestion(S.cur);
+}
+
+function isCorrect(q, sel) {
+  const correct = new Set(q.answers.map((a, i) => a.correct ? i : -1).filter(i => i >= 0));
+  return [...correct].every(i => sel.has(i)) && [...sel].every(i => correct.has(i));
+}
+
+function showResults() {
+  const total = S.quiz.length;
+  const scored = S.quiz.map((q, i) => isCorrect(q, S.userAnswers[i]));
+  const score = scored.filter(Boolean).length;
+  const pct = Math.round(score / total * 100);
+  let emoji = '😅', color = '#dc2626';
+  if (pct >= 90) { emoji = '🏆'; color = '#16a34a'; }
+  else if (pct >= 70) { emoji = '😊'; color = '#16a34a'; }
+  else if (pct >= 50) { emoji = '🤔'; color = '#d97706'; }
+  document.getElementById('score-block').innerHTML = `
+    <div class="score-card">
+      <div class="score-emoji">${emoji}</div>
+      <div class="score-num" style="color:${color}">${score}<span class="score-denom">/${total}</span></div>
+      <div class="score-pct">${pct}% de réussite</div>
+    </div>`;
+  const list = document.getElementById('results-list');
+  list.innerHTML = '';
+  S.quiz.forEach((q, i) => {
+    const ok = scored[i], sel = S.userAnswers[i];
+    const div = document.createElement('div');
+    div.className = `res-item ${ok ? 'res-ok' : 'res-fail'}`;
+    const answersHTML = q.answers.map((a, ai) => {
+      const was = sel.has(ai);
+      if (a.correct && was)  return `<div class="res-ans ra-ok"><span class="ra-icon">✓</span><span>${a.text}</span></div>`;
+      if (!a.correct && was) return `<div class="res-ans ra-err"><span class="ra-icon">✗</span><span>${a.text}</span></div>`;
+      if (a.correct && !was) return `<div class="res-ans ra-miss"><span class="ra-icon">○</span><span>${a.text} <em>(manquée)</em></span></div>`;
+      return '';
+    }).join('');
+    div.innerHTML = `
+      <div class="res-chapter">${q.chapter || ''}</div>
+      <div class="res-top">
+        <div class="res-q-text">${q.text.trim()}</div>
+        <div class="res-icon">${ok ? '✅' : '❌'}</div>
+      </div>
+      <div class="res-answers">${answersHTML}</div>`;
+    list.appendChild(div); renderMath(div);
+  });
+  showScreen('screen-results');
+}
+
+function goToMenu() { S.mode = null; S.selected = []; showScreen('screen-mode'); }
+
+// Init
+(function () {
+  let total = 0;
+  for (const qs of Object.values(CHAPTERS)) total += qs.length;
+  document.getElementById('bank-info').textContent =
+    `${total} questions disponibles · ${Object.keys(CHAPTERS).length} chapitres`;
+})();
+</script>
+</body>
+</html>
