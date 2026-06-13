@@ -52,6 +52,28 @@
     padding: 28px 18px 56px;
   }
 
+  /* ── Bouton retour au portail ── */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 18px;
+    padding: 8px 14px;
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: color 0.15s, border-color 0.15s, transform 0.1s;
+  }
+  .back-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    transform: translateX(-2px);
+  }
+
   /* ── Header ── */
   header {
     margin-bottom: 28px;
@@ -363,6 +385,8 @@
 </head>
 <body>
 <div class="page">
+
+  <a class="back-link" href="../">← Retour au portail</a>
 
   <header>
     <div class="eyebrow">Physique-chimie · Terminale</div>
