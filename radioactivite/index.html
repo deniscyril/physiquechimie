@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Désintégration radioactive — Simulation</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f5f3ee;
+    --surface: #ffffff;
+    --surface-2: #ece9e2;
+    --border: rgba(26,26,24,0.10);
+    --alive: #c0392b;
+    --alive-soft: rgba(192,57,43,0.12);
+    --dead: #27ae60;
+    --dead-soft: rgba(39,174,96,0.12);
+    --text: #1a1a18;
+    --text-muted: #6b6860;
+    --text-dim: #aeaa9f;
+    --accent: #c0392b;
+    --accent-hover: #a8311f;
+    --mono: 'Space Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+
+  /* Mode datation : ¹⁴C (bleu) → ¹⁴N (orange), pour distinguer
+     visuellement ce mode du mode général. */
+  body.mode-datation {
+    --alive: #2980b9;
+    --alive-soft: rgba(41,128,185,0.12);
+    --dead: #e67e22;
+    --dead-soft: rgba(230,126,34,0.12);
+    --accent: #2980b9;
+    --accent-hover: #21618c;
+  }
+
+  html, body {
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--display);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 28px 18px 56px;
+  }
+
+  /* ── Header ── */
+  header {
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  h1 {
+    font-size: clamp(1.6rem, 4.5vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    margin-top: 8px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    max-width: 640px;
+    line-height: 1.5;
+  }
+
+  /* ── Sélecteur de mode ── */
+  .mode-switch {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .mode-switch button {
+    flex: none;
+    font-size: 0.82rem;
+    padding: 10px 18px;
+    min-height: 40px;
+  }
+
+  .mode-switch button.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .mode-switch button.active:hover { background: var(--accent-hover); }
+
+  /* ── Bandeau de statut (mode datation) ── */
+  .status-banner {
+    display: none;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    padding: 10px 14px;
+    border-radius: 9px;
+    margin-bottom: 16px;
+    background: var(--surface-2);
+    color: var(--text-muted);
+    border-left: 3px solid var(--accent);
+  }
+
+  body.mode-datation .status-banner { display: block; }
+  body.mode-datation .slider-row { display: none; }
+
+  /* ── Bloc de formule additionnel (mode datation) ── */
+  .formula-datation { display: none; }
+  body.mode-datation .formula-datation { display: block; }
+
+  /* ── Layout ── */
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+  }
+
+  @media (max-width: 860px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+  }
+
+  .panel + .panel { margin-top: 16px; }
+
+  .panel-title {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+
+  /* ── Grille de noyaux ── */
+  .grid-nuclei {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: 3px;
+    margin-bottom: 18px;
+  }
+
+  .nucleus {
+    aspect-ratio: 1;
+    border-radius: 3px;
+    background: var(--alive);
+    transition: background-color 0.35s ease;
+  }
+
+  .nucleus.decayed { background: var(--dead); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nucleus { transition: none; }
+  }
+
+  .legend {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 18px;
+  }
+
+  .legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .swatch.alive { background: var(--alive); }
+  .swatch.dead { background: var(--dead); }
+
+  /* ── Contrôles ── */
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .slider-row label {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .slider-row label span:last-child {
+    color: var(--text);
+    font-weight: 700;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--surface-2);
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 3px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--border);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: 3px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--border);
+  }
+
+  .button-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  button {
+    flex: 1;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 0.92rem;
+    padding: 13px 16px;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    cursor: pointer;
+    transition: transform 0.08s ease, background-color 0.15s ease;
+    min-height: 46px;
+  }
+
+  button:hover { background: #e2ddd2; }
+  button:active { transform: translateY(1px); }
+
+  button.primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  button.primary:hover { background: var(--accent-hover); }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* ── Stats ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .stat {
+    background: var(--surface-2);
+    border-radius: 9px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .stat-value {
+    font-family: var(--mono);
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+
+  /* ── Graphique ── */
+  .chart-wrap {
+    position: relative;
+    height: 280px;
+  }
+
+  @media (max-width: 480px) {
+    .chart-wrap { height: 220px; }
+  }
+
+  /* ── Formules ── */
+  .formula-block {
+    font-family: var(--mono);
+    font-size: 0.95rem;
+    background: var(--surface-2);
+    border-radius: 9px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    overflow-x: auto;
+  }
+
+  .formula-label {
+    font-family: var(--display);
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 12px;
+    margin-bottom: 4px;
+  }
+
+  .formula-label:first-child { margin-top: 0; }
+
+  footer {
+    margin-top: 32px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="eyebrow">Physique-chimie · Terminale</div>
+    <h1>Désintégration radioactive</h1>
+    <p class="subtitle">
+      Chaque noyau radioactif a, à chaque seconde, une probabilité de se désintégrer
+      qui dépend de la constante radioactive λ. Cliquez sur « +1 seconde » pour faire
+      avancer le temps et observer la décroissance exponentielle apparaître.
+    </p>
+  </header>
+
+  <div class="mode-switch" role="group" aria-label="Choix du mode">
+    <button id="mode-general" class="active">Mode général</button>
+    <button id="mode-datation">Mode datation (¹⁴C)</button>
+  </div>
+
+  <div class="layout">
+
+    <!-- Colonne gauche : simulation -->
+    <div>
+      <div class="panel">
+        <div class="panel-title" id="grid-title">Population de noyaux (160)</div>
+
+        <div class="status-banner" id="status-banner"></div>
+
+        <div class="grid-nuclei" id="grid" role="img" aria-label="Grille de 160 noyaux, rouge = non désintégré, vert = désintégré"></div>
+
+        <div class="legend">
+          <span><span class="swatch alive"></span><span id="legend-alive">Non désintégré</span></span>
+          <span><span class="swatch dead"></span><span id="legend-dead">Désintégré</span></span>
+        </div>
+
+        <div class="controls">
+          <div class="slider-row">
+            <label for="lambda-slider">
+              <span>Constante radioactive λ (s⁻¹)</span>
+              <span id="lambda-out">0.10</span>
+            </label>
+            <input type="range" id="lambda-slider" min="1" max="50" value="10" step="1"
+                   aria-describedby="lambda-out">
+          </div>
+
+          <div class="button-row">
+            <button class="primary" id="btn-next">+1 seconde</button>
+            <button id="btn-reset">Réinitialiser</button>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat-label" id="stat-time-label">Temps t (s)</div>
+            <div class="stat-value" id="stat-iter">0</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">N(t) restants</div>
+            <div class="stat-value" id="stat-n">160</div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Demi-vie t₁/₂ (<span id="stat-halflife-unit">s</span>)</div>
+            <div class="stat-value" id="stat-halflife">6.6</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Colonne droite : graphique + formules -->
+    <div>
+      <div class="panel">
+        <div class="panel-title">Courbe N(t)</div>
+        <div class="chart-wrap">
+          <canvas id="chart"></canvas>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">Modèle mathématique</div>
+
+        <div class="formula-label">Loi de décroissance</div>
+        <div class="formula-block">N(t) = N₀ · e^(−λt)</div>
+
+        <div class="formula-label">Constante radioactive<span id="lambda-context"> (réglée par le curseur)</span></div>
+        <div class="formula-block">λ = <span id="formula-lambda">0.10</span> <span id="lambda-unit">s⁻¹</span></div>
+
+        <div class="formula-label">Demi-vie</div>
+        <div class="formula-block">t₁/₂ = ln(2) / λ ≈ <span id="formula-halflife">6.9</span> <span id="halflife-unit">s</span></div>
+
+        <div class="formula-datation">
+          <div class="formula-label">Cas de la datation : enfouissement à t = 0</div>
+          <div class="formula-block">N(t) = N₀ pour t &lt; 0 (organisme vivant, échanges avec l'atmosphère)<br>N(t) = N₀ · e^(−λt) pour t ≥ 0 (système clos après enfouissement)</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer id="footer-date"></footer>
+</div>
+
+<script>
+(function () {
+  const ROWS = 10;
+  const COLS = 16;
+  const N0 = ROWS * COLS;
+
+  const gridEl = document.getElementById('grid');
+  const sliderEl = document.getElementById('lambda-slider');
+  const lambdaOutEl = document.getElementById('lambda-out');
+  const statIterEl = document.getElementById('stat-iter');
+  const statNEl = document.getElementById('stat-n');
+  const statHalfLifeEl = document.getElementById('stat-halflife');
+  const formulaLambdaEl = document.getElementById('formula-lambda');
+  const formulaHalfLifeEl = document.getElementById('formula-halflife');
+
+  let nuclei = [];
+  let iteration = 0;
+  let lambda = Number(sliderEl.value) / 100;
+  let chart = null;
+  let mode = 'general';
+
+  // En mode datation, le temps démarre avant l'enfouissement (t < 0) :
+  // l'échantillon est encore vivant et N(t) reste constant jusqu'à t = 0.
+  // Intervalle négatif réduit de moitié par rapport à un premier essai (-5 au lieu de -10).
+  const T_START = { general: 0, datation: -5 };
+  const X_SPAN = { general: 40, datation: 30 };
+
+  // Constante radioactive réaliste du ¹⁴C : t½ = 5,73 ka → λ ≈ 0,121 ka⁻¹.
+  // Pas de curseur en mode datation : on simule UN isotope réel, pas un cas abstrait.
+  const LAMBDA_C14 = Math.log(2) / 5.73;
+
+  // Construit une fois les 160 cellules du DOM, puis on ne fait
+  // que basculer leur classe — plus léger que de tout recréer.
+  function buildGrid() {
+    gridEl.innerHTML = '';
+    for (let i = 0; i < N0; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'nucleus';
+      gridEl.appendChild(cell);
+    }
+  }
+
+  function renderGrid() {
+    const cells = gridEl.children;
+    for (let i = 0; i < N0; i++) {
+      cells[i].classList.toggle('decayed', !nuclei[i]);
+    }
+  }
+
+  function getLambda() {
+    return mode === 'datation' ? LAMBDA_C14 : lambda;
+  }
+
+  // Pas de temps = 1 unité (1 s en mode général, 1 ka en mode datation).
+  // Probabilité de désintégration d'un noyau pendant ce pas, dérivée de λ.
+  function getDecayProbability() {
+    return 1 - Math.exp(-getLambda());
+  }
+
+  function getHalfLife() {
+    return Math.log(2) / getLambda();
+  }
+
+  // N(t) théorique : constant tant que l'échantillon est vivant (t < 0,
+  // équilibre avec l'atmosphère), puis décroissance exponentielle à
+  // partir de l'enfouissement (t = 0).
+  function theoreticalSeries(minX, maxX) {
+    const lambda = getLambda();
+    const points = [];
+    for (let t = minX; t <= maxX; t++) {
+      const y = t < 0 ? N0 : N0 * Math.exp(-lambda * t);
+      points.push({ x: t, y });
+    }
+    return points;
+  }
+
+  function buildChart() {
+    if (chart) chart.destroy();
+
+    const ctx = document.getElementById('chart').getContext('2d');
+    const minX = T_START[mode];
+    const maxX = minX + X_SPAN[mode];
+    const simColor = mode === 'datation' ? '#2980b9' : '#c0392b';
+
+    const datasets = [
+      {
+        label: 'Simulation',
+        data: [{ x: minX, y: N0 }],
+        borderColor: simColor,
+        backgroundColor: simColor,
+        borderWidth: 2,
+        pointRadius: 3,
+        tension: 0,
+        showLine: true
+      },
+      {
+        label: 'Théorique N₀·e^(−λt)',
+        data: theoreticalSeries(minX, maxX),
+        borderColor: '#6b6860',
+        borderDash: [5, 4],
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0
+      }
+    ];
+
+    if (mode === 'datation') {
+      datasets.push({
+        label: 'Enfouissement (t = 0)',
+        data: [{ x: 0, y: 0 }, { x: 0, y: N0 }],
+        borderColor: '#aeaa9f',
+        borderWidth: 1.5,
+        borderDash: [2, 2],
+        pointRadius: 0,
+        tension: 0
+      });
+    }
+
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: { datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 200 },
+        scales: {
+          x: {
+            type: 'linear',
+            min: minX,
+            max: maxX,
+            title: { display: true, text: mode === 'datation' ? 'Temps t (ka, avant / après enfouissement)' : 'Temps t (s)' },
+            grid: { color: 'rgba(26,26,24,0.06)' }
+          },
+          y: {
+            min: 0,
+            max: N0,
+            title: { display: true, text: 'N(t)' },
+            grid: { color: 'rgba(26,26,24,0.06)' }
+          }
+        },
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { family: "'Space Mono', monospace" }, boxWidth: 14 } }
+        }
+      }
+    });
+  }
+
+  function updateChart() {
+    const simData = chart.data.datasets[0].data;
+    simData.push({ x: iteration, y: nuclei.filter(Boolean).length });
+
+    const minX = chart.options.scales.x.min;
+    const currentMax = chart.options.scales.x.max;
+    if (iteration > currentMax - 5) {
+      const newMax = currentMax + 20;
+      chart.options.scales.x.max = newMax;
+      chart.data.datasets[1].data = theoreticalSeries(minX, newMax);
+    }
+    chart.update();
+  }
+
+  function updateFormulas() {
+    const activeLambda = getLambda();
+    const halfLife = getHalfLife();
+    formulaLambdaEl.textContent = activeLambda.toFixed(mode === 'datation' ? 3 : 2);
+    formulaHalfLifeEl.textContent = halfLife.toFixed(1);
+    statHalfLifeEl.textContent = halfLife.toFixed(1);
+  }
+
+  function updateStats() {
+    statIterEl.textContent = iteration;
+    statNEl.textContent = nuclei.filter(Boolean).length;
+  }
+
+  function step() {
+    // Avant l'enfouissement (t < 0), l'échantillon est vivant : les échanges
+    // avec l'atmosphère maintiennent N(t) constant, aucune désintégration
+    // n'est comptabilisée. La décroissance ne démarre qu'à partir de t = 0.
+    if (iteration >= 0) {
+      const p = getDecayProbability();
+      for (let i = 0; i < N0; i++) {
+        if (nuclei[i] && Math.random() < p) {
+          nuclei[i] = false;
+        }
+      }
+    }
+    iteration++;
+    renderGrid();
+    updateStats();
+    updateStatusBanner();
+    updateChart();
+  }
+
+  function initSim() {
+    nuclei = new Array(N0).fill(true);
+    iteration = T_START[mode];
+    renderGrid();
+    updateStats();
+    updateFormulas();
+    updateStatusBanner();
+    buildChart();
+  }
+
+  function updateStatusBanner() {
+    const banner = document.getElementById('status-banner');
+    if (mode !== 'datation') return;
+    if (iteration < 0) {
+      banner.textContent =
+        `t = ${iteration} ka : échantillon vivant — les échanges de carbone avec l'atmosphère maintiennent N(t) constant.`;
+    } else {
+      banner.textContent =
+        `t = ${iteration} ka : échantillon enfoui depuis t = 0 — système clos, la décroissance du ¹⁴C en ¹⁴N commence.`;
+    }
+  }
+
+  function updateModeTexts() {
+    const gridTitle = document.getElementById('grid-title');
+    const legendAlive = document.getElementById('legend-alive');
+    const legendDead = document.getElementById('legend-dead');
+    const timeLabel = document.getElementById('stat-time-label');
+    const btnNext = document.getElementById('btn-next');
+    const lambdaContext = document.getElementById('lambda-context');
+    const lambdaUnit = document.getElementById('lambda-unit');
+    const halfLifeUnit = document.getElementById('halflife-unit');
+    const statHalfLifeUnit = document.getElementById('stat-halflife-unit');
+
+    if (mode === 'datation') {
+      gridTitle.textContent = 'Échantillon (160 noyaux de ¹⁴C)';
+      legendAlive.textContent = '¹⁴C (non désintégré)';
+      legendDead.textContent = '¹⁴N (produit de désintégration)';
+      timeLabel.textContent = 'Temps t (ka)';
+      btnNext.textContent = '+1 ka';
+      lambdaContext.textContent = ' (¹⁴C, valeur fixe)';
+      lambdaUnit.textContent = 'ka⁻¹';
+      halfLifeUnit.textContent = 'ka';
+      statHalfLifeUnit.textContent = 'ka';
+      gridEl.setAttribute('aria-label', 'Grille de 160 noyaux, bleu = carbone 14, orange = azote 14 issu de la désintégration');
+    } else {
+      gridTitle.textContent = 'Population de noyaux (160)';
+      legendAlive.textContent = 'Non désintégré';
+      legendDead.textContent = 'Désintégré';
+      timeLabel.textContent = 'Temps t (s)';
+      btnNext.textContent = '+1 seconde';
+      lambdaContext.textContent = ' (réglée par le curseur)';
+      lambdaUnit.textContent = 's⁻¹';
+      halfLifeUnit.textContent = 's';
+      statHalfLifeUnit.textContent = 's';
+      gridEl.setAttribute('aria-label', 'Grille de 160 noyaux, rouge = non désintégré, vert = désintégré');
+    }
+  }
+
+  function setMode(newMode) {
+    mode = newMode;
+    document.body.classList.toggle('mode-datation', mode === 'datation');
+    document.getElementById('mode-general').classList.toggle('active', mode === 'general');
+    document.getElementById('mode-datation').classList.toggle('active', mode === 'datation');
+    updateModeTexts();
+    initSim();
+  }
+
+  sliderEl.addEventListener('input', function () {
+    lambda = Number(this.value) / 100;
+    lambdaOutEl.textContent = lambda.toFixed(2);
+    updateFormulas();
+    initSim();
+  });
+
+  document.getElementById('btn-next').addEventListener('click', step);
+  document.getElementById('btn-reset').addEventListener('click', initSim);
+  document.getElementById('mode-general').addEventListener('click', () => setMode('general'));
+  document.getElementById('mode-datation').addEventListener('click', () => setMode('datation'));
+
+  document.getElementById('footer-date').textContent =
+    new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  buildGrid();
+  initSim();
+})();
+</script>
+</body>
+</html>
