@@ -226,9 +226,14 @@
 
   /* Lignes */
   .row-initial  td { background: #eff6ff; }
-  .row-inter-formula td { background: #fafafa; color: var(--text2); font-style: italic; font-size: 12px; }
-  .row-inter-val td { background: #eff6ff; font-weight: 600; border-left: 3px solid var(--accent); }
+  .row-inter    td { background: #eff6ff; }
+  .row-inter    td:first-child { border-left: 3px solid var(--accent); }
   .row-final    td { background: #f0fdf4; }
+  /* Expression littérale (grise) + valeur numérique (en gras, accentuée) dans une même case */
+  .cell-expr  { color: var(--text3); }
+  .cell-eq    { color: var(--text3); margin: 0 2px; }
+  .row-inter .cell-val { font-weight: 700; color: var(--accent); }
+  .row-final  .cell-val { font-weight: 700; color: #16a34a; }
 
   /* Couleur par espèce dans l'en-tête */
   .tableau th.sp-col { font-weight: 700; font-size: 13px; }
@@ -845,13 +850,23 @@ function fmtCell(v) {
   return parseFloat(v.toFixed(2)).toString().replace('.', ',');
 }
 
-function coefLabel(s) {
-  // Affiche le coefficient stœchiométrique signé sous forme lisible
+function coefLabel(s, varHtml) {
+  // Affiche le terme « ± coef·var » sous forme lisible (var = 'x' ou 'x_max')
+  varHtml = varHtml || '<em>x</em>';
   var c = s.coef;
-  if (c === 1)  return '+&thinsp;x';
-  if (c === -1) return '−&thinsp;x';
-  if (c > 0)   return '+&thinsp;' + c + 'x';
-  return '−&thinsp;' + (-c) + 'x';
+  if (c === 1)  return '+&thinsp;' + varHtml;
+  if (c === -1) return '−&thinsp;' + varHtml;
+  if (c > 0)   return '+&thinsp;' + c + varHtml;
+  return '−&thinsp;' + (-c) + varHtml;
+}
+
+// Construit le contenu « expression littérale = valeur » d'une case espèce
+function exprCell(s, x, varHtml) {
+  var n0val = fmtCell(n0[s.id]);
+  var val   = fmtCell(getN(s.id, x));
+  return '<span class="cell-expr">' + n0val + ' ' + coefLabel(s, varHtml) + '</span>' +
+         '<span class="cell-eq">=</span>' +
+         '<span class="cell-val">' + val + '</span>';
 }
 
 function buildTableau() {
@@ -902,43 +917,27 @@ function buildTableau() {
   });
   tbody.appendChild(r0);
 
-  // ── Ligne intermédiaire — formule ──
-  var r1f = document.createElement('tr');
-  r1f.className = 'row-inter-formula';
-  var td1fe = document.createElement('td');
-  td1fe.className = 'col-etat';
-  td1fe.innerHTML = 'En cours <em>(formule)</em>';
-  r1f.appendChild(td1fe);
-  var td1fx = document.createElement('td');
-  td1fx.innerHTML = '<em>x</em>';
-  r1f.appendChild(td1fx);
+  // ── Ligne intermédiaire « En cours » — expression littérale = valeur ──
+  var r1 = document.createElement('tr');
+  r1.className = 'row-inter';
+  var td1e = document.createElement('td');
+  td1e.className = 'col-etat';
+  td1e.innerHTML = 'En cours <em>x</em>&nbsp;=&nbsp;' + fmt(xState) + '&thinsp;mol';
+  r1.appendChild(td1e);
+  var td1x = document.createElement('td');
+  td1x.innerHTML = '<span class="cell-expr"><em>x</em></span>' +
+                   '<span class="cell-eq">=</span>' +
+                   '<span class="cell-val">' + fmt(xState) + '</span>';
+  r1.appendChild(td1x);
   species.forEach(function(s) {
     var td = document.createElement('td');
-    var n0val = fmtCell(n0[s.id]);
-    td.innerHTML = n0val + ' ' + coefLabel(s);
-    r1f.appendChild(td);
+    td.innerHTML = exprCell(s, xState, '<em>x</em>');
+    r1.appendChild(td);
   });
-  tbody.appendChild(r1f);
+  tbody.appendChild(r1);
 
-  // ── Ligne intermédiaire — valeurs pour x courant ──
-  var r1v = document.createElement('tr');
-  r1v.className = 'row-inter-val';
-  var td1ve = document.createElement('td');
-  td1ve.className = 'col-etat';
-  td1ve.innerHTML = 'En cours <em>x</em>&nbsp;=&nbsp;' + fmt(xState) + '&thinsp;mol';
-  r1v.appendChild(td1ve);
-  var td1vx = document.createElement('td');
-  td1vx.style.color = 'var(--accent)';
-  td1vx.textContent = fmt(xState);
-  r1v.appendChild(td1vx);
-  species.forEach(function(s) {
-    var td = document.createElement('td');
-    td.textContent = fmtCell(getN(s.id, xState));
-    r1v.appendChild(td);
-  });
-  tbody.appendChild(r1v);
-
-  // ── Ligne état final (x = xmax) ──
+  // ── Ligne état final (x = xmax) — expression littérale = valeur ──
+  var xmaxHtml = '<em>x</em><sub>max</sub>';
   var rf = document.createElement('tr');
   rf.className = 'row-final';
   var tdfe = document.createElement('td');
@@ -946,12 +945,13 @@ function buildTableau() {
   tdfe.innerHTML = 'Final <span class="badge-final">x = x<sub>max</sub></span>';
   rf.appendChild(tdfe);
   var tdfx = document.createElement('td');
-  tdfx.style.color = '#16a34a';
-  tdfx.textContent = fmt(xmax);
+  tdfx.innerHTML = '<span class="cell-expr">' + xmaxHtml + '</span>' +
+                   '<span class="cell-eq">=</span>' +
+                   '<span class="cell-val">' + fmt(xmax) + '</span>';
   rf.appendChild(tdfx);
   species.forEach(function(s) {
     var td = document.createElement('td');
-    td.textContent = fmtCell(getN(s.id, xmax));
+    td.innerHTML = exprCell(s, xmax, xmaxHtml);
     rf.appendChild(td);
   });
   tbody.appendChild(rf);
