@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avancement d'une transformation chimique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #f0f4f8;
+    --bg2:       #ffffff;
+    --bg3:       #e8eef5;
+    --border:    #c8d6e5;
+    --text:      #1a2a3a;
+    --text2:     #4a6278;
+    --text3:     #7a96aa;
+    --accent:    #2563eb;
+    --red:       #dc2626;
+    --red-bg:    #fef2f2;
+    --red-border:#fca5a5;
+    --radius:    12px;
+    --radius-sm: 7px;
+  }
+
+  html { font-size: 16px; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  header { text-align: center; margin-bottom: 2rem; }
+  header .eyebrow {
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text3); margin-bottom: 6px;
+  }
+  header h1 {
+    font-size: clamp(1.3rem, 4vw, 1.9rem); font-weight: 600;
+    color: var(--text); line-height: 1.2;
+  }
+  header h1 span { color: var(--accent); }
+
+  .container { max-width: 900px; margin: 0 auto; }
+
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.2rem; margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .section-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text3); margin-bottom: 12px;
+  }
+
+  /* ── Select réaction ── */
+  .reaction-select-wrap { position: relative; }
+  .reaction-select-wrap::after {
+    content: '▾';
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--text3); pointer-events: none; font-size: 14px;
+  }
+  select#reaction-select {
+    width: 100%;
+    padding: 12px 40px 12px 14px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--border);
+    background: var(--bg3);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  select#reaction-select:focus { border-color: var(--accent); }
+  select#reaction-select option { background: var(--bg3); color: var(--text); }
+
+  /* ── Contrôles quantités ── */
+  .controls-row { display: flex; flex-wrap: wrap; gap: 14px; }
+  .species-ctrl { display: flex; flex-direction: column; gap: 6px; min-width: 100px; flex: 1; }
+  .species-name { font-size: 14px; font-weight: 600; }
+  .role-badge { font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 500; width: fit-content; }
+  .badge-r   { background: #fde8e8; color: #b91c1c; }
+  .badge-p   { background: #dcfce7; color: #15803d; }
+  .badge-lim { background: #fef3c7; color: #92400e; border: 1px solid #f59e0b; }
+  .qty-row { display: flex; align-items: center; gap: 8px; }
+  .qty-val { font-size: 22px; font-weight: 700; min-width: 38px; text-align: center; }
+  .btn-qty {
+    width: 30px; height: 30px; border-radius: 6px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text); font-size: 18px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: background 0.1s; flex-shrink: 0;
+  }
+  .btn-qty:hover { background: var(--bg3); }
+  .unit { font-size: 11px; color: var(--text3); }
+
+  /* ── Info cards ── */
+  .info-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 1rem; }
+  .info-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 10px 14px; flex: 1; min-width: 90px;
+  }
+  .info-card .lbl { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+  .info-card .val { font-size: 18px; font-weight: 700; color: var(--text); }
+
+  /* ── Slider ── */
+  .slider-wrap { margin-bottom: 0.5rem; }
+  .slider-meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 8px; font-size: 13px; color: var(--text2);
+  }
+  .slider-meta .x-val { font-size: 17px; font-weight: 700; color: var(--accent); }
+  .slider-meta .x-val.blocked { color: var(--red); }
+
+  /* Track avec zone grisée au-delà de xmax */
+  .slider-track-wrap { position: relative; margin-bottom: 6px; }
+  input[type=range] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 6px; border-radius: 3px;
+    background: var(--bg3); outline: none; cursor: pointer;
+    position: relative; z-index: 1;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); cursor: pointer; border: 2px solid var(--bg2);
+    transition: transform 0.1s, background 0.15s;
+  }
+  input[type=range].blocked::-webkit-slider-thumb { background: var(--red); }
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  input[type=range]::-moz-range-thumb {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); cursor: pointer; border: 2px solid var(--bg2);
+  }
+  input[type=range].blocked::-moz-range-thumb { background: var(--red); }
+
+  /* Marqueur xmax sous le slider */
+  .slider-hints {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--text3); margin-top: 4px; position: relative;
+  }
+  .xmax-tick {
+    position: absolute; bottom: 14px; transform: translateX(-50%);
+    width: 2px; height: 10px; background: var(--accent); border-radius: 1px;
+    pointer-events: none; z-index: 2;
+  }
+  .xmax-tick-label {
+    position: absolute; bottom: 26px; transform: translateX(-50%);
+    font-size: 10px; color: var(--accent); white-space: nowrap;
+    pointer-events: none; z-index: 2; font-weight: 500;
+  }
+
+  /* ── Alerte réactif épuisé ── */
+  #epuise-alert {
+    display: none;
+    background: var(--red-bg);
+    border: 1px solid var(--red-border);
+    color: #991b1b;
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 10px;
+    text-align: center;
+    letter-spacing: 0.02em;
+  }
+  #epuise-alert.visible { display: block; }
+
+  /* ── Charts ── */
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 600px) { .charts-grid { grid-template-columns: 1fr; } }
+  .chart-inner { position: relative; height: 210px; }
+
+  .bar-x-display { display: flex; justify-content: space-around; margin-top: 10px; gap: 4px; }
+  .bar-x-item { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
+  .bar-x-label { font-size: 12px; font-weight: 600; }
+  .bar-x-val { font-size: 13px; font-weight: 500; color: var(--text2); }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; font-size: 12px; color: var(--text2); }
+  .leg-item { display: flex; align-items: center; gap: 5px; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  footer { text-align: center; margin-top: 2.5rem; font-size: 11px; color: var(--text3); }
+
+  /* ── Tableau d'avancement ── */
+  .tableau-toggle {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer; user-select: none;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text3);
+    padding: 0; background: none; border: none;
+    width: 100%; text-align: left;
+  }
+  .tableau-toggle:hover { color: var(--text2); }
+  .tableau-toggle .chevron {
+    display: inline-block; transition: transform 0.25s;
+    font-size: 10px; color: var(--accent);
+  }
+  .tableau-toggle.open .chevron { transform: rotate(90deg); }
+
+  .tableau-body {
+    display: none; margin-top: 14px; overflow-x: auto;
+  }
+  .tableau-body.open { display: block; }
+
+  .tableau {
+    width: 100%; border-collapse: collapse;
+    font-size: 13px; min-width: 340px;
+  }
+  .tableau th, .tableau td {
+    padding: 9px 12px; text-align: center;
+    border: 1px solid var(--border);
+  }
+  .tableau thead tr { background: var(--bg3); }
+  .tableau th { font-weight: 600; color: var(--text2); font-size: 11px; letter-spacing: 0.05em; }
+  .tableau th.col-etat { text-align: left; min-width: 120px; }
+  .tableau td.col-etat { text-align: left; font-weight: 500; color: var(--text2); }
+
+  /* Lignes */
+  .row-initial  td { background: #eff6ff; }
+  .row-inter-formula td { background: #fafafa; color: var(--text2); font-style: italic; font-size: 12px; }
+  .row-inter-val td { background: #eff6ff; font-weight: 600; border-left: 3px solid var(--accent); }
+  .row-final    td { background: #f0fdf4; }
+
+  /* Couleur par espèce dans l'en-tête */
+  .tableau th.sp-col { font-weight: 700; font-size: 13px; }
+
+  /* Badge état final */
+  .badge-final {
+    display: inline-block; font-size: 9px; padding: 1px 5px;
+    border-radius: 3px; background: #dcfce7;
+    color: #15803d; font-weight: 600; margin-left: 4px; vertical-align: middle;
+  }
+
+  /* ── Encart quotient / réactif limitant ── */
+  .quotient-intro {
+    font-size: 13px; color: var(--text2); line-height: 1.5;
+    margin-bottom: 14px;
+  }
+  .quotient-list { display: flex; flex-direction: column; gap: 10px; }
+  .quotient-row {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+    padding: 12px 14px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); background: var(--bg3);
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .quotient-row.is-lim {
+    border-color: #f59e0b; background: #fffbeb;
+  }
+  .quotient-species {
+    font-size: 15px; font-weight: 700; min-width: 42px;
+  }
+  .quotient-calc {
+    font-size: 15px; color: var(--text); display: flex;
+    align-items: center; gap: 7px; flex-wrap: wrap;
+  }
+  .quotient-calc .frac {
+    display: inline-flex; flex-direction: column; align-items: center;
+    line-height: 1.1; vertical-align: middle; margin: 0 2px;
+  }
+  .quotient-calc .frac .num { border-bottom: 1.5px solid var(--text2); padding: 0 6px; }
+  .quotient-calc .frac .den { padding: 0 6px; }
+  .quotient-calc .equals { color: var(--text3); }
+  .quotient-calc .result { font-weight: 700; font-size: 17px; }
+  .quotient-tag {
+    margin-left: auto; font-size: 11px; font-weight: 600;
+    padding: 3px 9px; border-radius: 4px; white-space: nowrap;
+  }
+  .quotient-tag.lim { background: #fef3c7; color: #92400e; }
+  .quotient-tag.excess { background: var(--bg2); color: var(--text3); border: 1px solid var(--border); }
+  .quotient-conclusion {
+    margin-top: 16px; padding: 14px;
+    border-radius: var(--radius-sm); background: #eff6ff;
+    border: 1px solid #bfdbfe; font-size: 14px; line-height: 1.55;
+    color: var(--text);
+  }
+  .quotient-conclusion strong { color: var(--accent); }
+  .quotient-conclusion .xmax-val { font-weight: 700; font-size: 16px; color: var(--accent); }
+
+  /* ── Bouton retour au portail ── */
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 20px;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--text2);
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: color 0.15s, border-color 0.15s, transform 0.1s;
+  }
+  .back-link:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    transform: translateX(-2px);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <a class="back-link" href="../">← Retour au portail</a>
+
+  <header>
+    <div class="eyebrow">Chimie — Enseignement de Spécialité</div>
+    <h1>Avancement d'une <span>transformation chimique</span></h1>
+  </header>
+
+  <!-- Choix de la réaction -->
+  <div class="card">
+    <div class="section-label">Équation chimique</div>
+    <div class="reaction-select-wrap">
+      <select id="reaction-select" aria-label="Choisir une réaction chimique"></select>
+    </div>
+  </div>
+
+  <!-- Quantités initiales -->
+  <div class="card">
+    <div class="section-label">État initial — quantités de matière (mol)</div>
+    <div class="controls-row" id="controls"></div>
+  </div>
+
+  <!-- Infos + slider -->
+  <div class="card">
+    <div class="info-row" id="inforow"></div>
+    <div class="slider-wrap">
+      <div class="slider-meta">
+        <span>Avancement <em>x</em></span>
+        <span class="x-val" id="x-disp"><em>x</em> = 0,00 mol</span>
+      </div>
+      <div class="slider-track-wrap">
+        <span class="xmax-tick" id="xmax-tick"></span>
+        <span class="xmax-tick-label" id="xmax-tick-label"></span>
+        <input type="range" id="x-slider" min="0" max="150" value="0" step="1" aria-label="Avancement chimique x">
+      </div>
+      <div class="slider-hints">
+        <span>x = 0 — État initial</span>
+        <span id="xmax-label-right"></span>
+      </div>
+    </div>
+    <div id="epuise-alert">⚠ Réactif limitant épuisé — x ne peut pas dépasser x<sub>max</sub></div>
+  </div>
+
+  <!-- Graphiques -->
+  <div class="charts-grid">
+    <div class="card">
+      <div class="section-label">Histogramme des quantités</div>
+      <div class="chart-inner"><canvas id="barChart" role="img" aria-label="Histogramme des quantités de matière"></canvas></div>
+      <div class="bar-x-display" id="bar-x-display"></div>
+    </div>
+    <div class="card">
+      <div class="section-label">Quantités en fonction de x</div>
+      <div class="chart-inner"><canvas id="lineChart" role="img" aria-label="Courbes n(x) par espèce"></canvas></div>
+      <div class="legend" id="legend"></div>
+    </div>
+  </div>
+
+</div>
+
+  <!-- Encart repérage du réactif limitant -->
+  <div class="card" id="quotient-card">
+    <button class="tableau-toggle" id="quotient-toggle" onclick="toggleQuotient()" aria-expanded="false">
+      <span class="chevron">▶</span>
+      Proportions stœchiométriques et réactif limitant
+    </button>
+    <div class="tableau-body" id="quotient-body">
+      <p class="quotient-intro">
+        La <strong>proportion stœchiométrique</strong> d'un réactif est le quotient de sa quantité initiale n₀ par son coefficient stœchiométrique.<br>
+        On compare les proportions stœchiométriques de chaque réactif : c'est celle qui est la <strong>plus petite</strong> qui désigne le <strong>réactif limitant</strong> — c'est lui qui conditionne l'arrêt de la réaction, et sa valeur donne directement x<sub>max</sub>.<br>
+        Lorsque les proportions stœchiométriques de tous les réactifs sont <strong>égales</strong>, on dit que le mélange est <strong>stœchiométrique</strong> : les réactifs sont alors <strong>entièrement consommés</strong>.
+      </p>
+      <div class="quotient-list" id="quotient-list"></div>
+      <div class="quotient-conclusion" id="quotient-conclusion"></div>
+    </div>
+  </div>
+
+  <!-- Tableau d'avancement escamotable -->
+  <div class="card" id="tableau-card">
+    <button class="tableau-toggle" id="tableau-toggle" onclick="toggleTableau()" aria-expanded="false">
+      <span class="chevron">▶</span>
+      Tableau d'avancement —
+      <span id="tableau-eq" style="color:var(--accent);font-weight:700;margin-left:4px;font-style:normal;text-transform:none;letter-spacing:0"></span>
+    </button>
+    <div class="tableau-body" id="tableau-body">
+      <table class="tableau" id="tableau"></table>
+    </div>
+  </div>
+
+</div>
+<footer>Simulation pédagogique — réactions de combustion — Première spécialité</footer>
+
+<script>
+// ── Données ───────────────────────────────────────────────────────────────────
+const REACTIONS = [
+  {
+    id: 'r1', label: 'C + O₂ → CO₂', name: 'Combustion du carbone',
+    species: [
+      {id:'C',    label:'C',    role:'r', coef:-1, color:'#1a56db'},
+      {id:'O2',   label:'O₂',  role:'r', coef:-1, color:'#c0392b'},
+      {id:'CO2',  label:'CO₂', role:'p', coef:+1, color:'#16a34a'},
+    ],
+    n0Default: {C:3, O2:5, CO2:0},
+  },
+  {
+    id: 'r2', label: '2H₂ + O₂ → 2H₂O', name: "Combustion de l'hydrogène",
+    species: [
+      {id:'H2',  label:'H₂',  role:'r', coef:-2, color:'#1a56db'},
+      {id:'O2',  label:'O₂',  role:'r', coef:-1, color:'#c0392b'},
+      {id:'H2O', label:'H₂O', role:'p', coef:+2, color:'#16a34a'},
+    ],
+    n0Default: {H2:6, O2:5, H2O:0},
+  },
+  {
+    id: 'r3', label: '4Al + 3O₂ → 2Al₂O₃', name: "Combustion de l'aluminium",
+    species: [
+      {id:'Al',    label:'Al',    role:'r', coef:-4, color:'#1a56db'},
+      {id:'O2',    label:'O₂',   role:'r', coef:-3, color:'#c0392b'},
+      {id:'Al2O3', label:'Al₂O₃',role:'p', coef:+2, color:'#16a34a'},
+    ],
+    n0Default: {Al:8, O2:9, Al2O3:0},
+  },
+];
+
+// ── État ──────────────────────────────────────────────────────────────────────
+let currentReaction = REACTIONS[0];
+let n0 = Object.assign({}, currentReaction.n0Default);
+let xState = 0;           // valeur effective de x (plafonnée à xmax)
+let sliderBlocked = false; // true quand le curseur est au-delà de xmax
+
+function sp() { return currentReaction.species; }
+function fmt(v) { return v.toFixed(2).replace('.', ','); }
+
+function computeXmax() {
+  let xmax = Infinity;
+  sp().forEach(function(s) {
+    if (s.coef < 0) {
+      const lim = n0[s.id] / (-s.coef);
+      if (lim < xmax) xmax = lim;
+    }
+  });
+  return xmax === Infinity ? 0 : xmax;
+}
+
+function getN(id, x) {
+  const s = sp().find(function(sp) { return sp.id === id; });
+  return Math.max(0, n0[id] + s.coef * x);
+}
+
+function getLimitant() {
+  const xmax = computeXmax();
+  return sp()
+    .filter(function(s) { return s.coef < 0; })
+    .filter(function(s) { return Math.abs(n0[s.id] / (-s.coef) - xmax) < 1e-9; })
+    .map(function(s) { return s.id; });
+}
+
+function niceStep(xmax) {
+  if (xmax <= 0) return 1;
+  const raw = xmax / 4;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const norm = raw / mag;
+  let step;
+  if (norm < 1.5)      step = mag;
+  else if (norm < 3.5) step = 2 * mag;
+  else if (norm < 7.5) step = 5 * mag;
+  else                 step = 10 * mag;
+  return parseFloat(step.toPrecision(6));
+}
+
+function makeXs(xmax) {
+  const pts = 200;
+  const result = [];
+  for (var i = 0; i <= pts; i++) result.push(parseFloat((xmax * i / pts).toFixed(6)));
+  return result;
+}
+
+// ── Menu select ───────────────────────────────────────────────────────────────
+function buildSelect() {
+  const sel = document.getElementById('reaction-select');
+  sel.innerHTML = '';
+  REACTIONS.forEach(function(r) {
+    const opt = document.createElement('option');
+    opt.value = r.id;
+    opt.textContent = r.label + ' — ' + r.name;
+    if (r.id === currentReaction.id) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+document.getElementById('reaction-select').addEventListener('change', function() {
+  const r = REACTIONS.find(function(r) { return r.id === this.value; }, this);
+  if (!r || r.id === currentReaction.id) return;
+  currentReaction = r;
+  n0 = Object.assign({}, r.n0Default);
+  xState = 0;
+  sliderBlocked = false;
+  buildControls();
+  buildInfoRow();
+  updateSliderUI();
+  updateTableauEq();
+  rebuildCharts();
+  if (quotientOpen) buildQuotient();
+});
+
+// ── Contrôles quantités ───────────────────────────────────────────────────────
+function buildControls() {
+  const row = document.getElementById('controls');
+  row.innerHTML = '';
+  const limitants = getLimitant();
+  sp().forEach(function(s) {
+    const isLim = limitants.includes(s.id);
+    const badgeClass = isLim ? 'role-badge badge-lim' : (s.role === 'r' ? 'role-badge badge-r' : 'role-badge badge-p');
+    const badgeText  = isLim ? '⚠ Réactif limitant'  : (s.role === 'r' ? 'Réactif' : 'Produit');
+    const div = document.createElement('div');
+    div.className = 'species-ctrl';
+    div.innerHTML =
+      '<div class="species-name" style="color:' + s.color + '">' + s.label + '</div>' +
+      '<span class="' + badgeClass + '">' + badgeText + '</span>' +
+      '<div class="qty-row">' +
+        '<button class="btn-qty" onclick="changeN(\'' + s.id + '\',-1)" aria-label="Diminuer ' + s.label + '">−</button>' +
+        '<span class="qty-val">' + n0[s.id].toFixed(0) + '</span>' +
+        '<button class="btn-qty" onclick="changeN(\'' + s.id + '\',+1)" aria-label="Augmenter ' + s.label + '">+</button>' +
+      '</div>' +
+      '<span class="unit">mol</span>';
+    row.appendChild(div);
+  });
+}
+
+function buildInfoRow() {
+  const xmax = computeXmax();
+  const tau  = xmax > 0 ? (xState / xmax * 100) : 0;
+  document.getElementById('inforow').innerHTML =
+    '<div class="info-card"><div class="lbl">x<sub>max</sub> (mol)</div><div class="val">' + fmt(xmax) + '</div></div>' +
+    '<div class="info-card"><div class="lbl">x actuel (mol)</div><div class="val">' + fmt(xState) + '</div></div>' +
+    '<div class="info-card"><div class="lbl">Taux d\'avancement</div><div class="val">' + Math.round(tau) + ' %</div></div>';
+}
+
+function buildBarXDisplay() {
+  const div = document.getElementById('bar-x-display');
+  div.innerHTML = '';
+  sp().forEach(function(s) {
+    const nv = getN(s.id, xState);
+    div.innerHTML +=
+      '<div class="bar-x-item">' +
+        '<span class="bar-x-label" style="color:' + s.color + '">' + s.label + '</span>' +
+        '<span class="bar-x-val">' + fmt(nv) + ' mol</span>' +
+      '</div>';
+  });
+}
+
+function buildLegend() {
+  const limitants = getLimitant();
+  const leg = document.getElementById('legend');
+  leg.innerHTML = '';
+  sp().forEach(function(s) {
+    const isLim  = limitants.includes(s.id);
+    const suffix = s.role === 'r' ? (isLim ? ' (limitant)' : '') : ' (produit)';
+    leg.innerHTML += '<span class="leg-item"><span class="leg-dot" style="background:' + s.color + '"></span>' + s.label + suffix + '</span>';
+  });
+}
+
+window.changeN = function(id, delta) {
+  const nv = n0[id] + delta;
+  if (nv < 0) return;
+  n0[id] = nv;
+  const xmax = computeXmax();
+  if (xState > xmax) { xState = xmax; sliderBlocked = false; }
+  buildControls();
+  buildInfoRow();
+  updateSliderUI();
+  updateCharts();
+  if (quotientOpen) buildQuotient();
+};
+
+// ── Slider ────────────────────────────────────────────────────────────────────
+// Le slider travaille en dixièmes de mol (1 unité = 0,1 mol).
+// La plage va de 0 à floor(xmax * 1.5 / 0.1) unités.
+// Au-delà de xmax (= floor(xmax/0.1) unités), x est bloqué à xmax.
+
+function xToTick(x)    { return Math.round(x / 0.1); }   // mol → tick
+function tickToX(tick) { return parseFloat((tick * 0.1).toFixed(4)); } // tick → mol
+
+function sliderMaxTick(xmax) {
+  // 1.5× xmax, arrondi au dixième supérieur, minimum 5 ticks au-delà de xmax
+  return Math.max(xToTick(xmax) + 5, Math.ceil(xmax * 1.5 / 0.1));
+}
+
+function updateSliderUI() {
+  const xmax   = computeXmax();
+  const slider = document.getElementById('x-slider');
+
+  const xmaxTick = xToTick(xmax);
+  const maxTick  = sliderMaxTick(xmax);
+
+  slider.max  = maxTick;
+  slider.step = 1;
+
+  if (!sliderBlocked) slider.value = xToTick(xState);
+
+  if (sliderBlocked) {
+    slider.classList.add('blocked');
+  } else {
+    slider.classList.remove('blocked');
+  }
+
+  const xDisp = document.getElementById('x-disp');
+  xDisp.innerHTML = '<em>x</em> = ' + fmt(xState) + ' mol';
+  xDisp.classList.toggle('blocked', sliderBlocked);
+
+  document.getElementById('epuise-alert').classList.toggle('visible', sliderBlocked);
+
+  // Marqueur xmax : position en % dans la piste
+  const pct = (xmaxTick / maxTick * 100).toFixed(2);
+  document.getElementById('xmax-tick').style.left       = pct + '%';
+  document.getElementById('xmax-tick-label').style.left = pct + '%';
+  document.getElementById('xmax-tick-label').textContent = 'x\u2098\u2090\u2093 = ' + fmt(xmax) + ' mol';
+  document.getElementById('xmax-label-right').textContent = 'au-delà : réactif épuisé';
+
+  // Dégradé : zone active jusqu'à xmax, grisée au-delà
+  slider.style.background =
+    'linear-gradient(to right, #bfdbfe 0%, #bfdbfe ' + pct + '%, #e2e8f0 ' + pct + '%, #e2e8f0 100%)';
+}
+
+document.getElementById('x-slider').addEventListener('input', function() {
+  const xmax    = computeXmax();
+  const xmaxTick = xToTick(xmax);
+  const rawTick  = parseInt(this.value);
+
+  if (rawTick > xmaxTick) {
+    xState        = xmax;
+    sliderBlocked = true;
+  } else {
+    xState        = tickToX(rawTick);
+    sliderBlocked = false;
+  }
+
+  updateSliderUI();
+  buildControls();
+  buildInfoRow();
+  updateCharts();
+});
+
+// ── Charts ────────────────────────────────────────────────────────────────────
+var barChart, lineChart;
+const gridColor  = 'rgba(0,0,0,0.07)';
+const tickColor  = '#4a6278';
+const labelColor = '#4a6278';
+
+function buildLineDatasets(xs) {
+  const curves = sp().map(function(s) {
+    return {
+      label: s.label,
+      data: xs.map(function(xv) {
+        return { x: xv, y: parseFloat(Math.max(0, n0[s.id] + s.coef * xv).toFixed(4)) };
+      }),
+      borderColor: s.color, backgroundColor: 'transparent',
+      borderWidth: s.role === 'r' ? 2.5 : 2, pointRadius: 0, tension: 0,
+      borderDash: s.role === 'p' ? [6, 4] : [], order: 1,
+    };
+  });
+  const dots = sp().map(function(s) {
+    const yv = parseFloat(Math.max(0, n0[s.id] + s.coef * xState).toFixed(4));
+    return {
+      label: s.label + '_dot',
+      data: [{ x: xState, y: yv }],
+      borderColor: s.color, backgroundColor: s.color,
+      pointRadius: 6, pointHoverRadius: 8, showLine: false, order: 0,
+    };
+  });
+  return curves.concat(dots);
+}
+
+function rebuildCharts() {
+  const xmax = computeXmax();
+  const xs   = makeXs(xmax);
+  const step = niceStep(xmax);
+
+  if (barChart)  { barChart.destroy();  barChart  = null; }
+  if (lineChart) { lineChart.destroy(); lineChart = null; }
+
+  barChart = new Chart(document.getElementById('barChart').getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: sp().map(function(s) { return s.label; }),
+      datasets: [{
+        label: 'n (mol)',
+        data: sp().map(function(s) { return parseFloat(getN(s.id, xState).toFixed(3)); }),
+        backgroundColor: sp().map(function(s) { return s.color + 'BB'; }),
+        borderColor:     sp().map(function(s) { return s.color; }),
+        borderWidth: 1.5, borderRadius: 5,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { min: 0, title: { display: true, text: 'n (mol)', color: labelColor, font: { size: 11 } }, ticks: { color: tickColor, font: { size: 11 } }, grid: { color: gridColor } },
+        x: { ticks: { color: tickColor, font: { size: 13, weight: '600' } }, grid: { display: false } }
+      },
+      animation: { duration: 150 }
+    }
+  });
+
+  lineChart = new Chart(document.getElementById('lineChart').getContext('2d'), {
+    type: 'line',
+    data: { datasets: buildLineDatasets(xs) },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: {
+          type: 'linear',
+          title: { display: true, text: 'x (mol)', color: labelColor, font: { size: 11 } },
+          min: 0, max: xmax,
+          ticks: { stepSize: step, color: tickColor, font: { size: 10 }, callback: function(v) { return parseFloat(v.toFixed(4)); } },
+          grid: { color: gridColor },
+        },
+        y: { min: 0, title: { display: true, text: 'n (mol)', color: labelColor, font: { size: 11 } }, ticks: { color: tickColor, font: { size: 11 } }, grid: { color: gridColor } }
+      },
+      animation: { duration: 0 }
+    }
+  });
+
+  buildLegend();
+  buildBarXDisplay();
+  if (tableauOpen) buildTableau();
+}
+
+function updateCharts() {
+  const xmax = computeXmax();
+  const xs   = makeXs(xmax);
+  const step = niceStep(xmax);
+
+  barChart.data.labels = sp().map(function(s) { return s.label; });
+  barChart.data.datasets[0].data            = sp().map(function(s) { return parseFloat(getN(s.id, xState).toFixed(3)); });
+  barChart.data.datasets[0].backgroundColor = sp().map(function(s) { return s.color + 'BB'; });
+  barChart.data.datasets[0].borderColor     = sp().map(function(s) { return s.color; });
+  barChart.update('none');
+
+  lineChart.options.scales.x.max = xmax;
+  lineChart.options.scales.x.ticks.stepSize = step;
+  lineChart.data.datasets = buildLineDatasets(xs);
+  lineChart.update('none');
+
+  buildLegend();
+  buildBarXDisplay();
+  if (tableauOpen) buildTableau();
+}
+
+// ── Encart quotient / réactif limitant ───────────────────────────────────────
+var quotientOpen = false;
+
+window.toggleQuotient = function() {
+  quotientOpen = !quotientOpen;
+  var btn  = document.getElementById('quotient-toggle');
+  var body = document.getElementById('quotient-body');
+  btn.classList.toggle('open', quotientOpen);
+  body.classList.toggle('open', quotientOpen);
+  btn.setAttribute('aria-expanded', quotientOpen ? 'true' : 'false');
+  if (quotientOpen) buildQuotient();
+};
+
+function buildQuotient() {
+  var xmax      = computeXmax();
+  var reactifs  = sp().filter(function(s) { return s.coef < 0; });
+  var limitants = getLimitant();
+  var list      = document.getElementById('quotient-list');
+  list.innerHTML = '';
+
+  reactifs.forEach(function(s) {
+    var nu     = -s.coef;
+    var quot   = n0[s.id] / nu;
+    var isLim  = limitants.includes(s.id);
+
+    var row = document.createElement('div');
+    row.className = 'quotient-row' + (isLim ? ' is-lim' : '');
+
+    // Calcul numérique posé, systématiquement explicité (même si nu = 1)
+    var frac =
+      '<span class="frac"><span class="num">' + fmtCell(n0[s.id]) + '</span><span class="den">' + nu + '</span></span>' +
+      '<span class="equals">=</span>' +
+      '<span class="result" style="color:' + s.color + '">' + fmtCell(quot) + '</span>';
+
+    var tag = isLim
+      ? '<span class="quotient-tag lim">⚠ proportion la plus petite ⟹ limitant</span>'
+      : '<span class="quotient-tag excess">proportion plus grande → en excès</span>';
+
+    row.innerHTML =
+      '<span class="quotient-species" style="color:' + s.color + '">' + s.label + '</span>' +
+      '<span class="quotient-calc">' + frac + '</span>' +
+      tag;
+
+    list.appendChild(row);
+  });
+
+  // Conclusion
+  var concl   = document.getElementById('quotient-conclusion');
+  var limNames = limitants.map(function(id) {
+    return sp().find(function(s) { return s.id === id; }).label;
+  });
+
+  if (limNames.length > 1) {
+    concl.innerHTML =
+      'Les proportions stœchiométriques sont <strong>égales</strong>&nbsp;: c\'est un <strong>mélange stœchiométrique</strong>. ' +
+      'Les réactifs sont <strong>entièrement consommés</strong> simultanément.' +
+      '<br>⟹ <span class="xmax-val">x<sub>max</sub> = ' + fmt(xmax) + ' mol</span>';
+  } else {
+    concl.innerHTML =
+      'La proportion stœchiométrique la plus petite est celle de <strong>' + limNames[0] + '</strong>&nbsp;: c\'est le <strong>réactif limitant</strong>. ' +
+      'Sa valeur donne l\'avancement maximal&nbsp;:' +
+      '<br>⟹ <span class="xmax-val">x<sub>max</sub> = ' + fmt(xmax) + ' mol</span>';
+  }
+}
+
+// ── Tableau d'avancement ──────────────────────────────────────────────────────
+var tableauOpen = false;
+
+function updateTableauEq() {
+  var el = document.getElementById('tableau-eq');
+  if (el) el.textContent = currentReaction.label;
+}
+
+window.toggleTableau = function() {
+  tableauOpen = !tableauOpen;
+  var btn  = document.getElementById('tableau-toggle');
+  var body = document.getElementById('tableau-body');
+  btn.classList.toggle('open', tableauOpen);
+  body.classList.toggle('open', tableauOpen);
+  btn.setAttribute('aria-expanded', tableauOpen ? 'true' : 'false');
+  if (tableauOpen) buildTableau();
+};
+
+function fmtCell(v) {
+  // Affiche un nombre arrondi à 2 décimales, sans zéros inutiles
+  return parseFloat(v.toFixed(2)).toString().replace('.', ',');
+}
+
+function coefLabel(s) {
+  // Affiche le coefficient stœchiométrique signé sous forme lisible
+  var c = s.coef;
+  if (c === 1)  return '+&thinsp;x';
+  if (c === -1) return '−&thinsp;x';
+  if (c > 0)   return '+&thinsp;' + c + 'x';
+  return '−&thinsp;' + (-c) + 'x';
+}
+
+function buildTableau() {
+  var xmax    = computeXmax();
+  var species = sp();
+  var table   = document.getElementById('tableau');
+  table.innerHTML = '';
+
+  // ── En-tête ──
+  var thead = document.createElement('thead');
+  var hrow  = document.createElement('tr');
+  var thEtat = document.createElement('th');
+  thEtat.className = 'col-etat';
+  thEtat.textContent = 'État';
+  hrow.appendChild(thEtat);
+
+  // Colonne avancement
+  var thX = document.createElement('th');
+  thX.innerHTML = '<em>x</em> (mol)';
+  hrow.appendChild(thX);
+
+  species.forEach(function(s) {
+    var th = document.createElement('th');
+    th.className = 'sp-col';
+    th.style.color = s.color;
+    th.textContent = s.label + ' (mol)';
+    hrow.appendChild(th);
+  });
+  thead.appendChild(hrow);
+  table.appendChild(thead);
+
+  var tbody = document.createElement('tbody');
+
+  // ── Ligne état initial ──
+  var r0 = document.createElement('tr');
+  r0.className = 'row-initial';
+  var td0e = document.createElement('td');
+  td0e.className = 'col-etat';
+  td0e.textContent = 'Initial';
+  r0.appendChild(td0e);
+  var td0x = document.createElement('td');
+  td0x.textContent = '0';
+  r0.appendChild(td0x);
+  species.forEach(function(s) {
+    var td = document.createElement('td');
+    td.textContent = fmtCell(n0[s.id]);
+    r0.appendChild(td);
+  });
+  tbody.appendChild(r0);
+
+  // ── Ligne intermédiaire — formule ──
+  var r1f = document.createElement('tr');
+  r1f.className = 'row-inter-formula';
+  var td1fe = document.createElement('td');
+  td1fe.className = 'col-etat';
+  td1fe.innerHTML = 'En cours <em>(formule)</em>';
+  r1f.appendChild(td1fe);
+  var td1fx = document.createElement('td');
+  td1fx.innerHTML = '<em>x</em>';
+  r1f.appendChild(td1fx);
+  species.forEach(function(s) {
+    var td = document.createElement('td');
+    var n0val = fmtCell(n0[s.id]);
+    td.innerHTML = n0val + ' ' + coefLabel(s);
+    r1f.appendChild(td);
+  });
+  tbody.appendChild(r1f);
+
+  // ── Ligne intermédiaire — valeurs pour x courant ──
+  var r1v = document.createElement('tr');
+  r1v.className = 'row-inter-val';
+  var td1ve = document.createElement('td');
+  td1ve.className = 'col-etat';
+  td1ve.innerHTML = 'En cours <em>x</em>&nbsp;=&nbsp;' + fmt(xState) + '&thinsp;mol';
+  r1v.appendChild(td1ve);
+  var td1vx = document.createElement('td');
+  td1vx.style.color = 'var(--accent)';
+  td1vx.textContent = fmt(xState);
+  r1v.appendChild(td1vx);
+  species.forEach(function(s) {
+    var td = document.createElement('td');
+    td.textContent = fmtCell(getN(s.id, xState));
+    r1v.appendChild(td);
+  });
+  tbody.appendChild(r1v);
+
+  // ── Ligne état final (x = xmax) ──
+  var rf = document.createElement('tr');
+  rf.className = 'row-final';
+  var tdfe = document.createElement('td');
+  tdfe.className = 'col-etat';
+  tdfe.innerHTML = 'Final <span class="badge-final">x = x<sub>max</sub></span>';
+  rf.appendChild(tdfe);
+  var tdfx = document.createElement('td');
+  tdfx.style.color = '#16a34a';
+  tdfx.textContent = fmt(xmax);
+  rf.appendChild(tdfx);
+  species.forEach(function(s) {
+    var td = document.createElement('td');
+    td.textContent = fmtCell(getN(s.id, xmax));
+    rf.appendChild(td);
+  });
+  tbody.appendChild(rf);
+
+  table.appendChild(tbody);
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+buildSelect();
+buildControls();
+buildInfoRow();
+updateSliderUI();
+updateTableauEq();
+setTimeout(rebuildCharts, 80);
+</script>
+</body>
+</html>
