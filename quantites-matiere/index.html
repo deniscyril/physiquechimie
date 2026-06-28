@@ -254,11 +254,28 @@ select.blank.wrong   { border-color: var(--err-b); background-color: var(--err);
   border: 2px solid var(--blue); border-radius: 7px;
   padding: 5px 8px; background: #fff; color: var(--text); font-family: inherit;
 }
+.sci-exp-group {
+  display: inline-flex; align-items: stretch; gap: 2px;
+  margin-top: -10px;
+}
+.sci-sign {
+  width: 28px; font-size: 1rem; font-weight: 800;
+  border: 2px solid var(--blue); border-radius: 6px;
+  background: var(--blue-bg); color: var(--blue-d);
+  font-family: inherit; cursor: pointer; padding: 0; margin: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.12s, border-color 0.12s;
+  line-height: 1; touch-action: manipulation;
+}
+.sci-sign:hover { background: #bfdbfe; }
+.sci-sign[data-sign="-"] { background: var(--amber-bg); border-color: var(--amber); color: var(--amber-d); }
+.sci-sign.ok { border-color: var(--ok-b) !important; background: var(--ok) !important; color: #15803d !important; }
+.sci-sign.ko { border-color: var(--err-b) !important; background: var(--err) !important; color: #b91c1c !important; }
 .sci-e {
-  width: 46px; font-size: 13px; font-weight: 700;
+  width: 40px; font-size: 13px; font-weight: 700;
   border: 2px solid var(--blue); border-radius: 6px;
   padding: 4px 6px; background: #fff; color: #1e3a8a;
-  margin-top: -10px; font-family: inherit;
+  font-family: inherit;
 }
 .sci-m:focus, .sci-e:focus { outline: none; box-shadow: 0 0 0 3px rgba(59,130,246,0.25); }
 .sci-m.ok, .sci-e.ok { border-color: var(--ok-b); background: var(--ok); }
@@ -633,7 +650,10 @@ footer { font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 56px; }
           $N =$&nbsp;<span class="sci-wrap">
             <input class="sci-m" id="g1m" type="text" inputmode="decimal" placeholder="x,x" autocomplete="off">
             <span class="sci-base">&nbsp;× 10</span>
-            <input class="sci-e" id="g1e" type="text" inputmode="text" placeholder="n" autocomplete="off">
+            <span class="sci-exp-group">
+              <button type="button" class="sci-sign" id="g1e-sign" data-sign="+" onclick="toggleSciSign(this)">+</button>
+              <input class="sci-e" id="g1e" type="text" inputmode="numeric" placeholder="nn" autocomplete="off">
+            </span>
           </span>&nbsp;atomes
         </div>
       </div>
@@ -728,7 +748,10 @@ footer { font-size: 0.8rem; color: #aaa; text-align: center; margin-top: 56px; }
         $N_A =$&nbsp;<span class="sci-wrap">
           <input class="sci-m" id="q2m" type="text" inputmode="decimal" placeholder="x,x" autocomplete="off">
           <span class="sci-base">&nbsp;× 10</span>
-          <input class="sci-e" id="q2e" type="text" inputmode="text" placeholder="n" autocomplete="off">
+          <span class="sci-exp-group">
+            <button type="button" class="sci-sign" id="q2e-sign" data-sign="+" onclick="toggleSciSign(this)">+</button>
+            <input class="sci-e" id="q2e" type="text" inputmode="numeric" placeholder="nn" autocomplete="off">
+          </span>
         </span>&nbsp;mol⁻¹
       </div>
       <div class="btn-row"><button class="btn" id="q2-btn" onclick="checkQ2()">Valider</button></div>
@@ -1023,6 +1046,18 @@ function unlockP4() {
 // ══════════════════════════════════════════════════
 function n(s) { return String(s).trim().toLowerCase().replace(/,/g,'.').replace(/[x×]/g,'*').replace(/\s/g,''); }
 
+function toggleSciSign(btn) {
+  const neg = btn.dataset.sign === '-';
+  btn.dataset.sign = neg ? '+' : '-';
+  btn.textContent = neg ? '+' : '-';
+}
+
+function getSciExpSigned(signId, absId) {
+  const absVal = parseInt(n(document.getElementById(absId).value));
+  if (isNaN(absVal)) return NaN;
+  return document.getElementById(signId).dataset.sign === '-' ? -absVal : absVal;
+}
+
 function checkSci(mVal, eVal, mTgt, eTgt) {
   const mv = parseFloat(n(mVal)), ev = parseInt(n(eVal));
   if (isNaN(mv) || isNaN(ev)) return false;
@@ -1080,10 +1115,12 @@ function g1Step2() {
   } else shakeReset(s);
 }
 function g1Result() {
-  const m = document.getElementById('g1m').value, e = document.getElementById('g1e').value;
+  const m = document.getElementById('g1m').value;
+  const e = getSciExpSigned('g1e-sign', 'g1e');
   const ok = checkSci(m, e, 3.0, 22);
   document.getElementById('g1m').className = 'sci-m ' + (ok?'ok':'ko');
   document.getElementById('g1e').className = 'sci-e ' + (ok?'ok':'ko');
+  document.getElementById('g1e-sign').className = 'sci-sign ' + (ok?'ok':'ko');
   if (ok) {
     fb('g1-fb', true, '<div class="fb-title">✓ Bonne réponse !</div>$N = 3{,}0 \\times 10^{22}$ atomes');
     document.getElementById('g1-btn').style.display = 'none';
@@ -1097,6 +1134,7 @@ function g1Result() {
     setTimeout(() => {
       document.getElementById('g1m').className='sci-m';
       document.getElementById('g1e').className='sci-e';
+      document.getElementById('g1e-sign').className='sci-sign';
     }, 1200);
   }
 }
@@ -1168,12 +1206,14 @@ function checkQ1() {
 }
 
 function checkQ2() {
-  const m = document.getElementById('q2m').value, e = document.getElementById('q2e').value;
-  const mNorm = n(m); // après remplacement virgule→point
+  const m = document.getElementById('q2m').value;
+  const e = getSciExpSigned('q2e-sign', 'q2e');
+  const mNorm = n(m);
   const validMantisse = mNorm === '6.0';
   const ok = validMantisse && checkSci(m, e, 6.0, 23);
   document.getElementById('q2m').className = 'sci-m ' + (ok?'ok':'ko');
   document.getElementById('q2e').className = 'sci-e ' + (ok?'ok':'ko');
+  document.getElementById('q2e-sign').className = 'sci-sign ' + (ok?'ok':'ko');
   if (ok) {
     fb('q2-fb', true, '<div class="fb-title">✓ $N_A = 6{,}0 \\times 10^{23}$ mol⁻¹ — à retenir !</div>');
     document.getElementById('q2-btn').disabled = true;
@@ -1187,6 +1227,7 @@ function checkQ2() {
     setTimeout(() => {
       document.getElementById('q2m').className='sci-m';
       document.getElementById('q2e').className='sci-e';
+      document.getElementById('q2e-sign').className='sci-sign';
       document.getElementById('q2-fb').innerHTML='';
     }, 2000);
   }
@@ -1259,7 +1300,10 @@ function renderAQ() {
     : `<span class="sci-wrap">
         <input class="sci-m" id="am" type="text" inputmode="decimal" placeholder="x,x" autocomplete="off">
         <span class="sci-base">&nbsp;× 10</span>
-        <input class="sci-e" id="ae" type="text" inputmode="text" placeholder="n" autocomplete="off">
+        <span class="sci-exp-group">
+          <button type="button" class="sci-sign" id="ae-sign" data-sign="+" onclick="toggleSciSign(this)">+</button>
+          <input class="sci-e" id="ae" type="text" inputmode="numeric" placeholder="nn" autocomplete="off">
+        </span>
        </span>`;
   wrap.innerHTML = `
     <div class="progress-wrap"><div class="progress-bar" style="width:${aIdx/AQ.length*100}%"></div></div>
@@ -1293,10 +1337,11 @@ function checkAQ() {
       fb('a-fb', false, `<div class="fb-title">✗ Réponse incorrecte</div><div style="margin-bottom:8px;">${q.hint(m)}</div>${corrHTML}`);
     }
   } else {
-    const e = document.getElementById('ae').value;
+    const e = getSciExpSigned('ae-sign', 'ae');
     ok = checkSci(m, e, q.mt, q.et);
     document.getElementById('am').className = 'sci-m ' + (ok?'ok':'ko');
     document.getElementById('ae').className = 'sci-e ' + (ok?'ok':'ko');
+    document.getElementById('ae-sign').className = 'sci-sign ' + (ok?'ok':'ko');
     if (ok) {
       aScore++;
       fb('a-fb', true, '<div class="fb-title">✓ Bonne réponse !</div>' + corrHTML);
