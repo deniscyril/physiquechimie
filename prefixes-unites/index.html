@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Convertir les unités — Préfixes SI</title>
+<style>
+:root {
+  --bg:        #f3f4fd;
+  --card:      #ffffff;
+  --border:    #dde0f0;
+  --text:      #1e1e2e;
+  --muted:     #6b7280;
+  --primary:   #5448c8;
+  --primary-d: #3e34a8;
+  --p1:        #7c3aed;
+  --p2:        #0891b2;
+  --p3:        #059669;
+  --amber:     #d97706;
+  --amber-bg:  #fffbeb;
+  --amber-bd:  #fcd34d;
+  --alg:       #4f6dc8;
+  --alg-bg:    #eef1ff;
+  --alg-bd:    #a5b4fc;
+  --ok:        #16a34a;
+  --ok-bg:     #dcfce7;
+  --ok-bd:     #86efac;
+  --err:       #dc2626;
+  --err-bg:    #fef2f2;
+  --err-bd:    #fca5a5;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Georgia', serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.6;
+}
+#app {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: normal;
+  color: var(--text);
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 10px;
+  margin-bottom: 28px;
+}
+
+.phase-label {
+  display: inline-block;
+  color: white;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  font-family: sans-serif;
+  font-weight: 600;
+}
+.p1-label { background: var(--p1); }
+.p2-label { background: var(--p2); }
+.p3-label { background: var(--p3); }
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-family: inherit;
+  padding: 6px 14px;
+  cursor: pointer;
+  margin-bottom: 22px;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.btn-back:hover { background: #e8eaff; border-color: var(--primary); color: var(--primary); }
+
+/* ── HOME ── */
+.home-title {
+  font-size: 1.7rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+.home-subtitle {
+  color: var(--muted);
+  font-size: 0.97rem;
+  margin-bottom: 36px;
+  max-width: 580px;
+  line-height: 1.65;
+}
+.phase-cards { display: flex; flex-direction: column; gap: 14px; }
+.phase-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s, transform 0.1s;
+}
+.phase-card:hover { box-shadow: 0 4px 16px rgba(84,72,200,0.13); transform: translateY(-1px); }
+.phase-card.p1:hover { border-color: var(--p1); }
+.phase-card.p2:hover { border-color: var(--p2); }
+.phase-card.p3:hover { border-color: var(--p3); }
+.phase-card-num {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 700;
+  margin-bottom: 4px;
+  font-family: sans-serif;
+}
+.p1 .phase-card-num { color: var(--p1); }
+.p2 .phase-card-num { color: var(--p2); }
+.p3 .phase-card-num { color: var(--p3); }
+.phase-card-title { font-size: 1.05rem; font-weight: bold; color: var(--text); margin-bottom: 3px; }
+.phase-card-desc  { font-size: 0.87rem; color: var(--muted); }
+.phase-card-arrow { font-size: 1.3rem; color: #ccc; flex-shrink: 0; }
+.phase-card:hover .phase-card-arrow { color: var(--primary); }
+
+/* ── PREFIX TABLE ── */
+.prefix-table-wrap {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 28px;
+}
+.prefix-table-title {
+  background: linear-gradient(135deg, #ede9fe 0%, #dbeafe 100%);
+  padding: 10px 16px;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: var(--primary-d);
+  border-bottom: 1.5px solid var(--border);
+  font-family: sans-serif;
+  letter-spacing: 0.02em;
+}
+.prefix-table { width: 100%; border-collapse: collapse; font-size: 0.93rem; }
+.prefix-table th {
+  background: #f8f8ff;
+  padding: 8px 12px;
+  text-align: left;
+  font-family: sans-serif;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  font-weight: 700;
+}
+.prefix-table td { padding: 8px 12px; border-bottom: 1px solid #f0f0f8; }
+.prefix-table tr:last-child td { border-bottom: none; }
+.prefix-table tr.base-row td { background: #f0f0ff; font-weight: bold; }
+.prefix-sym {
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--primary);
+}
+.prefix-exp { font-family: 'Courier New', monospace; }
+.prefix-dec { font-family: 'Courier New', monospace; font-size: 0.82rem; color: var(--muted); }
+
+/* ── MODELAGE ── */
+.technique {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+.technique-header {
+  background: linear-gradient(135deg, #ede9fe 0%, #dbeafe 100%);
+  padding: 12px 18px;
+  font-weight: bold;
+  font-size: 1rem;
+  border-bottom: 1.5px solid var(--border);
+  color: var(--primary-d);
+}
+.technique-body { padding: 18px; }
+
+.objectif-line {
+  background: #f0f0ff;
+  border: 1.5px solid #c4b5fd;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 0.97rem;
+  color: #3b2b8a;
+}
+.objectif-line strong { color: var(--p1); }
+
+.example-header {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: sans-serif;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 10px;
+  margin-top: 18px;
+}
+.example-q {
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.example-q strong { color: var(--primary); }
+
+.bloc {
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.bloc:last-child { margin-bottom: 0; }
+.bloc-alg   { background: var(--alg-bg);   border-left: 4px solid var(--alg-bd); }
+.bloc-result { background: var(--amber-bg); border-left: 4px solid var(--amber-bd); }
+
+.bloc-title {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-family: sans-serif;
+}
+.bloc-alg    .bloc-title { color: var(--alg); }
+.bloc-result .bloc-title { color: var(--amber); }
+
+.step { display: flex; gap: 8px; margin-bottom: 5px; align-items: baseline; line-height: 1.5; }
+.step-arrow { color: var(--muted); flex-shrink: 0; font-size: 0.9rem; margin-top: 1px; }
+.step-num {
+  width: 20px; height: 20px;
+  background: var(--alg);
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-family: sans-serif;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.formula-box {
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: #fff;
+  border: 1.5px solid var(--amber-bd);
+  border-radius: 6px;
+  padding: 6px 14px;
+  display: inline-block;
+  margin-top: 6px;
+  color: #92400e;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-block;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-family: inherit;
+  font-weight: 600;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-d); }
+.btn-p2 { background: var(--p2); color: white; }
+.btn-p2:hover { background: #0e7490; }
+.btn-p3 { background: var(--p3); color: white; }
+.btn-p3:hover { background: #047857; }
+.btn-hint {
+  background: var(--amber-bg);
+  color: #92400e;
+  border: 1.5px solid var(--amber-bd);
+  font-size: 0.88rem;
+  padding: 7px 16px;
+  font-weight: normal;
+}
+.btn-hint:hover { background: #fef3c7; }
+.btn-outline {
+  background: none;
+  border: 1.5px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 9px 20px;
+}
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); background: #eef0ff; }
+
+.nav-bottom { margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+/* ── EXERCISES ── */
+.exercise-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 18px;
+  transition: box-shadow 0.15s;
+}
+.exercise-card:focus-within { box-shadow: 0 0 0 3px rgba(84,72,200,0.12); }
+.exercise-num {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+  margin-bottom: 4px;
+  font-family: sans-serif;
+  font-weight: 700;
+}
+.grandeur-tag {
+  display: inline-block;
+  font-size: 0.73rem;
+  font-family: sans-serif;
+  color: var(--muted);
+  background: #f3f4fd;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1px 8px;
+  margin-bottom: 10px;
+}
+.exercise-question { font-size: 1.08rem; margin-bottom: 6px; line-height: 1.8; }
+.exercise-question strong { color: var(--primary); }
+
+.format-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-family: sans-serif;
+  margin-bottom: 10px;
+}
+.format-hint code {
+  background: #f3f4fd;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.78rem;
+  color: var(--primary);
+  font-family: 'Courier New', monospace;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.answer-input {
+  font-size: 16px;
+  font-family: 'Courier New', monospace;
+  padding: 8px 12px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  width: 200px;
+  outline: none;
+  background: #fafbff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.answer-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(84,72,200,0.12); }
+.answer-input.correct   { border-color: var(--ok);  background: var(--ok-bg); }
+.answer-input.incorrect { border-color: var(--err); background: var(--err-bg); }
+.answer-input:disabled  { opacity: 0.7; }
+.unit-suffix { font-size: 1rem; font-weight: bold; color: var(--text); min-width: 32px; }
+
+.hint-box {
+  background: var(--amber-bg);
+  border: 1.5px solid var(--amber-bd);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  font-size: 0.93rem;
+  color: #78350f;
+  display: none;
+}
+.hint-box.visible { display: block; }
+
+.feedback-box {
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 8px;
+  font-size: 0.93rem;
+  display: none;
+}
+.feedback-box.visible { display: block; }
+.feedback-ok  { background: var(--ok-bg);  border: 1.5px solid var(--ok-bd);  color: #14532d; }
+.feedback-err { background: var(--err-bg); border: 1.5px solid var(--err-bd); color: #7f1d1d; }
+
+.corr-steps { margin-top: 10px; font-size: 0.92rem; }
+.corr-steps .step { margin-bottom: 4px; }
+
+/* ── SCORE ── */
+.score-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 30px 24px;
+  text-align: center;
+  margin-bottom: 32px;
+}
+.score-big { font-size: 3rem; font-weight: bold; color: var(--primary); line-height: 1; margin-bottom: 8px; }
+.score-label { color: var(--muted); font-size: 1rem; }
+.score-msg { margin-top: 10px; font-size: 1rem; color: var(--text); }
+
+.section-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+  font-family: sans-serif;
+  font-weight: 700;
+  margin: 24px 0 12px;
+}
+.correction-item {
+  background: var(--err-bg);
+  border: 1.5px solid var(--err-bd);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  font-size: 0.93rem;
+}
+.correction-item .ci-q { font-weight: bold; color: var(--err); margin-bottom: 4px; }
+.correction-item .ci-your { color: #991b1b; font-family: monospace; margin-bottom: 8px; font-size: 0.88rem; }
+.correction-item .ci-title {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  font-family: sans-serif;
+  font-weight: 700;
+  color: var(--alg);
+  margin-bottom: 6px;
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DONNÉES
+// ═══════════════════════════════════════════════════════
+
+const PREFIXES = {
+  'G': { name: 'giga',   exp: 9  },
+  'M': { name: 'méga',   exp: 6  },
+  'k': { name: 'kilo',   exp: 3  },
+  '':  { name: '(base)', exp: 0  },
+  'c': { name: 'centi',  exp: -2 },
+  'm': { name: 'milli',  exp: -3 },
+  'µ': { name: 'micro',  exp: -6 },
+  'n': { name: 'nano',   exp: -9 },
+};
+
+const UNITS = {
+  // Longueur
+  'nm': { prefix: 'n', base: 'm',  exp: -9, grandeur: 'Longueur'  },
+  'µm': { prefix: 'µ', base: 'm',  exp: -6, grandeur: 'Longueur'  },
+  'mm': { prefix: 'm', base: 'm',  exp: -3, grandeur: 'Longueur'  },
+  'cm': { prefix: 'c', base: 'm',  exp: -2, grandeur: 'Longueur'  },
+  'm':  { prefix: '',  base: 'm',  exp:  0, grandeur: 'Longueur'  },
+  'km': { prefix: 'k', base: 'm',  exp:  3, grandeur: 'Longueur'  },
+  // Masse (base = g)
+  'µg': { prefix: 'µ', base: 'g',  exp: -6, grandeur: 'Masse'     },
+  'mg': { prefix: 'm', base: 'g',  exp: -3, grandeur: 'Masse'     },
+  'g':  { prefix: '',  base: 'g',  exp:  0, grandeur: 'Masse'     },
+  'kg': { prefix: 'k', base: 'g',  exp:  3, grandeur: 'Masse'     },
+  // Durée
+  'ns': { prefix: 'n', base: 's',  exp: -9, grandeur: 'Durée'     },
+  'µs': { prefix: 'µ', base: 's',  exp: -6, grandeur: 'Durée'     },
+  'ms': { prefix: 'm', base: 's',  exp: -3, grandeur: 'Durée'     },
+  's':  { prefix: '',  base: 's',  exp:  0, grandeur: 'Durée'     },
+  // Tension
+  'mV': { prefix: 'm', base: 'V',  exp: -3, grandeur: 'Tension'   },
+  'V':  { prefix: '',  base: 'V',  exp:  0, grandeur: 'Tension'   },
+  'kV': { prefix: 'k', base: 'V',  exp:  3, grandeur: 'Tension'   },
+  'MV': { prefix: 'M', base: 'V',  exp:  6, grandeur: 'Tension'   },
+  // Intensité
+  'µA': { prefix: 'µ', base: 'A',  exp: -6, grandeur: 'Intensité' },
+  'mA': { prefix: 'm', base: 'A',  exp: -3, grandeur: 'Intensité' },
+  'A':  { prefix: '',  base: 'A',  exp:  0, grandeur: 'Intensité' },
+  'kA': { prefix: 'k', base: 'A',  exp:  3, grandeur: 'Intensité' },
+  // Fréquence
+  'Hz':  { prefix: '',  base: 'Hz', exp:  0, grandeur: 'Fréquence' },
+  'kHz': { prefix: 'k', base: 'Hz', exp:  3, grandeur: 'Fréquence' },
+  'MHz': { prefix: 'M', base: 'Hz', exp:  6, grandeur: 'Fréquence' },
+  'GHz': { prefix: 'G', base: 'Hz', exp:  9, grandeur: 'Fréquence' },
+  // Énergie
+  'mJ': { prefix: 'm', base: 'J',  exp: -3, grandeur: 'Énergie'   },
+  'J':  { prefix: '',  base: 'J',  exp:  0, grandeur: 'Énergie'   },
+  'kJ': { prefix: 'k', base: 'J',  exp:  3, grandeur: 'Énergie'   },
+  'MJ': { prefix: 'M', base: 'J',  exp:  6, grandeur: 'Énergie'   },
+  // Puissance
+  'mW': { prefix: 'm', base: 'W',  exp: -3, grandeur: 'Puissance' },
+  'W':  { prefix: '',  base: 'W',  exp:  0, grandeur: 'Puissance' },
+  'kW': { prefix: 'k', base: 'W',  exp:  3, grandeur: 'Puissance' },
+  'MW': { prefix: 'M', base: 'W',  exp:  6, grandeur: 'Puissance' },
+  'GW': { prefix: 'G', base: 'W',  exp:  9, grandeur: 'Puissance' },
+};
+
+// Phase 2 — pratique guidée
+const PHASE2 = [
+  { value: 25,   fromUnit: 'mm',  toUnit: 'm'   },
+  { value: 470,  fromUnit: 'mA',  toUnit: 'A'   },
+  { value: 2.5,  fromUnit: 'kJ',  toUnit: 'J'   },
+  { value: 8,    fromUnit: 'µs',  toUnit: 's'   },
+  { value: 0.5,  fromUnit: 'GHz', toUnit: 'Hz'  },
+  { value: 3,    fromUnit: 'km',  toUnit: 'cm'  },
+];
+
+// Phase 3 — pratique autonome
+const PHASE3 = [
+  { value: 45,   fromUnit: 'nm',  toUnit: 'm'   },
+  { value: 2.5,  fromUnit: 'kV',  toUnit: 'V'   },
+  { value: 750,  fromUnit: 'µg',  toUnit: 'g'   },
+  { value: 1.5,  fromUnit: 'MW',  toUnit: 'W'   },
+  { value: 0.8,  fromUnit: 'ms',  toUnit: 's'   },
+  { value: 5,    fromUnit: 'cm',  toUnit: 'mm'  },
+  { value: 3,    fromUnit: 'km',  toUnit: 'cm'  },
+  { value: 250,  fromUnit: 'mA',  toUnit: 'µA'  },
+  { value: 150,  fromUnit: 'kHz', toUnit: 'MHz' },
+  { value: 6,    fromUnit: 'km',  toUnit: 'mm'  },
+];
+
+// ═══════════════════════════════════════════════════════
+// UTILITAIRES
+// ═══════════════════════════════════════════════════════
+
+function parseAnswer(raw) {
+  let s = raw.trim();
+  if (!s) return null;
+  // Superscripts → ASCII
+  const sup = { '⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5',
+                '⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-','⁺':'+' };
+  s = s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]/g, c => sup[c]);
+  // Espaces (y compris séparateurs de milliers)
+  s = s.replace(/[\s  ]/g, '');
+  // Virgule française → point
+  s = s.replace(',', '.');
+  // Signes de multiplication → *
+  s = s.replace(/[×·]/g, '*');
+  // "3.10^-2" (notation française) → "3*10^-2"
+  s = s.replace(/(\d)\.(10\^)/g, '$1*$2');
+  // Forme 3*10^-2
+  const m = s.match(/^(-?[\d.]+)\*10\^([+-]?\d+)$/);
+  if (m) return parseFloat(m[1]) * Math.pow(10, parseInt(m[2]));
+  // Nombre simple ou notation e
+  const n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+
+function isCorrect(parsed, expected) {
+  if (parsed === null || !isFinite(parsed)) return false;
+  if (expected === 0) return Math.abs(parsed) < 1e-15;
+  return Math.abs((parsed - expected) / expected) < 1e-6;
+}
+
+function getExpected(ex) {
+  return ex.value * Math.pow(10, UNITS[ex.fromUnit].exp - UNITS[ex.toUnit].exp);
+}
+
+// Affiche une valeur avec virgule française
+function fv(v) {
+  return v.toString().replace('.', ',');
+}
+
+// Exposant en <sup>
+function sup(n) { return `<sup>${n}</sup>`; }
+
+// Formate la réponse attendue pour l'affichage (forme sci + décimale si lisible)
+function fmtExpected(ex) {
+  const from = UNITS[ex.fromUnit];
+  const to   = UNITS[ex.toUnit];
+  const d    = from.exp - to.exp;
+  const val  = getExpected(ex);
+  const vsrc = fv(ex.value);
+
+  if (d === 0) return `${vsrc} ${ex.toUnit}`;
+
+  let s = `${vsrc} × 10${sup(d)} ${ex.toUnit}`;
+  const abs = Math.abs(val);
+  if (abs >= 1e-3 && abs < 1e9) {
+    const dec = parseFloat(val.toPrecision(10))
+      .toLocaleString('fr-FR', { maximumSignificantDigits: 8 });
+    s += ` = ${dec} ${ex.toUnit}`;
+  }
+  return s;
+}
+
+// Génère les étapes de correction HTML
+function genCorrection(ex) {
+  const from  = UNITS[ex.fromUnit];
+  const to    = UNITS[ex.toUnit];
+  const fromP = PREFIXES[from.prefix];
+  const toP   = PREFIXES[to.prefix];
+  const d     = from.exp - to.exp;
+  const vsrc  = fv(ex.value);
+
+  const row = (txt) => `<div class="step"><span class="step-arrow">→</span> <span>${txt}</span></div>`;
+
+  if (to.exp === 0) {
+    // Vers l'unité de base
+    return [
+      `Préfixe <strong>${from.prefix}</strong> (${fromP.name}) = 10${sup(from.exp)}`,
+      `Donc 1 ${ex.fromUnit} = 10${sup(from.exp)} ${to.base}`,
+      `<strong>${vsrc} ${ex.fromUnit} = ${vsrc} × 10${sup(from.exp)} ${ex.toUnit}</strong>`,
+      Math.abs(getExpected(ex)) >= 1e-3 && Math.abs(getExpected(ex)) < 1e9
+        ? `Forme décimale : ${parseFloat(getExpected(ex).toPrecision(8)).toLocaleString('fr-FR')} ${ex.toUnit}`
+        : null,
+    ].filter(Boolean).map(row).join('');
+  }
+
+  if (from.exp === 0) {
+    // Depuis l'unité de base
+    return [
+      `Préfixe cible <strong>${to.prefix}</strong> (${toP.name}) = 10${sup(to.exp)}`,
+      `Donc 1 ${to.base} = 10${sup(-to.exp)} ${ex.toUnit}`,
+      `<strong>${vsrc} ${ex.fromUnit} = ${vsrc} × 10${sup(-to.exp)} ${ex.toUnit}</strong>`,
+    ].map(row).join('');
+  }
+
+  // Entre deux préfixes
+  return [
+    `<strong>Étape 1 — ${ex.fromUnit} → ${from.base}</strong>`,
+    `Préfixe source : <strong>${from.prefix}</strong> (${fromP.name}) = 10${sup(from.exp)}`,
+    `${vsrc} ${ex.fromUnit} = ${vsrc} × 10${sup(from.exp)} ${from.base}`,
+    `<strong>Étape 2 — ${from.base} → ${ex.toUnit}</strong>`,
+    `Préfixe cible : <strong>${to.prefix}</strong> (${toP.name}) = 10${sup(to.exp)}, donc 1 ${from.base} = 10${sup(-to.exp)} ${ex.toUnit}`,
+    `${vsrc} × 10${sup(from.exp)} ${from.base} = ${vsrc} × 10${sup(from.exp)} × 10${sup(-to.exp)} ${ex.toUnit}`,
+    `<strong>= ${vsrc} × 10${sup(d)} ${ex.toUnit}</strong>` +
+      (Math.abs(getExpected(ex)) >= 1e-3 && Math.abs(getExpected(ex)) < 1e9
+        ? ` = ${parseFloat(getExpected(ex).toPrecision(8)).toLocaleString('fr-FR')} ${ex.toUnit}`
+        : ''),
+  ].map(row).join('');
+}
+
+// Génère l'indice pour un exercice de Phase 2
+function genHint(ex) {
+  const from  = UNITS[ex.fromUnit];
+  const to    = UNITS[ex.toUnit];
+  const fromP = PREFIXES[from.prefix];
+  const toP   = PREFIXES[to.prefix];
+
+  if (to.exp === 0) {
+    return `Le préfixe <strong>${from.prefix}</strong> (${fromP.name}) vaut 10<sup>${from.exp}</sup>. Donc 1 ${ex.fromUnit} = 10<sup>${from.exp}</sup> ${from.base}.`;
+  }
+  if (from.exp === 0) {
+    return `Le préfixe <strong>${to.prefix}</strong> (${toP.name}) vaut 10<sup>${to.exp}</sup>. Donc 1 ${to.base} = 10<sup>${-to.exp}</sup> ${ex.toUnit}.`;
+  }
+  return `Passez par l'unité intermédiaire <strong>${from.base}</strong>. Préfixe source : <strong>${from.prefix}</strong> (${fromP.name}) = 10<sup>${from.exp}</sup>. Préfixe cible : <strong>${to.prefix}</strong> (${toP.name}) = 10<sup>${to.exp}</sup>.`;
+}
+
+// ═══════════════════════════════════════════════════════
+// COMPOSANTS HTML
+// ═══════════════════════════════════════════════════════
+
+function prefixTableHTML() {
+  const rows = [
+    { sym: 'G', name: 'giga',    pow: '10⁹',  dec: '1 000 000 000',  bg: '#fffaf0' },
+    { sym: 'M', name: 'méga',    pow: '10⁶',  dec: '1 000 000',      bg: '#fffaf0' },
+    { sym: 'k', name: 'kilo',    pow: '10³',  dec: '1 000',          bg: '#fffaf0' },
+    { sym: '—', name: '(base)',  pow: '10⁰ = 1', dec: '1',           bg: '#f0f0ff', base: true },
+    { sym: 'c', name: 'centi',   pow: '10⁻²', dec: '0,01',           bg: '#f0fff8' },
+    { sym: 'm', name: 'milli',   pow: '10⁻³', dec: '0,001',          bg: '#f0fff8' },
+    { sym: 'µ', name: 'micro',   pow: '10⁻⁶', dec: '0,000 001',      bg: '#f0fff8' },
+    { sym: 'n', name: 'nano',    pow: '10⁻⁹', dec: '0,000 000 001',  bg: '#f0fff8' },
+  ];
+  return `
+  <div class="prefix-table-wrap">
+    <div class="prefix-table-title">Tableau des préfixes du Système International</div>
+    <table class="prefix-table">
+      <thead>
+        <tr>
+          <th>Symbole</th><th>Nom du préfixe</th><th>Puissance de 10</th><th>Valeur décimale</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map(r => `
+        <tr style="background:${r.bg}" ${r.base ? 'class="base-row"' : ''}>
+          <td><span class="prefix-sym">${r.sym}</span></td>
+          <td>${r.name}</td>
+          <td class="prefix-exp">${r.pow}</td>
+          <td class="prefix-dec">${r.dec}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function exerciseCardHTML(ex, idx, phase) {
+  const withHint   = phase === 2;
+  const withVerify = phase === 2; // Phase 3 = soumission groupée via "Voir mon score"
+  const pid = `${phase}-${idx}`;
+  return `
+  <div class="exercise-card" id="card${pid}">
+    <div class="exercise-num">Exercice ${idx + 1} / ${phase === 2 ? PHASE2.length : PHASE3.length}</div>
+    <span class="grandeur-tag">${UNITS[ex.fromUnit].grandeur}</span>
+    <div class="exercise-question">
+      Convertir <strong>${fv(ex.value)} ${ex.fromUnit}</strong> en <strong>${ex.toUnit}</strong>
+    </div>
+    <div class="format-hint">Formats acceptés : <code>3*10^-2</code> ou <code>0,03</code> ou <code>3e-2</code></div>
+    <div class="input-row">
+      <input class="answer-input" id="inp${pid}" inputmode="text" placeholder="Ta réponse…" autocomplete="off"
+             ${withVerify ? `onkeydown="if(event.key==='Enter') checkEx(${phase},${idx})"` : ''}>
+      <span class="unit-suffix">${ex.toUnit}</span>
+      ${withVerify ? `<button class="btn btn-primary" id="vbtn${pid}" onclick="checkEx(${phase},${idx})">Vérifier</button>` : ''}
+      ${withHint ? `<button class="btn btn-hint" id="hbtn${idx}" onclick="showHint(${idx})">Indice</button>` : ''}
+    </div>
+    ${withHint ? `<div class="hint-box" id="hint${idx}">${genHint(ex)}</div>` : ''}
+    <div class="feedback-box" id="fb${pid}"></div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// PAGES
+// ═══════════════════════════════════════════════════════
+
+const app = document.getElementById('app');
+
+function showHome() {
+  app.innerHTML = `
+  <h1>Convertir les unités avec les préfixes</h1>
+  <p class="home-subtitle">
+    Apprends à convertir toute grandeur physique en utilisant les préfixes du système international —
+    nano, micro, milli, centi, kilo, méga, giga — et leurs équivalents en puissances de 10.
+    La méthode est toujours la même, quelle que soit la grandeur.
+  </p>
+  <div class="phase-cards">
+    <div class="phase-card p1" onclick="showPhase1()">
+      <div>
+        <div class="phase-card-num">Phase 1</div>
+        <div class="phase-card-title">Modelage — Apprendre la méthode</div>
+        <div class="phase-card-desc">Tableau des préfixes · Conversion vers l'unité de base · Conversion entre deux préfixes</div>
+      </div>
+      <div class="phase-card-arrow">→</div>
+    </div>
+    <div class="phase-card p2" onclick="showPhase2()">
+      <div>
+        <div class="phase-card-num">Phase 2</div>
+        <div class="phase-card-title">Pratique guidée — 6 exercices avec indices</div>
+        <div class="phase-card-desc">Grandeurs variées · Tableau disponible · Un indice sur demande</div>
+      </div>
+      <div class="phase-card-arrow">→</div>
+    </div>
+    <div class="phase-card p3" onclick="showPhase3()">
+      <div>
+        <div class="phase-card-num">Phase 3</div>
+        <div class="phase-card-title">Pratique autonome — 10 exercices</div>
+        <div class="phase-card-desc">Sans aide · Sans tableau · Score et corrections à la fin</div>
+      </div>
+      <div class="phase-card-arrow">→</div>
+    </div>
+  </div>`;
+}
+
+// ─── PHASE 1 ────────────────────────────────────────────
+function showPhase1() {
+  app.innerHTML = `
+  <button class="btn-back" onclick="showHome()">← Accueil</button>
+  <a href="../index.html" class="btn-back" style="margin-left:8px">↖ Portail</a>
+  <div class="phase-label p1-label">Phase 1 — Modelage</div>
+  <h1>La méthode des préfixes</h1>
+
+  ${prefixTableHTML()}
+
+  <!-- ── MÉTHODE A ─────────────────────────── -->
+  <div class="technique">
+    <div class="technique-header">Méthode A — Convertir vers l'unité de base</div>
+    <div class="technique-body">
+      <div class="objectif-line">
+        Principe : un préfixe est un <strong>facteur multiplicatif</strong> exprimé en puissance de 10.
+        Convertir revient à remplacer ce préfixe par sa valeur numérique.
+      </div>
+
+      <div class="example-header">Exemple 1 — Longueur</div>
+      <div class="example-q">On veut convertir <strong>3 cm</strong> en <strong>m</strong>.</div>
+      <div class="bloc bloc-alg">
+        <div class="bloc-title">Démarche pas à pas</div>
+        <div class="step"><span class="step-num">1</span><span>Identifier le préfixe dans l'unité source : <strong>c</strong> = centi = 10<sup>−2</sup></span></div>
+        <div class="step"><span class="step-num">2</span><span>Remplacer le préfixe par sa valeur : 1 cm = 10<sup>−2</sup> m</span></div>
+        <div class="step"><span class="step-num">3</span><span>Multiplier : 3 cm = 3 × 10<sup>−2</sup> m</span></div>
+      </div>
+      <div class="bloc bloc-result">
+        <div class="bloc-title">Résultat</div>
+        <span class="formula-box">3 cm = 3 × 10<sup>−2</sup> m = 0,03 m</span>
+      </div>
+
+      <div class="example-header">Exemple 2 — Intensité électrique (autre grandeur, même méthode)</div>
+      <div class="example-q">On veut convertir <strong>470 µA</strong> en <strong>A</strong>.</div>
+      <div class="bloc bloc-alg">
+        <div class="bloc-title">Démarche pas à pas</div>
+        <div class="step"><span class="step-num">1</span><span>Préfixe : <strong>µ</strong> = micro = 10<sup>−6</sup></span></div>
+        <div class="step"><span class="step-num">2</span><span>1 µA = 10<sup>−6</sup> A</span></div>
+        <div class="step"><span class="step-num">3</span><span>470 µA = 470 × 10<sup>−6</sup> A</span></div>
+      </div>
+      <div class="bloc bloc-result">
+        <div class="bloc-title">Résultat</div>
+        <span class="formula-box">470 µA = 470 × 10<sup>−6</sup> A = 4,70 × 10<sup>−4</sup> A</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MÉTHODE B ─────────────────────────── -->
+  <div class="technique">
+    <div class="technique-header">Méthode B — Convertir entre deux unités avec préfixes</div>
+    <div class="technique-body">
+      <div class="objectif-line">
+        Principe : on passe toujours par l'unité de base comme <strong>étape intermédiaire</strong>.
+      </div>
+
+      <div class="example-header">Exemple — Longueur</div>
+      <div class="example-q">On veut convertir <strong>5 km</strong> en <strong>cm</strong>.</div>
+      <div class="bloc bloc-alg">
+        <div class="bloc-title">Démarche en deux étapes</div>
+        <div class="step"><span class="step-num">1</span>
+          <span><strong>km → m</strong> : k (kilo) = 10<sup>3</sup> → 1 km = 10<sup>3</sup> m<br>
+          <span style="margin-left:4px">Donc 5 km = 5 × 10<sup>3</sup> m</span></span>
+        </div>
+        <div class="step" style="margin-top:8px"><span class="step-num">2</span>
+          <span><strong>m → cm</strong> : c (centi) = 10<sup>−2</sup> → 1 cm = 10<sup>−2</sup> m → 1 m = 10<sup>2</sup> cm<br>
+          <span style="margin-left:4px">Donc 5 × 10<sup>3</sup> m = 5 × 10<sup>3</sup> × 10<sup>2</sup> cm</span></span>
+        </div>
+        <div class="step" style="margin-top:8px"><span class="step-num">3</span>
+          <span>On additionne les exposants : 10<sup>3</sup> × 10<sup>2</sup> = 10<sup>5</sup></span>
+        </div>
+      </div>
+      <div class="bloc bloc-result">
+        <div class="bloc-title">Résultat</div>
+        <span class="formula-box">5 km = 5 × 10<sup>5</sup> cm = 500 000 cm</span>
+      </div>
+
+      <div style="background:#f0f0ff; border:1.5px solid #c4b5fd; border-radius:8px; padding:12px 16px; margin-top:14px; font-size:0.93rem; color:#3b2b8a;">
+        <strong>Raccourci :</strong> l'exposant du résultat est toujours la différence
+        <em>exposant source − exposant cible</em>.<br>
+        Ici : 3 − (−2) = <strong>5</strong>, donc on obtient bien 10<sup>5</sup>.
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-bottom">
+    <button class="btn btn-p2" onclick="showPhase2()">Passer à la pratique guidée →</button>
+  </div>`;
+}
+
+// ─── PHASE 2 ────────────────────────────────────────────
+function showPhase2() {
+  app.innerHTML = `
+  <button class="btn-back" onclick="showHome()">← Accueil</button>
+  <a href="../index.html" class="btn-back" style="margin-left:8px">↖ Portail</a>
+  <div class="phase-label p2-label">Phase 2 — Pratique guidée</div>
+  <h1>6 exercices — indices disponibles</h1>
+
+  ${prefixTableHTML()}
+
+  ${PHASE2.map((ex, i) => exerciseCardHTML(ex, i, 2)).join('')}
+
+  <div class="nav-bottom">
+    <button class="btn btn-p3" onclick="showPhase3()">Passer à la pratique autonome →</button>
+    <button class="btn btn-outline" onclick="showPhase1()">← Revoir la méthode</button>
+  </div>`;
+}
+
+// ─── PHASE 3 ────────────────────────────────────────────
+let p3Submitted = false;
+
+function showPhase3() {
+  p3Submitted = false;
+  app.innerHTML = `
+  <button class="btn-back" onclick="showHome()">← Accueil</button>
+  <a href="../index.html" class="btn-back" style="margin-left:8px">↖ Portail</a>
+  <div class="phase-label p3-label">Phase 3 — Pratique autonome</div>
+  <h1>10 exercices — sans aide</h1>
+
+  <div style="background:#f0fff8; border:1.5px solid #6ee7b7; border-radius:8px; padding:12px 16px; margin-bottom:24px; font-size:0.93rem; color:#064e3b; font-family:sans-serif;">
+    Le tableau des préfixes n'est plus affiché. Remplis tous les exercices, puis clique sur <strong>Voir mon score</strong>.
+  </div>
+
+  ${PHASE3.map((ex, i) => exerciseCardHTML(ex, i, 3)).join('')}
+
+  <div class="nav-bottom">
+    <button class="btn btn-p3" onclick="submitPhase3()">Voir mon score →</button>
+    <button class="btn btn-outline" onclick="showPhase2()">← Pratique guidée</button>
+  </div>
+  <div id="score-zone"></div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// LOGIQUE EXERCICES
+// ═══════════════════════════════════════════════════════
+
+function showHint(idx) {
+  const h = document.getElementById(`hint${idx}`);
+  const b = document.getElementById(`hbtn${idx}`);
+  if (h) { h.classList.add('visible'); }
+  if (b) { b.style.display = 'none'; }
+}
+
+function checkEx(phase, idx) {
+  const exList = phase === 2 ? PHASE2 : PHASE3;
+  const ex = exList[idx];
+  const pid = `${phase}-${idx}`;
+  const inp = document.getElementById(`inp${pid}`);
+  const fb  = document.getElementById(`fb${pid}`);
+  if (!inp || !fb) return;
+
+  const raw    = inp.value;
+  const parsed = parseAnswer(raw);
+  const exp    = getExpected(ex);
+  const ok     = isCorrect(parsed, exp);
+
+  inp.classList.toggle('correct',   ok);
+  inp.classList.toggle('incorrect', !ok);
+  inp.disabled = true;
+
+  const vbtn = document.getElementById(`vbtn${pid}`);
+  if (vbtn) vbtn.disabled = true;
+  if (phase === 2) {
+    const hbtn = document.getElementById(`hbtn${idx}`);
+    if (hbtn) hbtn.style.display = 'none';
+  }
+
+  fb.className = `feedback-box visible feedback-${ok ? 'ok' : 'err'}`;
+  if (ok) {
+    fb.innerHTML = `<strong>✓ Correct !</strong> &nbsp; ${fmtExpected(ex)}`;
+  } else {
+    const yourTxt = raw.trim() ? `Ta réponse : <em>${raw}</em>` : 'Aucune réponse saisie.';
+    fb.innerHTML = `<strong>✗ Incorrect.</strong> ${yourTxt}
+      <div class="corr-steps">${genCorrection(ex)}</div>`;
+  }
+}
+
+function submitPhase3() {
+  if (p3Submitted) return;
+  p3Submitted = true;
+
+  let score = 0;
+  const errors = [];
+
+  PHASE3.forEach((ex, i) => {
+    const pid = `3-${i}`;
+    const inp = document.getElementById(`inp${pid}`);
+    const raw = inp ? inp.value : '';
+    const parsed = parseAnswer(raw);
+    const expected = getExpected(ex);
+    const ok = isCorrect(parsed, expected);
+
+    if (inp) { inp.disabled = true; inp.classList.toggle('correct', ok); inp.classList.toggle('incorrect', !ok); }
+    const vbtn = document.getElementById(`vbtn${pid}`);
+    if (vbtn) vbtn.disabled = true;
+
+    if (ok) {
+      score++;
+      const fb = document.getElementById(`fb${pid}`);
+      if (fb) { fb.className = 'feedback-box visible feedback-ok'; fb.innerHTML = `<strong>✓ Correct !</strong> &nbsp; ${fmtExpected(ex)}`; }
+    } else {
+      errors.push({ ex, idx: i, raw });
+      const fb = document.getElementById(`fb${pid}`);
+      if (fb) { fb.className = 'feedback-box visible feedback-err'; fb.innerHTML = `<strong>✗ Incorrect.</strong>`; }
+    }
+  });
+
+  const msg = score === 10 ? 'Parfait ! Tu maîtrises les conversions avec les préfixes.'
+            : score >= 8   ? 'Très bien ! Quelques points à retravailler.'
+            : score >= 5   ? 'Bon début. Revois les erreurs ci-dessous.'
+            : 'Continue à t\'entraîner — la méthode est en Phase 1.';
+
+  let errHTML = '';
+  if (errors.length) {
+    errHTML = `<div class="section-label">Corrections des erreurs</div>` +
+    errors.map(({ ex, idx, raw }) => `
+      <div class="correction-item">
+        <div class="ci-q">Ex. ${idx + 1} — Convertir ${fv(ex.value)} ${ex.fromUnit} en ${ex.toUnit}</div>
+        ${raw.trim() ? `<div class="ci-your">Ta réponse : ${raw}</div>` : ''}
+        <div class="ci-title">Correction :</div>
+        <div class="corr-steps">${genCorrection(ex)}</div>
+      </div>`).join('');
+  }
+
+  const zone = document.getElementById('score-zone');
+  zone.innerHTML = `
+  <div class="score-card">
+    <div class="score-big">${score} / 10</div>
+    <div class="score-label">Score final</div>
+    <div class="score-msg">${msg}</div>
+  </div>
+  ${errHTML}
+  <div class="nav-bottom">
+    <button class="btn btn-p3" onclick="showPhase3()">Recommencer la Phase 3</button>
+    <button class="btn btn-outline" onclick="showHome()">← Accueil</button>
+  </div>`;
+
+  zone.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ═══════════════════════════════════════════════════════
+// DÉMARRAGE
+// ═══════════════════════════════════════════════════════
+showHome();
+</script>
+</body>
+</html>
