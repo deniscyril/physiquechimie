@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Révision hebdomadaire — Physique-Chimie</title>
+<script>
+MathJax = {
+  tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+  startup: { ready() { MathJax.startup.defaultReady(); } }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+<style>
+:root {
+  --bg:        #f3f4fd;
+  --card:      #ffffff;
+  --border:    #dde0f0;
+  --text:      #1e1e2e;
+  --muted:     #6b7280;
+  --primary:   #5448c8;
+  --primary-d: #3e34a8;
+  --amber:     #d97706;
+  --amber-bg:  #fffbeb;
+  --amber-bd:  #fcd34d;
+  --ok:        #16a34a;
+  --ok-bg:     #dcfce7;
+  --ok-bd:     #86efac;
+  --err:       #dc2626;
+  --err-bg:    #fef2f2;
+  --err-bd:    #fca5a5;
+  --maths:     #0891b2;
+  --maths-bg:  #ecfeff;
+  --maths-bd:  #a5f3fc;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Georgia', serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.6;
+}
+#app { max-width: 780px; margin: 0 auto; padding: 24px 20px 80px; }
+
+h1 { font-size: 1.5rem; font-weight: normal; border-bottom: 2px solid var(--border); padding-bottom: 10px; margin-bottom: 24px; }
+
+.btn-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: none; border: 1.5px solid var(--border); border-radius: 20px;
+  color: var(--muted); font-size: 0.88rem; font-family: inherit;
+  padding: 6px 14px; cursor: pointer; text-decoration: none; margin-bottom: 22px;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.btn-back:hover { background: #e8eaff; border-color: var(--primary); color: var(--primary); }
+
+.home-title { font-size: 1.7rem; font-weight: bold; color: var(--primary); margin-bottom: 8px; }
+.home-subtitle { color: var(--muted); font-size: 0.97rem; margin-bottom: 32px; max-width: 580px; line-height: 1.65; }
+
+.level-cards { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+.level-card {
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 18px 22px; display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; cursor: pointer; text-decoration: none; color: inherit;
+  transition: box-shadow 0.15s, border-color 0.15s, transform 0.1s;
+}
+.level-card:hover { box-shadow: 0 4px 16px rgba(84,72,200,0.13); border-color: var(--primary); transform: translateY(-1px); }
+.level-card-title { font-size: 1.05rem; font-weight: bold; color: var(--text); margin-bottom: 3px; }
+.level-card-desc { font-size: 0.87rem; color: var(--muted); }
+.level-card-arrow { font-size: 1.3rem; color: #ccc; flex-shrink: 0; }
+.level-card:hover .level-card-arrow { color: var(--primary); }
+
+.btn {
+  display: inline-block; padding: 10px 24px; border: none; border-radius: 20px;
+  cursor: pointer; font-size: 0.95rem; font-family: inherit; font-weight: 600;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-d); }
+.btn-outline { background: none; border: 1.5px solid var(--border); color: var(--muted); font-size: 0.9rem; padding: 9px 20px; }
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); background: #eef0ff; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.nav-bottom { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+.notice { border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; font-size: 0.93rem; font-family: sans-serif; }
+.notice-info { background: #eef1ff; border: 1.5px solid #a5b4fc; color: #3b2b8a; }
+.notice-warn { background: var(--amber-bg); border: 1.5px solid var(--amber-bd); color: #78350f; }
+.notice-err  { background: var(--err-bg); border: 1.5px solid var(--err-bd); color: #7f1d1d; }
+.notice code {
+  background: rgba(255,255,255,0.6); border: 1px solid rgba(0,0,0,0.1); border-radius: 4px;
+  padding: 1px 5px; font-family: 'Courier New', monospace; font-size: 0.85rem;
+}
+.dl-path {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  background: rgba(255,255,255,0.6); border-radius: 6px; padding: 8px 10px; margin: 10px 0;
+}
+.dl-file { font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--muted); }
+.dl-arrow { color: var(--primary); }
+.dl-dest { font-family: 'Courier New', monospace; font-size: 0.88rem; font-weight: bold; color: var(--primary-d); }
+.dl-note { font-size: 0.8rem; color: var(--muted); }
+
+/* ── FEUILLE (consultation & aperçu) ── */
+.sheet-card {
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 22px 24px; margin-bottom: 14px;
+}
+.sheet-header { margin-bottom: 22px; }
+.sheet-title { font-size: 1.3rem; font-weight: bold; color: var(--primary); }
+.sheet-sub { color: var(--muted); font-size: 0.9rem; font-family: sans-serif; margin-top: 2px; }
+.jour-block { padding: 14px 0; border-bottom: 1px solid #eee; }
+.jour-block:last-child { border-bottom: none; }
+.jour-label {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.09em; font-weight: 700;
+  font-family: sans-serif; margin-bottom: 6px;
+}
+.jour-label.tag-maths { color: var(--maths); }
+.jour-label.tag-connaissance { color: var(--primary); }
+.jour-label.tag-technique { color: var(--amber); }
+.jour-chapitre { font-weight: normal; color: var(--muted); text-transform: none; letter-spacing: 0; }
+.jour-enonce { font-size: 1.05rem; }
+
+/* ── ESPACE ENSEIGNANT ── */
+.progression-list { background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 6px 18px; margin-bottom: 20px; }
+.progression-item { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid #f0f0f8; font-size: 0.95rem; }
+.progression-item:last-child { border-bottom: none; }
+.progression-item input { width: 18px; height: 18px; cursor: pointer; }
+.progression-item label { cursor: pointer; flex: 1; }
+.progression-code { color: var(--muted); font-family: 'Courier New', monospace; font-size: 0.8rem; margin-left: 6px; }
+
+.field-row { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+.field-row label { font-size: 0.92rem; font-family: sans-serif; color: var(--muted); }
+.field-row input[type=number] {
+  font-size: 16px; padding: 8px 12px; border: 2px solid var(--border); border-radius: 8px;
+  width: 90px; outline: none;
+}
+.field-row input[type=number]:focus { border-color: var(--primary); }
+
+.level-select { display: flex; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; }
+.level-btn {
+  border: 1.5px solid var(--border); background: var(--card); border-radius: 20px;
+  padding: 7px 16px; font-size: 0.9rem; font-family: sans-serif; cursor: pointer;
+  color: var(--muted); text-decoration: none;
+}
+.level-btn.active { background: var(--primary); border-color: var(--primary); color: white; font-weight: 600; }
+
+.section-label {
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--muted);
+  font-family: sans-serif; font-weight: 700; margin: 24px 0 12px;
+}
+
+.footer-link { margin-top: 40px; text-align: center; }
+.footer-link a { color: var(--muted); font-size: 0.85rem; font-family: sans-serif; text-decoration: none; }
+.footer-link a:hover { color: var(--primary); }
+
+@media print {
+  .no-print { display: none !important; }
+  body { background: white; font-size: 13px; }
+  #app { max-width: 100%; padding: 10px; }
+  .sheet-card { border: none; padding: 0; }
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DONNÉES DE STRUCTURE (niveaux, chapitres officiels)
+// ═══════════════════════════════════════════════════════
+
+const LEVELS = {
+  '2nde': {
+    label: 'Seconde générale',
+    chapters: {
+      '01_corps_purs': 'Corps purs et mélanges',
+      '02_solutions_aqueuses': 'Solutions aqueuses',
+      '03_atome': "Structure de l'atome",
+      '04_configuration_electronique': 'Configuration électronique',
+      '05_ions_tableau_periodique': 'Ions et tableau périodique',
+      '06_mole': 'La mole',
+      '07_transformation_physique': 'Transformations physiques',
+      '08_transformation_chimique': 'Transformations chimiques',
+      '09_transformation_nucleaire': 'Transformations nucléaires',
+      '10_mouvement': 'Mouvement et vitesse',
+      '11_forces': 'Les forces',
+      '12_principe_inertie': "Principe d'inertie",
+      '13_electricite': 'Circuits électriques',
+      '14_lumiere_spectre': 'Lumière et spectres',
+      '15_refraction': 'Réfraction',
+      '16_son_ondes': 'Son et ondes',
+    }
+  },
+  '1ere': {
+    label: 'Première spécialité',
+    chapters: {
+      '01_mole_concentration': 'La mole et concentrations',
+      '02_absorbance_beer_lambert': 'Absorbance et Beer-Lambert',
+      '03_oxydoreduction': 'Oxydoréduction',
+      '04_avancement_titrage': 'Avancement et titrage',
+      '05_lewis_geometrie_polarite': 'Lewis, géométrie et polarité',
+      '06_cohesion_dissolution': 'Cohésion et dissolution',
+      '07_chimie_organique': 'Chimie organique',
+      '08_combustion_energie_liaison': 'Combustion et énergie de liaison',
+      '09_interactions_champ': 'Interactions et champs',
+      '10_fluides_au_repos': 'Fluides au repos',
+      '11_mecanique_newton': 'Mouvement et forces',
+      '12_energie_mecanique': 'Énergie mécanique',
+      '13_energie_electrique': 'Énergie électrique',
+      '14_ondes_mecaniques': 'Ondes mécaniques',
+      '15_lentilles_couleurs': 'Lentilles et couleurs',
+      '16_photon_niveaux_energie': "Photon et niveaux d'énergie",
+    }
+  },
+  'terminale': {
+    label: 'Terminale spécialité',
+    chapters: {
+      '01_methodes_physiques': 'Méthodes physiques',
+      '02_acide_base': 'Acides et bases',
+      '03_titrages': 'Titrages',
+      '04_cinematique': 'Cinématique',
+      '05_dynamique': 'Dynamique',
+      '06_champ_uniforme': 'Mouvement dans un champ uniforme',
+      '07_energie_mecanique': 'Énergie mécanique',
+      '08_forces_acides_bases': 'Forces des acides et bases',
+      '09_ondes_diffraction': 'Ondes et diffraction',
+      '10_kepler_gravitation': 'Lois de Kepler et gravitation',
+      '11_RC': 'Circuit RC',
+      '12_cinetique_chimique': 'Cinétique chimique',
+      '13_radioactivite': 'Radioactivité',
+      '14_mecanique_fluides': 'Mécanique des fluides',
+      '15_piles_evolution_spontanee': 'Piles et évolution spontanée',
+      '16_thermodynamique': 'Thermodynamique',
+      '17_electrolyse': 'Électrolyse',
+      '18_lunette_astronomique': 'Lunette astronomique',
+      '19_photon_quantique': 'Photon et effet photoélectrique',
+      '20_synthese_organique': 'Synthèse organique (partie 1)',
+      '21_chimie_organique_suite': 'Synthèse organique (partie 2)',
+    }
+  }
+};
+
+const CATEGORIE_LABEL = { maths: '🧮 Automatisme mathématique', connaissance: '📖 Connaissance', technique: '🔧 Technique' };
+const NEVER_SEEN_WEIGHT = 100;
+
+// ═══════════════════════════════════════════════════════
+// UTILITAIRES
+// ═══════════════════════════════════════════════════════
+
+async function fetchJSON(path) {
+  const r = await fetch(path, { cache: 'no-store' });
+  if (!r.ok) throw new Error('not found: ' + path);
+  return r.json();
+}
+async function fetchText(path) {
+  const r = await fetch(path, { cache: 'no-store' });
+  if (!r.ok) throw new Error('not found: ' + path);
+  return r.text();
+}
+
+function mdToHtml(md) {
+  let s = (md || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/\n/g, '<br>');
+  return s;
+}
+
+function parseProgression(text) {
+  return text.split('\n').map(l => l.trim()).filter(Boolean).map(line => {
+    const m = line.match(/^\[([ xX])\]\s+(\S+)\s+(.*)$/);
+    if (!m) return null;
+    return { checked: m[1].toLowerCase() === 'x', code: m[2], title: m[3] };
+  }).filter(Boolean);
+}
+function serializeProgression(items) {
+  return items.map(it => `[${it.checked ? 'x' : ' '}] ${it.code} ${it.title}`).join('\n') + '\n';
+}
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function weight(q, historique, semaine) {
+  const last = historique[q.id];
+  if (last == null) return NEVER_SEEN_WEIGHT;
+  return Math.max(1, semaine - last);
+}
+
+function weightedPickDiverse(pool, historique, semaine, n, diversifyKey) {
+  let items = pool.slice();
+  const picked = [];
+  for (let k = 0; k < n && items.length; k++) {
+    const weights = items.map(q => weight(q, historique, semaine));
+    const total = weights.reduce((a, b) => a + b, 0);
+    let r = Math.random() * total;
+    let idx = weights.findIndex(w => (r -= w) <= 0);
+    if (idx === -1) idx = items.length - 1;
+    const chosen = items[idx];
+    picked.push(chosen);
+    items = diversifyKey ? items.filter(q => q[diversifyKey] !== chosen[diversifyKey]) : items.filter(q => q.id !== chosen.id);
+  }
+  return picked;
+}
+
+function genererFeuille(banque, progressionCodes, historique, semaine) {
+  const mathsPool = banque.filter(q => q.chapitre === 'maths_transversales');
+  const chapPool = banque.filter(q => q.chapitre !== 'maths_transversales' && progressionCodes.has(q.chapitre));
+
+  const maths = weightedPickDiverse(mathsPool, historique, semaine, 2, null);
+  const usedIds = new Set(maths.map(q => q.id));
+  const specifiques = weightedPickDiverse(chapPool.filter(q => !usedIds.has(q.id)), historique, semaine, 5, 'chapitre');
+
+  let all = [...specifiques, ...maths];
+  if (all.length < 7) {
+    const manque = 7 - all.length;
+    const usedIds2 = new Set(all.map(q => q.id));
+    const extra = weightedPickDiverse(mathsPool.filter(q => !usedIds2.has(q.id)), historique, semaine, manque, null);
+    all = all.concat(extra);
+  }
+  return { questions: shuffle(all), incomplet: all.length < 7 };
+}
+
+function downloadFile(filename, content) {
+  const blob = new Blob([content], { type: 'application/octet-stream' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+function typeset(el) { if (window.MathJax) MathJax.typesetPromise([el]); }
+
+// ═══════════════════════════════════════════════════════
+// RENDU — COMPOSANTS PARTAGÉS
+// ═══════════════════════════════════════════════════════
+
+function sheetHTML(niveau, semaine, questions) {
+  const chapters = LEVELS[niveau].chapters;
+  return `
+  <div class="sheet-card">
+    <div class="sheet-header">
+      <div class="sheet-title">Semaine ${semaine} — ${LEVELS[niveau].label}</div>
+      <div class="sheet-sub">Révisions espacées · une question par jour</div>
+    </div>
+    ${questions.map((q, i) => `
+    <div class="jour-block">
+      <div class="jour-label tag-${q.categorie}">
+        Jour ${i + 1} — ${CATEGORIE_LABEL[q.categorie] || q.categorie}
+        ${q.chapitre !== 'maths_transversales' ? `<span class="jour-chapitre">· ${chapters[q.chapitre] || q.chapitre}</span>` : ''}
+      </div>
+      <div class="jour-enonce">${mdToHtml(q.enonce)}</div>
+    </div>`).join('')}
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// PAGE — ACCUEIL
+// ═══════════════════════════════════════════════════════
+
+async function renderAccueil() {
+  const app = document.getElementById('app');
+  app.innerHTML = `
+  <a href="../index.html" class="btn-back">↖ Portail</a>
+  <p class="home-title">📅 Révision hebdomadaire</p>
+  <p class="home-subtitle">Une feuille de 7 questions par semaine, générée automatiquement avec un mécanisme de révision espacée, à partir de ce qui a déjà été vu en cours.</p>
+  <div class="level-cards" id="level-cards">
+    ${Object.keys(LEVELS).map(k => `
+    <a class="level-card" href="?niveau=${k}">
+      <div>
+        <div class="level-card-title">${LEVELS[k].label}</div>
+        <div class="level-card-desc" id="desc-${k}">Chargement…</div>
+      </div>
+      <div class="level-card-arrow">→</div>
+    </a>`).join('')}
+  </div>
+  <div class="footer-link"><a href="?mode=enseignant">🔒 Espace enseignant</a></div>`;
+
+  for (const k of Object.keys(LEVELS)) {
+    const el = document.getElementById(`desc-${k}`);
+    try {
+      const hist = await fetchJSON(`data/historique-${k}.json`);
+      const vals = Object.values(hist);
+      el.textContent = vals.length ? `Dernière feuille : semaine ${Math.max(...vals)}` : 'Aucune feuille générée pour l\'instant';
+    } catch (e) {
+      el.textContent = 'Aucune feuille générée pour l\'instant';
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// PAGE — CONSULTATION (feuille élève)
+// ═══════════════════════════════════════════════════════
+
+async function renderConsultation(niveau, semaine) {
+  const app = document.getElementById('app');
+  if (!LEVELS[niveau]) { app.innerHTML = `<div class="notice notice-err">Niveau inconnu.</div>`; return; }
+
+  app.innerHTML = `<div class="notice notice-info">Chargement de la feuille…</div>`;
+
+  let hist = {};
+  try { hist = await fetchJSON(`data/historique-${niveau}.json`); } catch (e) {}
+
+  if (semaine == null) {
+    const vals = Object.values(hist);
+    if (!vals.length) {
+      app.innerHTML = `
+      <a href="?" class="btn-back">← Accueil</a>
+      <div class="notice notice-warn">Aucune feuille n'a encore été générée pour ce niveau.</div>
+      <div class="footer-link"><a href="?niveau=${niveau}&mode=enseignant">🔒 Générer une feuille (espace enseignant)</a></div>`;
+      return;
+    }
+    semaine = Math.max(...vals);
+  }
+
+  let feuille;
+  try {
+    feuille = await fetchJSON(`data/feuilles/${niveau}-semaine-${semaine}.json`);
+  } catch (e) {
+    app.innerHTML = `
+    <a href="?" class="btn-back">← Accueil</a>
+    <div class="notice notice-err">La feuille "semaine ${semaine}" n'existe pas pour ce niveau.</div>`;
+    return;
+  }
+
+  app.innerHTML = `
+  <a href="?" class="btn-back no-print">← Accueil</a>
+  <div class="level-select no-print">
+    ${Object.keys(LEVELS).map(k => `<a class="level-btn ${k === niveau ? 'active' : ''}" href="?niveau=${k}">${LEVELS[k].label}</a>`).join('')}
+  </div>
+  ${sheetHTML(niveau, semaine, feuille.questions)}
+  <div class="nav-bottom no-print">
+    <button class="btn btn-primary" onclick="window.print()">🖨️ Imprimer / PDF</button>
+    <a class="btn btn-outline" href="?niveau=${niveau}&mode=enseignant">🔒 Espace enseignant</a>
+  </div>`;
+  typeset(app);
+}
+
+// ═══════════════════════════════════════════════════════
+// PAGE — ESPACE ENSEIGNANT
+// ═══════════════════════════════════════════════════════
+
+async function renderEnseignant(niveauInitial) {
+  const app = document.getElementById('app');
+  const niveau = LEVELS[niveauInitial] ? niveauInitial : '2nde';
+
+  app.innerHTML = `<div class="notice notice-info">Chargement…</div>`;
+
+  const [banque, progressionText, historique] = await Promise.all([
+    fetchJSON(`data/banque-${niveau}.json`),
+    fetchText(`data/progression-${niveau}.txt`),
+    fetchJSON(`data/historique-${niveau}.json`).catch(() => ({})),
+  ]);
+  const progression = parseProgression(progressionText);
+  const vals = Object.values(historique);
+  const prochaineSemaine = vals.length ? Math.max(...vals) + 1 : 1;
+
+  app.innerHTML = `
+  <a href="?" class="btn-back">← Accueil</a>
+  <h1>🔒 Espace enseignant — ${LEVELS[niveau].label}</h1>
+
+  <div class="level-select">
+    ${Object.keys(LEVELS).map(k => `<a class="level-btn ${k === niveau ? 'active' : ''}" href="?niveau=${k}&mode=enseignant">${LEVELS[k].label}</a>`).join('')}
+  </div>
+
+  <div class="section-label">Progression — chapitres traités</div>
+  <div class="progression-list" id="progression-list">
+    ${progression.map((it, i) => `
+    <div class="progression-item">
+      <input type="checkbox" id="chk-${i}" ${it.checked ? 'checked' : ''}>
+      <label for="chk-${i}">${it.title}<span class="progression-code">${it.code}</span></label>
+    </div>`).join('')}
+  </div>
+  <div class="nav-bottom">
+    <button class="btn btn-outline" onclick="exporterProgression('${niveau}')">⬇ Exporter la progression</button>
+  </div>
+
+  <div class="section-label">Générer la feuille de la semaine</div>
+  <div class="field-row">
+    <label for="semaine-input">Numéro de semaine</label>
+    <input type="number" id="semaine-input" min="1" value="${prochaineSemaine}">
+    <button class="btn btn-primary" onclick="genererApercu('${niveau}')">Générer</button>
+  </div>
+  <div id="apercu-zone"></div>
+
+  <div class="footer-link"><a href="?niveau=${niveau}">Voir la feuille de révision (élèves) →</a></div>`;
+
+  window.__revisionState = { niveau, banque, progression, historique };
+}
+
+function exporterProgression(niveau) {
+  const state = window.__revisionState;
+  const items = state.progression.map((it, i) => ({
+    ...it, checked: document.getElementById(`chk-${i}`).checked,
+  }));
+  state.progression = items;
+  downloadFile(`progression-${niveau}.txt`, serializeProgression(items));
+}
+
+function genererApercu(niveau) {
+  const state = window.__revisionState;
+  const semaine = parseInt(document.getElementById('semaine-input').value, 10);
+  if (!semaine || semaine < 1) return;
+
+  const progressionCodes = new Set(state.progression.filter(it => {
+    const idx = state.progression.indexOf(it);
+    return document.getElementById(`chk-${idx}`).checked;
+  }).map(it => it.code));
+
+  const { questions, incomplet } = genererFeuille(state.banque, progressionCodes, state.historique, semaine);
+  window.__revisionApercu = { niveau, semaine, questions };
+
+  const zone = document.getElementById('apercu-zone');
+  zone.innerHTML = `
+  ${incomplet ? `<div class="notice notice-warn">Peu de chapitres débloqués : la feuille contient moins de 5 questions spécifiques, complétée par des automatismes mathématiques.</div>` : ''}
+  ${questions.length === 0 ? `<div class="notice notice-err">Aucune question disponible — cochez au moins un chapitre dans la progression.</div>` : sheetHTML(niveau, semaine, questions)}
+  ${questions.length ? `
+  <div class="nav-bottom">
+    <button class="btn btn-outline" onclick="genererApercu('${niveau}')">🔄 Régénérer</button>
+    <button class="btn btn-primary" onclick="validerFeuille()">✓ Valider et enregistrer</button>
+  </div>` : ''}`;
+  typeset(zone);
+}
+
+function validerFeuille() {
+  const state = window.__revisionState;
+  const apercu = window.__revisionApercu;
+  if (!apercu) return;
+
+  const newHistorique = { ...state.historique };
+  apercu.questions.forEach(q => { newHistorique[q.id] = apercu.semaine; });
+  state.historique = newHistorique;
+
+  const feuille = {
+    niveau: apercu.niveau,
+    semaine: apercu.semaine,
+    date_generation: new Date().toISOString(),
+    questions: apercu.questions,
+  };
+
+  downloadFile(`historique-${apercu.niveau}.json`, JSON.stringify(newHistorique, null, 2));
+  downloadFile(`${apercu.niveau}-semaine-${apercu.semaine}.json`, JSON.stringify(feuille, null, 2));
+
+  const zone = document.getElementById('apercu-zone');
+  zone.innerHTML += `
+  <div class="notice notice-info">
+    <strong>2 fichiers viennent d'être téléchargés. Dépose-les à ces emplacements exacts :</strong>
+    <div class="dl-path"><span class="dl-file">historique-${apercu.niveau}.json</span><span class="dl-arrow">→</span><span class="dl-dest">revision-hebdo/data/historique-${apercu.niveau}.json</span><span class="dl-note">(remplace le fichier existant)</span></div>
+    <div class="dl-path"><span class="dl-file">${apercu.niveau}-semaine-${apercu.semaine}.json</span><span class="dl-arrow">→</span><span class="dl-dest">revision-hebdo/data/feuilles/${apercu.niveau}-semaine-${apercu.semaine}.json</span><span class="dl-note">(nouveau fichier)</span></div>
+    Puis, depuis le dossier du projet : <code>git add revision-hebdo/data/</code> · <code>git commit -m "Semaine ${apercu.semaine} — ${LEVELS[apercu.niveau].label}"</code> · <code>git push</code>.
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// DÉMARRAGE
+// ═══════════════════════════════════════════════════════
+
+function init() {
+  const params = new URLSearchParams(location.search);
+  const niveau = params.get('niveau');
+  const mode = params.get('mode');
+  if (mode === 'enseignant') return renderEnseignant(niveau);
+  if (!niveau) return renderAccueil();
+  const semaine = params.get('semaine');
+  return renderConsultation(niveau, semaine ? parseInt(semaine, 10) : null);
+}
+init();
+</script>
+</body>
+</html>

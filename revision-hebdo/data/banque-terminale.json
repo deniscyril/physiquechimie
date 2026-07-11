@@ -1,0 +1,950 @@
+[
+  {
+    "id": "terminale-01_methodes_physiques-01",
+    "chapitre": "01_methodes_physiques",
+    "categorie": "connaissance",
+    "enonce": "Rappeler la loi de Beer-Lambert reliant l'absorbance $A$ à la concentration $c$ d'une espèce colorée en solution."
+  },
+  {
+    "id": "terminale-01_methodes_physiques-02",
+    "chapitre": "01_methodes_physiques",
+    "categorie": "connaissance",
+    "enonce": "Rappeler la loi de Kohlrausch reliant la conductivité $\\sigma$ d'une solution ionique aux concentrations des ions présents."
+  },
+  {
+    "id": "terminale-01_methodes_physiques-03",
+    "chapitre": "01_methodes_physiques",
+    "categorie": "technique",
+    "enonce": "Une mesure donne $m_{mes} = 12,3$ g pour une valeur de référence $m_{ref} = 12,0$ g avec une incertitude-type $u(m) = 0,2$ g. Calculer le quotient $|m_{mes}-m_{ref}|/u(m)$ et conclure sur la compatibilité des deux valeurs."
+  },
+  {
+    "id": "terminale-01_methodes_physiques-04",
+    "chapitre": "01_methodes_physiques",
+    "categorie": "connaissance",
+    "enonce": "Donner l'équation d'état du gaz parfait et préciser les unités de chaque grandeur."
+  },
+  {
+    "id": "terminale-01_methodes_physiques-05",
+    "chapitre": "01_methodes_physiques",
+    "categorie": "technique",
+    "enonce": "Une solution mère a un titre massique $t = 36\\%$ et une densité $d = 1,18$. Établir l'expression de la concentration massique apportée $c_m$ en fonction de $t$ et $d$."
+  },
+  {
+    "id": "terminale-01_methodes_physiques-06",
+    "chapitre": "01_methodes_physiques",
+    "categorie": "connaissance",
+    "enonce": "Citer deux techniques de spectroscopie utilisées pour identifier un groupe caractéristique ou une espèce chimique, et préciser ce que chacune permet de déterminer."
+  },
+  {
+    "id": "terminale-02_acide_base-01",
+    "chapitre": "02_acide_base",
+    "categorie": "connaissance",
+    "enonce": "Définir un acide et une base au sens de Brønsted."
+  },
+  {
+    "id": "terminale-02_acide_base-02",
+    "chapitre": "02_acide_base",
+    "categorie": "connaissance",
+    "enonce": "Rappeler la formule permettant de calculer le pH d'une solution en fonction de la concentration en ions oxonium $[\\mathrm{H_3O^+}]$."
+  },
+  {
+    "id": "terminale-02_acide_base-03",
+    "chapitre": "02_acide_base",
+    "categorie": "technique",
+    "enonce": "Une solution a un pH de $4,7$. Calculer la concentration en ions oxonium $[\\mathrm{H_3O^+}]$ de cette solution."
+  },
+  {
+    "id": "terminale-02_acide_base-04",
+    "chapitre": "02_acide_base",
+    "categorie": "technique",
+    "enonce": "Calculer le pH d'une solution pour laquelle $[\\mathrm{H_3O^+}] = 3,0\\times10^{-9}$ mol·L$^{-1}$."
+  },
+  {
+    "id": "terminale-02_acide_base-05",
+    "chapitre": "02_acide_base",
+    "categorie": "connaissance",
+    "enonce": "Écrire l'équation de la réaction entre l'acide éthanoïque $\\mathrm{CH_3COOH}$ et l'eau, et donner le couple acide-base associé."
+  },
+  {
+    "id": "terminale-02_acide_base-06",
+    "chapitre": "02_acide_base",
+    "categorie": "connaissance",
+    "enonce": "Définir une espèce amphotère et donner un exemple."
+  },
+  {
+    "id": "terminale-03_titrages-01",
+    "chapitre": "03_titrages",
+    "categorie": "connaissance",
+    "enonce": "Définir l'équivalence lors d'un titrage."
+  },
+  {
+    "id": "terminale-03_titrages-02",
+    "chapitre": "03_titrages",
+    "categorie": "technique",
+    "enonce": "Lors d'un titrage, l'équivalence est repérée pour un volume de solution titrante $V_E = 12,4$ mL de concentration $c_B = 0,10$ mol·L$^{-1}$. Le volume de solution titrée est $V_A = 20,0$ mL. Calculer la concentration $c_A$ de la solution titrée sachant que la réaction support met en jeu des réactifs dans les proportions stœchiométriques 1:1."
+  },
+  {
+    "id": "terminale-03_titrages-03",
+    "chapitre": "03_titrages",
+    "categorie": "connaissance",
+    "enonce": "Citer deux grandeurs physiques pouvant être suivies au cours d'un titrage pour repérer l'équivalence."
+  },
+  {
+    "id": "terminale-03_titrages-04",
+    "chapitre": "03_titrages",
+    "categorie": "technique",
+    "enonce": "Expliquer la méthode des tangentes permettant de déterminer le volume à l'équivalence sur une courbe de titrage pH-métrique."
+  },
+  {
+    "id": "terminale-03_titrages-05",
+    "chapitre": "03_titrages",
+    "categorie": "connaissance",
+    "enonce": "Expliquer pourquoi la pente de la courbe de conductivité en fonction du volume versé change à l'équivalence lors d'un titrage conductimétrique."
+  },
+  {
+    "id": "terminale-03_titrages-06",
+    "chapitre": "03_titrages",
+    "categorie": "technique",
+    "enonce": "Une prise d'essai de $V_A = 10,0$ mL d'une solution d'acide chlorhydrique est titrée par une solution d'hydroxyde de sodium de concentration $c_B = 5,0\\times10^{-2}$ mol·L$^{-1}$. L'équivalence est obtenue pour $V_E = 8,6$ mL. Calculer la quantité de matière d'acide présente initialement."
+  },
+  {
+    "id": "terminale-04_cinematique-01",
+    "chapitre": "04_cinematique",
+    "categorie": "connaissance",
+    "enonce": "Donner la relation entre le vecteur vitesse $\\vec{v}$ et le vecteur position $\\vec{OM}$ d'un point."
+  },
+  {
+    "id": "terminale-04_cinematique-02",
+    "chapitre": "04_cinematique",
+    "categorie": "connaissance",
+    "enonce": "Donner la relation entre le vecteur accélération $\\vec{a}$ et le vecteur vitesse $\\vec{v}$ d'un point."
+  },
+  {
+    "id": "terminale-04_cinematique-03",
+    "chapitre": "04_cinematique",
+    "categorie": "connaissance",
+    "enonce": "Donner les expressions des coordonnées du vecteur vitesse et du vecteur accélération dans le repère de Frenet pour un mouvement circulaire."
+  },
+  {
+    "id": "terminale-04_cinematique-04",
+    "chapitre": "04_cinematique",
+    "categorie": "technique",
+    "enonce": "Un point a pour vecteur position $\\vec{OM}(t)$ de coordonnées $x(t) = 3t^2$ et $y(t) = 2t$ (en mètres, $t$ en secondes). Déterminer les coordonnées du vecteur vitesse $\\vec{v}(t)$."
+  },
+  {
+    "id": "terminale-04_cinematique-05",
+    "chapitre": "04_cinematique",
+    "categorie": "technique",
+    "enonce": "Un point a pour vecteur vitesse de coordonnées $v_x(t) = 4t$ et $v_y(t) = -5$ (unités SI). Déterminer les coordonnées du vecteur accélération $\\vec{a}(t)$."
+  },
+  {
+    "id": "terminale-04_cinematique-06",
+    "chapitre": "04_cinematique",
+    "categorie": "connaissance",
+    "enonce": "Caractériser le vecteur accélération dans le cas d'un mouvement circulaire uniforme."
+  },
+  {
+    "id": "terminale-05_dynamique-01",
+    "chapitre": "05_dynamique",
+    "categorie": "connaissance",
+    "enonce": "Énoncer la deuxième loi de Newton."
+  },
+  {
+    "id": "terminale-05_dynamique-02",
+    "chapitre": "05_dynamique",
+    "categorie": "connaissance",
+    "enonce": "Définir un référentiel galiléen."
+  },
+  {
+    "id": "terminale-05_dynamique-03",
+    "chapitre": "05_dynamique",
+    "categorie": "technique",
+    "enonce": "Un système de masse $m = 1200$ kg est soumis à une somme de forces $\\sum \\vec{F} = 3,6\\times10^3\\,\\vec{u}$ N. Calculer la norme du vecteur accélération de son centre de masse."
+  },
+  {
+    "id": "terminale-05_dynamique-04",
+    "chapitre": "05_dynamique",
+    "categorie": "technique",
+    "enonce": "Un système de masse $m = 800$ g subit une accélération de norme $a = 2,5$ m·s$^{-2}$. Calculer la norme de la somme des forces qui s'exercent sur ce système."
+  },
+  {
+    "id": "terminale-05_dynamique-05",
+    "chapitre": "05_dynamique",
+    "categorie": "connaissance",
+    "enonce": "Expliquer ce que représente le centre de masse d'un système."
+  },
+  {
+    "id": "terminale-05_dynamique-06",
+    "chapitre": "05_dynamique",
+    "categorie": "connaissance",
+    "enonce": "Rappeler la condition sur la somme des forces appliquées à un système à l'équilibre."
+  },
+  {
+    "id": "terminale-06_champ_uniforme-01",
+    "chapitre": "06_champ_uniforme",
+    "categorie": "connaissance",
+    "enonce": "Montrer que le mouvement d'un système dans un champ uniforme est plan (expliquer le raisonnement, sans calcul)."
+  },
+  {
+    "id": "terminale-06_champ_uniforme-02",
+    "chapitre": "06_champ_uniforme",
+    "categorie": "connaissance",
+    "enonce": "Donner l'expression du champ électrique créé entre les armatures d'un condensateur plan en fonction de la tension $U$ et de la distance $d$ entre les armatures."
+  },
+  {
+    "id": "terminale-06_champ_uniforme-03",
+    "chapitre": "06_champ_uniforme",
+    "categorie": "technique",
+    "enonce": "Établir l'équation horaire $v_x(t)$ de la vitesse d'un système en chute libre dans un champ de pesanteur uniforme $\\vec{g}$, à partir de l'accélération $a_x = 0$ (axe horizontal) avec une vitesse initiale $v_{0x}$."
+  },
+  {
+    "id": "terminale-06_champ_uniforme-04",
+    "chapitre": "06_champ_uniforme",
+    "categorie": "technique",
+    "enonce": "Déterminer la primitive de la fonction $a(t) = -g$ (constante), avec la condition initiale $v(0) = v_0$, pour obtenir $v(t)$."
+  },
+  {
+    "id": "terminale-06_champ_uniforme-05",
+    "chapitre": "06_champ_uniforme",
+    "categorie": "connaissance",
+    "enonce": "Décrire le principe de fonctionnement d'un accélérateur linéaire de particules chargées."
+  },
+  {
+    "id": "terminale-06_champ_uniforme-06",
+    "chapitre": "06_champ_uniforme",
+    "categorie": "technique",
+    "enonce": "Une particule chargée est accélérée dans un champ électrique uniforme entre deux points A et B. Exprimer le théorème de l'énergie cinétique entre A et B pour cette particule."
+  },
+  {
+    "id": "terminale-07_energie_mecanique-01",
+    "chapitre": "07_energie_mecanique",
+    "categorie": "connaissance",
+    "enonce": "Rappeler la condition sur les forces s'exerçant sur un système pour que son énergie mécanique se conserve au cours d'un mouvement dans un champ uniforme."
+  },
+  {
+    "id": "terminale-07_energie_mecanique-02",
+    "chapitre": "07_energie_mecanique",
+    "categorie": "technique",
+    "enonce": "Un objet de masse $m = 500$ g est lâché sans vitesse initiale d'une hauteur $h = 20$ m dans le champ de pesanteur terrestre uniforme (frottements négligés). Utiliser la conservation de l'énergie mécanique pour calculer sa vitesse en arrivant au sol ($g = 9,8$ m·s$^{-2}$)."
+  },
+  {
+    "id": "terminale-07_energie_mecanique-03",
+    "chapitre": "07_energie_mecanique",
+    "categorie": "connaissance",
+    "enonce": "Écrire l'expression de l'énergie mécanique d'un satellite en orbite circulaire autour de la Terre, en fonction de son énergie cinétique et de son énergie potentielle de gravitation."
+  },
+  {
+    "id": "terminale-07_energie_mecanique-04",
+    "chapitre": "07_energie_mecanique",
+    "categorie": "technique",
+    "enonce": "Un satellite de masse $m$ est en orbite circulaire de rayon $r$ autour de la Terre. Sachant que son énergie cinétique vaut $E_c = \\dfrac{1}{2}m v^2$ et que $v^2 = \\dfrac{GM_T}{r}$, exprimer $E_c$ en fonction de $G$, $M_T$, $m$ et $r$."
+  },
+  {
+    "id": "terminale-07_energie_mecanique-05",
+    "chapitre": "07_energie_mecanique",
+    "categorie": "technique",
+    "enonce": "Une particule chargée est accélérée entre deux points A et B d'un champ électrique uniforme. Utiliser le théorème de l'énergie cinétique pour exprimer sa vitesse en B en fonction du travail de la force électrique et de sa vitesse en A."
+  },
+  {
+    "id": "terminale-07_energie_mecanique-06",
+    "chapitre": "07_energie_mecanique",
+    "categorie": "connaissance",
+    "enonce": "Expliquer pourquoi l'énergie mécanique d'un satellite en orbite circulaire autour de la Terre reste constante au cours du mouvement."
+  },
+  {
+    "id": "terminale-08_forces_acides_bases-01",
+    "chapitre": "08_forces_acides_bases",
+    "categorie": "connaissance",
+    "enonce": "Définir la constante d'acidité $K_A$ d'un couple acide-base."
+  },
+  {
+    "id": "terminale-08_forces_acides_bases-02",
+    "chapitre": "08_forces_acides_bases",
+    "categorie": "connaissance",
+    "enonce": "Rappeler la relation entre le pKA et la constante d'acidité $K_A$ d'un couple acide-base."
+  },
+  {
+    "id": "terminale-08_forces_acides_bases-03",
+    "chapitre": "08_forces_acides_bases",
+    "categorie": "connaissance",
+    "enonce": "Donner l'expression du produit ionique de l'eau $K_e$ et sa valeur usuelle à $25$°C."
+  },
+  {
+    "id": "terminale-08_forces_acides_bases-04",
+    "chapitre": "08_forces_acides_bases",
+    "categorie": "connaissance",
+    "enonce": "Définir le taux d'avancement final d'une transformation et donner la condition sur sa valeur pour qu'une transformation soit considérée comme totale."
+  },
+  {
+    "id": "terminale-08_forces_acides_bases-05",
+    "chapitre": "08_forces_acides_bases",
+    "categorie": "technique",
+    "enonce": "Un acide fort de concentration apportée $c = 1,0\\times10^{-2}$ mol·L$^{-1}$ est introduit dans l'eau. Donner la valeur du pH de la solution obtenue en justifiant à partir du caractère fort de l'acide."
+  },
+  {
+    "id": "terminale-08_forces_acides_bases-06",
+    "chapitre": "08_forces_acides_bases",
+    "categorie": "connaissance",
+    "enonce": "Expliquer, à l'aide du taux d'avancement final, la différence de comportement entre un acide fort et un acide faible de même concentration apportée dans l'eau."
+  },
+  {
+    "id": "terminale-09_ondes_diffraction-01",
+    "chapitre": "09_ondes_diffraction",
+    "categorie": "connaissance",
+    "enonce": "Rappeler l'expression du niveau d'intensité sonore $L$ en fonction de l'intensité sonore $I$ et de l'intensité sonore de référence $I_0$."
+  },
+  {
+    "id": "terminale-09_ondes_diffraction-02",
+    "chapitre": "09_ondes_diffraction",
+    "categorie": "technique",
+    "enonce": "Une onde sonore d'intensité $I = 4,0\\times10^{-4}$ W·m$^{-2}$ se propage, avec $I_0 = 1,0\\times10^{-12}$ W·m$^{-2}$. Calculer le niveau d'intensité sonore $L$ correspondant."
+  },
+  {
+    "id": "terminale-09_ondes_diffraction-03",
+    "chapitre": "09_ondes_diffraction",
+    "categorie": "connaissance",
+    "enonce": "Donner l'expression de l'angle caractéristique de diffraction $\\theta$ en fonction de la longueur d'onde $\\lambda$ et de la taille de l'ouverture $a$."
+  },
+  {
+    "id": "terminale-09_ondes_diffraction-04",
+    "chapitre": "09_ondes_diffraction",
+    "categorie": "technique",
+    "enonce": "Une onde de longueur d'onde $\\lambda = 600$ nm traverse une fente de largeur $a = 0,20$ mm. Calculer l'angle caractéristique de diffraction $\\theta$ (en radians)."
+  },
+  {
+    "id": "terminale-09_ondes_diffraction-05",
+    "chapitre": "09_ondes_diffraction",
+    "categorie": "connaissance",
+    "enonce": "Énoncer les conditions d'interférences constructives et destructives de deux ondes issues de deux sources synchrones, en fonction de la différence de marche $\\delta$."
+  },
+  {
+    "id": "terminale-09_ondes_diffraction-06",
+    "chapitre": "09_ondes_diffraction",
+    "categorie": "connaissance",
+    "enonce": "Décrire qualitativement le principe de l'effet Doppler pour une source mobile et un observateur fixe."
+  },
+  {
+    "id": "terminale-10_kepler_gravitation-01",
+    "chapitre": "10_kepler_gravitation",
+    "categorie": "connaissance",
+    "enonce": "Énoncer la troisième loi de Kepler sous forme d'une formule pour un mouvement circulaire."
+  },
+  {
+    "id": "terminale-10_kepler_gravitation-02",
+    "chapitre": "10_kepler_gravitation",
+    "categorie": "connaissance",
+    "enonce": "Définir un satellite géostationnaire et citer une caractéristique de son orbite."
+  },
+  {
+    "id": "terminale-10_kepler_gravitation-03",
+    "chapitre": "10_kepler_gravitation",
+    "categorie": "technique",
+    "enonce": "Un satellite est en orbite circulaire de rayon $r = 7,0\\times10^3$ km autour de la Terre ($M_T = 5,97\\times10^{24}$ kg, $G = 6,67\\times10^{-11}$ SI). Calculer la période de révolution $T$ du satellite à l'aide de la troisième loi de Kepler."
+  },
+  {
+    "id": "terminale-10_kepler_gravitation-04",
+    "chapitre": "10_kepler_gravitation",
+    "categorie": "connaissance",
+    "enonce": "Donner l'expression du vecteur accélération du centre de masse d'un satellite en mouvement circulaire uniforme dans le champ de gravitation terrestre, dans le repère de Frenet."
+  },
+  {
+    "id": "terminale-10_kepler_gravitation-05",
+    "chapitre": "10_kepler_gravitation",
+    "categorie": "connaissance",
+    "enonce": "Énoncer la première loi de Kepler."
+  },
+  {
+    "id": "terminale-10_kepler_gravitation-06",
+    "chapitre": "10_kepler_gravitation",
+    "categorie": "technique",
+    "enonce": "Deux planètes orbitent autour d'une même étoile. La planète A a une période $T_A = 2,0$ ans pour un rayon d'orbite $r_A$. La planète B a un rayon d'orbite $r_B = 4\\,r_A$. Calculer la période $T_B$ de la planète B à l'aide de la troisième loi de Kepler."
+  },
+  {
+    "id": "terminale-11_RC-01",
+    "chapitre": "11_RC",
+    "categorie": "connaissance",
+    "enonce": "Donner la relation entre la charge $q$ portée par un condensateur et la tension $U$ à ses bornes, en précisant le nom de la grandeur $C$."
+  },
+  {
+    "id": "terminale-11_RC-02",
+    "chapitre": "11_RC",
+    "categorie": "connaissance",
+    "enonce": "Rappeler la définition de l'intensité d'un courant électrique en fonction du débit de charges."
+  },
+  {
+    "id": "terminale-11_RC-03",
+    "chapitre": "11_RC",
+    "categorie": "technique",
+    "enonce": "Établir l'équation différentielle vérifiée par la tension $u_C(t)$ aux bornes d'un condensateur lors de sa charge à travers une résistance $R$ par une source idéale de tension $E$."
+  },
+  {
+    "id": "terminale-11_RC-04",
+    "chapitre": "11_RC",
+    "categorie": "technique",
+    "enonce": "Résoudre l'équation différentielle $RC\\dfrac{du_C}{dt} + u_C = E$ avec la condition initiale $u_C(0) = 0$."
+  },
+  {
+    "id": "terminale-11_RC-05",
+    "chapitre": "11_RC",
+    "categorie": "technique",
+    "enonce": "Établir l'équation différentielle vérifiée par la tension $u_C(t)$ aux bornes d'un condensateur de capacité $C$ lors de sa décharge à travers une résistance $R$."
+  },
+  {
+    "id": "terminale-11_RC-06",
+    "chapitre": "11_RC",
+    "categorie": "connaissance",
+    "enonce": "Définir le temps caractéristique $\\tau$ d'un dipôle RC et donner son expression en fonction de $R$ et $C$."
+  },
+  {
+    "id": "terminale-12_cinetique_chimique-01",
+    "chapitre": "12_cinetique_chimique",
+    "categorie": "connaissance",
+    "enonce": "Citer deux facteurs cinétiques influençant la vitesse d'une transformation chimique."
+  },
+  {
+    "id": "terminale-12_cinetique_chimique-02",
+    "chapitre": "12_cinetique_chimique",
+    "categorie": "connaissance",
+    "enonce": "Définir le temps de demi-réaction $t_{1/2}$."
+  },
+  {
+    "id": "terminale-12_cinetique_chimique-03",
+    "chapitre": "12_cinetique_chimique",
+    "categorie": "connaissance",
+    "enonce": "Donner les propriétés caractéristiques d'un catalyseur."
+  },
+  {
+    "id": "terminale-12_cinetique_chimique-04",
+    "chapitre": "12_cinetique_chimique",
+    "categorie": "connaissance",
+    "enonce": "Définir la vitesse volumique de disparition d'un réactif à partir de la dérivée de sa concentration."
+  },
+  {
+    "id": "terminale-12_cinetique_chimique-05",
+    "chapitre": "12_cinetique_chimique",
+    "categorie": "technique",
+    "enonce": "Expliquer comment reconnaître, à partir d'un tracé expérimental, qu'une transformation suit une loi de vitesse d'ordre 1."
+  },
+  {
+    "id": "terminale-12_cinetique_chimique-06",
+    "chapitre": "12_cinetique_chimique",
+    "categorie": "connaissance",
+    "enonce": "Définir un intermédiaire réactionnel dans un mécanisme réactionnel en plusieurs actes élémentaires."
+  },
+  {
+    "id": "terminale-13_radioactivite-01",
+    "chapitre": "13_radioactivite",
+    "categorie": "connaissance",
+    "enonce": "Rappeler la définition de l'activité $A$ d'un échantillon radioactif."
+  },
+  {
+    "id": "terminale-13_radioactivite-02",
+    "chapitre": "13_radioactivite",
+    "categorie": "connaissance",
+    "enonce": "Rappeler la formule entre la demi-vie $t_{1/2}$ et la constante radioactive $\\lambda$."
+  },
+  {
+    "id": "terminale-13_radioactivite-03",
+    "chapitre": "13_radioactivite",
+    "categorie": "connaissance",
+    "enonce": "Quelle particule est émise au cours d'une désintégration $\\beta^-$ ?"
+  },
+  {
+    "id": "terminale-13_radioactivite-04",
+    "chapitre": "13_radioactivite",
+    "categorie": "connaissance",
+    "enonce": "Quelle particule est émise au cours d'une désintégration $\\alpha$ ?"
+  },
+  {
+    "id": "terminale-13_radioactivite-05",
+    "chapitre": "13_radioactivite",
+    "categorie": "technique",
+    "enonce": "Établir l'expression de $N(t)$, nombre de noyaux radioactifs présents à l'instant $t$, en résolvant l'équation différentielle $\\dfrac{dN}{dt} = -\\lambda N$ avec la condition initiale $N(0) = N_0$."
+  },
+  {
+    "id": "terminale-13_radioactivite-06",
+    "chapitre": "13_radioactivite",
+    "categorie": "technique",
+    "enonce": "Un échantillon radioactif a une demi-vie $t_{1/2} = 5730$ ans (carbone 14). Calculer la valeur de la constante radioactive $\\lambda$ associée."
+  },
+  {
+    "id": "terminale-14_mecanique_fluides-01",
+    "chapitre": "14_mecanique_fluides",
+    "categorie": "connaissance",
+    "enonce": "Donner l'expression vectorielle de la poussée d'Archimède exercée sur un corps immergé dans un fluide."
+  },
+  {
+    "id": "terminale-14_mecanique_fluides-02",
+    "chapitre": "14_mecanique_fluides",
+    "categorie": "connaissance",
+    "enonce": "Rappeler la relation traduisant la conservation du débit volumique d'un fluide incompressible en écoulement permanent dans une conduite de section variable."
+  },
+  {
+    "id": "terminale-14_mecanique_fluides-03",
+    "chapitre": "14_mecanique_fluides",
+    "categorie": "technique",
+    "enonce": "Un fluide incompressible s'écoule dans une conduite dont la section passe de $S_1 = 4,0$ cm$^2$ à $S_2 = 1,0$ cm$^2$. La vitesse dans la première section est $v_1 = 0,50$ m·s$^{-1}$. Calculer la vitesse $v_2$ dans la seconde section."
+  },
+  {
+    "id": "terminale-14_mecanique_fluides-04",
+    "chapitre": "14_mecanique_fluides",
+    "categorie": "connaissance",
+    "enonce": "Énoncer la relation de Bernoulli pour un fluide incompressible en écoulement permanent le long d'une ligne de courant, entre deux points 1 et 2."
+  },
+  {
+    "id": "terminale-14_mecanique_fluides-05",
+    "chapitre": "14_mecanique_fluides",
+    "categorie": "technique",
+    "enonce": "À partir de la relation de Bernoulli $P_1 + \\dfrac{1}{2}\\rho v_1^2 + \\rho g z_1 = P_2 + \\dfrac{1}{2}\\rho v_2^2 + \\rho g z_2$, isoler la pression $P_2$."
+  },
+  {
+    "id": "terminale-14_mecanique_fluides-06",
+    "chapitre": "14_mecanique_fluides",
+    "categorie": "connaissance",
+    "enonce": "Décrire qualitativement l'effet Venturi observé lors du rétrécissement d'une conduite parcourue par un fluide."
+  },
+  {
+    "id": "terminale-15_piles_evolution_spontanee-01",
+    "chapitre": "15_piles_evolution_spontanee",
+    "categorie": "connaissance",
+    "enonce": "Définir le quotient de réaction $Q_r$ pour une réaction générique $aA + bB \\rightarrow cC + dD$."
+  },
+  {
+    "id": "terminale-15_piles_evolution_spontanee-02",
+    "chapitre": "15_piles_evolution_spontanee",
+    "categorie": "connaissance",
+    "enonce": "Rappeler le critère d'évolution spontanée d'un système hors équilibre en comparant $Q_r$ et $K$."
+  },
+  {
+    "id": "terminale-15_piles_evolution_spontanee-03",
+    "chapitre": "15_piles_evolution_spontanee",
+    "categorie": "connaissance",
+    "enonce": "Expliquer le rôle du pont salin dans le fonctionnement d'une pile."
+  },
+  {
+    "id": "terminale-15_piles_evolution_spontanee-04",
+    "chapitre": "15_piles_evolution_spontanee",
+    "categorie": "technique",
+    "enonce": "Une pile débite un courant d'intensité constante $I = 0,20$ A pendant une durée $\\Delta t = 5,0$ h. Calculer la quantité d'électricité (charge) qu'elle a fournie."
+  },
+  {
+    "id": "terminale-15_piles_evolution_spontanee-05",
+    "chapitre": "15_piles_evolution_spontanee",
+    "categorie": "connaissance",
+    "enonce": "Définir l'état d'équilibre chimique d'un système siège d'une transformation non totale."
+  },
+  {
+    "id": "terminale-15_piles_evolution_spontanee-06",
+    "chapitre": "15_piles_evolution_spontanee",
+    "categorie": "connaissance",
+    "enonce": "Expliquer pourquoi les réactifs d'une pile doivent être séparés dans deux demi-piles distinctes."
+  },
+  {
+    "id": "terminale-16_thermodynamique-01",
+    "chapitre": "16_thermodynamique",
+    "categorie": "connaissance",
+    "enonce": "Énoncer le premier principe de la thermodynamique pour un système fermé."
+  },
+  {
+    "id": "terminale-16_thermodynamique-02",
+    "chapitre": "16_thermodynamique",
+    "categorie": "connaissance",
+    "enonce": "Donner l'expression de la variation d'énergie interne d'un système incompressible en fonction de sa capacité thermique $C$ et de la variation de température."
+  },
+  {
+    "id": "terminale-16_thermodynamique-03",
+    "chapitre": "16_thermodynamique",
+    "categorie": "connaissance",
+    "enonce": "Citer les trois modes de transfert thermique."
+  },
+  {
+    "id": "terminale-16_thermodynamique-04",
+    "chapitre": "16_thermodynamique",
+    "categorie": "technique",
+    "enonce": "Établir l'équation différentielle vérifiée par la température $\\theta(t)$ d'un système au contact d'un thermostat de température $\\theta_{ext}$, selon la loi de Newton $\\dfrac{d\\theta}{dt} = -k(\\theta - \\theta_{ext})$, et donner la forme de sa solution."
+  },
+  {
+    "id": "terminale-16_thermodynamique-05",
+    "chapitre": "16_thermodynamique",
+    "categorie": "connaissance",
+    "enonce": "Rappeler la relation entre flux thermique $\\phi$, résistance thermique $R_{th}$ et écart de température."
+  },
+  {
+    "id": "terminale-16_thermodynamique-06",
+    "chapitre": "16_thermodynamique",
+    "categorie": "technique",
+    "enonce": "Résoudre l'équation différentielle $\\dfrac{d\\theta}{dt} = -k(\\theta - \\theta_{ext})$ avec la condition initiale $\\theta(0) = \\theta_0$."
+  },
+  {
+    "id": "terminale-17_electrolyse-01",
+    "chapitre": "17_electrolyse",
+    "categorie": "connaissance",
+    "enonce": "Définir le principe d'une électrolyse."
+  },
+  {
+    "id": "terminale-17_electrolyse-02",
+    "chapitre": "17_electrolyse",
+    "categorie": "connaissance",
+    "enonce": "Rappeler la relation entre la quantité de matière $n$ d'espèce formée, l'intensité $I$, la durée $\\Delta t$, le nombre d'électrons échangés $z$ et la constante de Faraday $F$."
+  },
+  {
+    "id": "terminale-17_electrolyse-03",
+    "chapitre": "17_electrolyse",
+    "categorie": "technique",
+    "enonce": "Une électrolyse est réalisée avec une intensité $I = 0,50$ A pendant $\\Delta t = 30$ min. Sachant que la réaction aux électrodes échange $z = 2$ électrons par entité formée, calculer la quantité de matière d'espèce formée ($F = 9,65\\times10^4$ C·mol$^{-1}$)."
+  },
+  {
+    "id": "terminale-17_electrolyse-04",
+    "chapitre": "17_electrolyse",
+    "categorie": "connaissance",
+    "enonce": "Expliquer la différence entre le fonctionnement d'une pile et celui d'un électrolyseur du point de vue du sens du transfert d'électrons."
+  },
+  {
+    "id": "terminale-17_electrolyse-05",
+    "chapitre": "17_electrolyse",
+    "categorie": "technique",
+    "enonce": "À partir de la relation $n = \\dfrac{I \\times \\Delta t}{z \\times F}$, isoler la durée $\\Delta t$ en fonction des autres grandeurs."
+  },
+  {
+    "id": "terminale-17_electrolyse-06",
+    "chapitre": "17_electrolyse",
+    "categorie": "connaissance",
+    "enonce": "Citer les grandeurs expérimentales dont dépend la quantité de matière de produit formé lors d'une électrolyse."
+  },
+  {
+    "id": "terminale-18_lunette_astronomique-01",
+    "chapitre": "18_lunette_astronomique",
+    "categorie": "connaissance",
+    "enonce": "Décrire la constitution d'une lunette astronomique afocale (nature et rôle de l'objectif et de l'oculaire)."
+  },
+  {
+    "id": "terminale-18_lunette_astronomique-02",
+    "chapitre": "18_lunette_astronomique",
+    "categorie": "connaissance",
+    "enonce": "Donner l'expression du grossissement d'une lunette afocale en fonction des distances focales de l'objectif $f'_1$ et de l'oculaire $f'_2$."
+  },
+  {
+    "id": "terminale-18_lunette_astronomique-03",
+    "chapitre": "18_lunette_astronomique",
+    "categorie": "technique",
+    "enonce": "Une lunette astronomique afocale a un objectif de distance focale $f'_1 = 900$ mm et un oculaire de distance focale $f'_2 = 10$ mm. Calculer son grossissement."
+  },
+  {
+    "id": "terminale-18_lunette_astronomique-04",
+    "chapitre": "18_lunette_astronomique",
+    "categorie": "connaissance",
+    "enonce": "Expliquer ce que signifie le caractère « afocal » d'une lunette astronomique."
+  },
+  {
+    "id": "terminale-18_lunette_astronomique-05",
+    "chapitre": "18_lunette_astronomique",
+    "categorie": "technique",
+    "enonce": "Une lunette astronomique a un grossissement $G = 60$ et un oculaire de distance focale $f'_2 = 15$ mm. Calculer la distance focale $f'_1$ de l'objectif."
+  },
+  {
+    "id": "terminale-18_lunette_astronomique-06",
+    "chapitre": "18_lunette_astronomique",
+    "categorie": "connaissance",
+    "enonce": "Préciser la nature (convergente ou divergente) des lentilles utilisées comme objectif et comme oculaire dans une lunette astronomique."
+  },
+  {
+    "id": "terminale-19_photon_quantique-01",
+    "chapitre": "19_photon_quantique",
+    "categorie": "connaissance",
+    "enonce": "Donner l'expression de l'énergie d'un photon en fonction de sa fréquence $\\nu$."
+  },
+  {
+    "id": "terminale-19_photon_quantique-02",
+    "chapitre": "19_photon_quantique",
+    "categorie": "connaissance",
+    "enonce": "Rappeler la relation d'Einstein reliant l'énergie cinétique des électrons émis lors de l'effet photoélectrique, la fréquence $\\nu$ du photon incident et le travail d'extraction $W_{extraction}$."
+  },
+  {
+    "id": "terminale-19_photon_quantique-03",
+    "chapitre": "19_photon_quantique",
+    "categorie": "connaissance",
+    "enonce": "Définir le travail d'extraction d'un métal dans le cadre de l'effet photoélectrique."
+  },
+  {
+    "id": "terminale-19_photon_quantique-04",
+    "chapitre": "19_photon_quantique",
+    "categorie": "technique",
+    "enonce": "Calculer l'énergie d'un photon de fréquence $\\nu = 5,0\\times10^{14}$ Hz ($h = 6,63\\times10^{-34}$ J·s)."
+  },
+  {
+    "id": "terminale-19_photon_quantique-05",
+    "chapitre": "19_photon_quantique",
+    "categorie": "technique",
+    "enonce": "À partir de la relation $E_c = h\\nu - W_{extraction}$, isoler la fréquence $\\nu$ en fonction des autres grandeurs."
+  },
+  {
+    "id": "terminale-19_photon_quantique-06",
+    "chapitre": "19_photon_quantique",
+    "categorie": "technique",
+    "enonce": "Une cellule photovoltaïque reçoit une puissance lumineuse $P_{incidente} = 200$ W et fournit une puissance électrique $P_{utile} = 44$ W. Calculer son rendement."
+  },
+  {
+    "id": "terminale-20_synthese_organique-01",
+    "chapitre": "20_synthese_organique",
+    "categorie": "connaissance",
+    "enonce": "Définir l'isomérie de constitution et donner un exemple de deux familles de composés pouvant être isomères l'une de l'autre."
+  },
+  {
+    "id": "terminale-20_synthese_organique-02",
+    "chapitre": "20_synthese_organique",
+    "categorie": "connaissance",
+    "enonce": "Citer le groupe caractéristique et la formule générale d'un ester."
+  },
+  {
+    "id": "terminale-20_synthese_organique-03",
+    "chapitre": "20_synthese_organique",
+    "categorie": "connaissance",
+    "enonce": "Citer le groupe caractéristique d'un amide et d'un halogénoalcane."
+  },
+  {
+    "id": "terminale-20_synthese_organique-04",
+    "chapitre": "20_synthese_organique",
+    "categorie": "connaissance",
+    "enonce": "Définir le motif d'un polymère et donner un exemple de polymère synthétique courant."
+  },
+  {
+    "id": "terminale-20_synthese_organique-05",
+    "chapitre": "20_synthese_organique",
+    "categorie": "technique",
+    "enonce": "Citer deux leviers expérimentaux permettant d'augmenter le rendement d'une synthèse organique en jouant sur l'équilibre ou l'élimination d'un produit."
+  },
+  {
+    "id": "terminale-20_synthese_organique-06",
+    "chapitre": "20_synthese_organique",
+    "categorie": "technique",
+    "enonce": "Une synthèse organique produit $m_{exp} = 4,2$ g de produit, alors que la masse théorique maximale attendue est $m_{th} = 6,0$ g. Calculer le rendement de cette synthèse."
+  },
+  {
+    "id": "terminale-21_chimie_organique_suite-01",
+    "chapitre": "21_chimie_organique_suite",
+    "categorie": "connaissance",
+    "enonce": "Définir une étape de protection d'un groupe caractéristique dans une stratégie de synthèse multi-étapes, et expliquer son intérêt."
+  },
+  {
+    "id": "terminale-21_chimie_organique_suite-02",
+    "chapitre": "21_chimie_organique_suite",
+    "categorie": "connaissance",
+    "enonce": "Citer les grands types de réactions rencontrées en synthèse organique (substitution, addition, élimination, oxydo-réduction, acide-base)."
+  },
+  {
+    "id": "terminale-21_chimie_organique_suite-03",
+    "chapitre": "21_chimie_organique_suite",
+    "categorie": "connaissance",
+    "enonce": "Représenter la formule topologique du butan-1-ol (sans passer par la formule semi-développée)."
+  },
+  {
+    "id": "terminale-21_chimie_organique_suite-04",
+    "chapitre": "21_chimie_organique_suite",
+    "categorie": "technique",
+    "enonce": "À partir d'une formule brute $\\mathrm{C_4H_{10}O}$, citer les différentes familles fonctionnelles possibles pour un composé de cette formule."
+  },
+  {
+    "id": "terminale-21_chimie_organique_suite-05",
+    "chapitre": "21_chimie_organique_suite",
+    "categorie": "connaissance",
+    "enonce": "Citer deux critères permettant d'évaluer l'impact environnemental d'une synthèse organique (choix des réactifs, solvants, énergie, sous-produits)."
+  },
+  {
+    "id": "terminale-21_chimie_organique_suite-06",
+    "chapitre": "21_chimie_organique_suite",
+    "categorie": "technique",
+    "enonce": "Expliquer, à partir d'une séquence réactionnelle donnée, comment identifier une étape de modification de groupe caractéristique par opposition à une étape de modification de chaîne carbonée."
+  },
+  {
+    "id": "terminale-maths-01",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Résoudre l'équation différentielle $\\dfrac{dN}{dt} = -\\lambda N$ avec la condition initiale $N(0) = N_0$."
+  },
+  {
+    "id": "terminale-maths-02",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Résoudre l'équation différentielle $RC\\dfrac{dq}{dt} + q = CE$ avec la condition initiale $q(0) = 0$."
+  },
+  {
+    "id": "terminale-maths-03",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Résoudre l'équation différentielle $\\dfrac{dv}{dt} + \\dfrac{v}{\\tau} = 0$ avec la condition initiale $v(0) = v_0$."
+  },
+  {
+    "id": "terminale-maths-04",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Résoudre l'équation différentielle $RC\\dfrac{du_C}{dt} + u_C = 0$ avec la condition initiale $u_C(0) = U_0$ (décharge d'un condensateur)."
+  },
+  {
+    "id": "terminale-maths-05",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Vérifier que la fonction $N(t) = N_0 e^{-\\lambda t}$ est solution de l'équation différentielle $\\dfrac{dN}{dt} = -\\lambda N$."
+  },
+  {
+    "id": "terminale-maths-06",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Résoudre l'équation différentielle $\\dfrac{d\\theta}{dt} + k\\theta = k\\theta_{ext}$ avec la condition initiale $\\theta(0) = \\theta_0$."
+  },
+  {
+    "id": "terminale-maths-07",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Déterminer le temps caractéristique $\\tau$ associé à l'équation différentielle $\\tau \\dfrac{dy}{dt} + y = A$, où $A$ et $\\tau$ sont des constantes."
+  },
+  {
+    "id": "terminale-maths-08",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Résoudre l'équation différentielle $\\dfrac{dv}{dt} = -\\dfrac{v}{\\tau} + g$ avec la condition initiale $v(0) = 0$ (chute avec frottement)."
+  },
+  {
+    "id": "terminale-maths-09",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Calculer la dérivée de la fonction $f(t) = e^{-\\lambda t}$."
+  },
+  {
+    "id": "terminale-maths-10",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Calculer la dérivée de la fonction $f(t) = \\cos(\\omega t + \\varphi)$."
+  },
+  {
+    "id": "terminale-maths-11",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Déterminer la primitive de la fonction $-g \\cdot t + V_0 \\cdot \\cos(\\theta)$."
+  },
+  {
+    "id": "terminale-maths-12",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Calculer la dérivée de la fonction $f(t) = A(1 - e^{-t/\\tau})$."
+  },
+  {
+    "id": "terminale-maths-13",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Déterminer une primitive de la fonction $f(t) = \\sin(\\omega t)$."
+  },
+  {
+    "id": "terminale-maths-14",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Calculer la dérivée seconde de la fonction $x(t) = \\dfrac{1}{2}at^2 + v_0 t + x_0$."
+  },
+  {
+    "id": "terminale-maths-15",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Déterminer la primitive de la fonction constante $a(t) = -g$, sachant que la primitive s'annule à $t=0$."
+  },
+  {
+    "id": "terminale-maths-16",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Convertir 5 MWh en J."
+  },
+  {
+    "id": "terminale-maths-17",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Convertir une durée de $250$ ms en secondes, en écriture scientifique."
+  },
+  {
+    "id": "terminale-maths-18",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Convertir une longueur de $450$ nm en mètres, en écriture scientifique."
+  },
+  {
+    "id": "terminale-maths-19",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Simplifier l'expression $\\dfrac{3,0\\times10^{-5} \\times 2,0\\times10^{8}}{4,0\\times10^{-2}}$ et donner le résultat en écriture scientifique."
+  },
+  {
+    "id": "terminale-maths-20",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Convertir une pression de $1013$ hPa en Pa."
+  },
+  {
+    "id": "terminale-maths-21",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Convertir une énergie de $2,5$ eV en joules, sachant que $1$ eV $= 1,6\\times10^{-19}$ J."
+  },
+  {
+    "id": "terminale-maths-22",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "À partir de la relation $E_c = h\\nu - W$, isoler le travail d'extraction $W$."
+  },
+  {
+    "id": "terminale-maths-23",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "À partir de la relation $P_2 - P_1 = \\rho g (z_1 - z_2)$, isoler la hauteur $z_1$."
+  },
+  {
+    "id": "terminale-maths-24",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "À partir de la relation $n = \\dfrac{c \\times V}{M}$, isoler la masse molaire $M$."
+  },
+  {
+    "id": "terminale-maths-25",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "À partir de la relation $\\theta = \\dfrac{\\lambda}{a}$, isoler la longueur d'onde $\\lambda$."
+  },
+  {
+    "id": "terminale-maths-26",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "À partir de la relation $Q_r = \\dfrac{[C]^c [D]^d}{[A]^a [B]^b}$, exprimer littéralement comment $Q_r$ varie si la concentration de $C$ augmente (à autres concentrations fixées)."
+  },
+  {
+    "id": "terminale-maths-27",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "À partir de la relation $G = \\dfrac{f'_1}{f'_2}$, isoler la distance focale de l'oculaire $f'_2$."
+  },
+  {
+    "id": "terminale-maths-28",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Résoudre l'équation $\\log(x) = -3,2$ pour $x > 0$."
+  },
+  {
+    "id": "terminale-maths-29",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Rappeler la propriété du logarithme décimal permettant de transformer $\\log(a \\times b)$ en somme."
+  },
+  {
+    "id": "terminale-maths-30",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Résoudre l'équation $10\\log\\left(\\dfrac{I}{I_0}\\right) = 60$ pour déterminer $I$ en fonction de $I_0$."
+  },
+  {
+    "id": "terminale-maths-31",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Simplifier l'expression $\\log\\left(\\dfrac{1}{x}\\right)$ en fonction de $\\log(x)$."
+  },
+  {
+    "id": "terminale-maths-32",
+    "chapitre": "maths_transversales",
+    "categorie": "maths",
+    "enonce": "Résoudre l'équation $-\\log(x) = 4,5$ pour $x > 0$."
+  }
+]
