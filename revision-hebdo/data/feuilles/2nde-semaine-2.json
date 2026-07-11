@@ -1,0 +1,49 @@
+{
+  "niveau": "2nde",
+  "semaine": 2,
+  "date_generation": "2026-07-11T20:55:42.528Z",
+  "questions": [
+    {
+      "id": "2nde-maths-12",
+      "chapitre": "maths_transversales",
+      "categorie": "maths",
+      "enonce": "Dans la relation $v = \\dfrac{d}{t}$, exprimer $d$ en fonction de $v$ et $t$."
+    },
+    {
+      "id": "2nde-maths-17",
+      "chapitre": "maths_transversales",
+      "categorie": "maths",
+      "enonce": "Un échantillon de 80 g contient 12 g d'une espèce chimique. Calculer le pourcentage massique de cette espèce dans l'échantillon."
+    },
+    {
+      "id": "2nde-01_corps_purs-03",
+      "chapitre": "01_corps_purs",
+      "categorie": "connaissance",
+      "enonce": "Donner la valeur de la masse volumique de l'eau liquide, avec son unité."
+    },
+    {
+      "id": "2nde-maths-28",
+      "chapitre": "maths_transversales",
+      "categorie": "maths",
+      "enonce": "Sans calculatrice, calculer $\\dfrac{8 \\times 10^{5}}{2 \\times 10^{2}}$."
+    },
+    {
+      "id": "2nde-maths-04",
+      "chapitre": "maths_transversales",
+      "categorie": "maths",
+      "enonce": "Sans calculatrice, simplifier $\\dfrac{10^{-2}}{10^{6}}$."
+    },
+    {
+      "id": "2nde-10_mouvement-03",
+      "chapitre": "10_mouvement",
+      "categorie": "technique",
+      "enonce": "Un point parcourt 45 m en 9 s à vitesse constante. Calculer la valeur de sa vitesse moyenne."
+    },
+    {
+      "id": "2nde-maths-07",
+      "chapitre": "maths_transversales",
+      "categorie": "maths",
+      "enonce": "Convertir 3,2 m en cm."
+    }
+  ]
+}

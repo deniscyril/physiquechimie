@@ -481,6 +481,7 @@ async function renderEnseignant(niveauInitial) {
   <div class="nav-bottom">
     <button class="btn btn-outline" onclick="exporterProgression('${niveau}')">⬇ Exporter la progression</button>
   </div>
+  <div id="progression-export-zone"></div>
 
   <div class="section-label">Générer la feuille de la semaine</div>
   <div class="field-row">
@@ -501,7 +502,23 @@ function exporterProgression(niveau) {
     ...it, checked: document.getElementById(`chk-${i}`).checked,
   }));
   state.progression = items;
-  downloadFile(`progression-${niveau}.txt`, serializeProgression(items));
+  window.__progressionExport = serializeProgression(items);
+
+  const zone = document.getElementById('progression-export-zone');
+  zone.innerHTML = `
+  <div class="notice notice-info">
+    <strong>1 fichier à télécharger et déposer à cet emplacement exact :</strong>
+    <div class="dl-path">
+      <button class="btn btn-outline" onclick="telechargerProgression('${niveau}')">⬇ progression-${niveau}.txt</button>
+      <span class="dl-arrow">→</span><span class="dl-dest">revision-hebdo/data/progression-${niveau}.txt</span>
+      <span class="dl-note">(remplace le fichier existant)</span>
+    </div>
+    Puis, depuis le dossier du projet : <code>git add revision-hebdo/data/progression-${niveau}.txt</code> · <code>git commit -m "Progression — ${LEVELS[niveau].label}"</code> · <code>git push</code>.
+  </div>`;
+}
+
+function telechargerProgression(niveau) {
+  downloadFile(`progression-${niveau}.txt`, window.__progressionExport);
 }
 
 function genererApercu(niveau) {
@@ -545,17 +562,36 @@ function validerFeuille() {
     questions: apercu.questions,
   };
 
-  downloadFile(`historique-${apercu.niveau}.json`, JSON.stringify(newHistorique, null, 2));
-  downloadFile(`${apercu.niveau}-semaine-${apercu.semaine}.json`, JSON.stringify(feuille, null, 2));
+  window.__validation = { niveau: apercu.niveau, semaine: apercu.semaine, newHistorique, feuille };
 
   const zone = document.getElementById('apercu-zone');
   zone.innerHTML += `
   <div class="notice notice-info">
-    <strong>2 fichiers viennent d'être téléchargés. Dépose-les à ces emplacements exacts :</strong>
-    <div class="dl-path"><span class="dl-file">historique-${apercu.niveau}.json</span><span class="dl-arrow">→</span><span class="dl-dest">revision-hebdo/data/historique-${apercu.niveau}.json</span><span class="dl-note">(remplace le fichier existant)</span></div>
-    <div class="dl-path"><span class="dl-file">${apercu.niveau}-semaine-${apercu.semaine}.json</span><span class="dl-arrow">→</span><span class="dl-dest">revision-hebdo/data/feuilles/${apercu.niveau}-semaine-${apercu.semaine}.json</span><span class="dl-note">(nouveau fichier)</span></div>
+    <strong>2 fichiers à télécharger (un clic chacun) et à déposer à ces emplacements exacts :</strong>
+    <div class="dl-path">
+      <button class="btn btn-outline" onclick="telechargerHistorique()">⬇ historique-${apercu.niveau}.json</button>
+      <span class="dl-arrow">→</span><span class="dl-dest">revision-hebdo/data/historique-${apercu.niveau}.json</span>
+      <span class="dl-note">(remplace le fichier existant)</span>
+    </div>
+    <div class="dl-path">
+      <button class="btn btn-outline" onclick="telechargerFeuilleGeneree()">⬇ ${apercu.niveau}-semaine-${apercu.semaine}.json</button>
+      <span class="dl-arrow">→</span><span class="dl-dest">revision-hebdo/data/feuilles/${apercu.niveau}-semaine-${apercu.semaine}.json</span>
+      <span class="dl-note">(nouveau fichier)</span>
+    </div>
     Puis, depuis le dossier du projet : <code>git add revision-hebdo/data/</code> · <code>git commit -m "Semaine ${apercu.semaine} — ${LEVELS[apercu.niveau].label}"</code> · <code>git push</code>.
   </div>`;
+}
+
+function telechargerHistorique() {
+  const v = window.__validation;
+  if (!v) return;
+  downloadFile(`historique-${v.niveau}.json`, JSON.stringify(v.newHistorique, null, 2));
+}
+
+function telechargerFeuilleGeneree() {
+  const v = window.__validation;
+  if (!v) return;
+  downloadFile(`${v.niveau}-semaine-${v.semaine}.json`, JSON.stringify(v.feuille, null, 2));
 }
 
 // ═══════════════════════════════════════════════════════
