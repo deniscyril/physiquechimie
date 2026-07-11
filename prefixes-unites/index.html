@@ -516,6 +516,118 @@ const UNITS = {
   'GW': { prefix: 'G', base: 'W',  exp:  9, grandeur: 'Puissance' },
 };
 
+// ═══════════════════════════════════════════════════════
+// CAS PARTICULIER : LE VOLUME (litre ↔ m³)
+// ═══════════════════════════════════════════════════════
+// Le litre n'est pas une unité de base du SI : 1 L = 10⁻³ m³. Passer d'un
+// préfixe du litre (ou de cm³) aux m³ demande donc une étape en plus par
+// rapport aux autres grandeurs — voir Méthode C, Phase 1.
+
+const VOLUME_PREFIX_UNITS = {
+  'µL': { prefix: 'µ', exp: -6 },
+  'mL': { prefix: 'm', exp: -3 },
+  'cL': { prefix: 'c', exp: -2 },
+  'L':  { prefix: '',  exp:  0 },
+};
+const VOLUME_LABEL = { 'µL': 'µL', 'mL': 'mL', 'cL': 'cL', 'L': 'L', 'cm3': 'cm³', 'm3': 'm³' };
+const L_TO_M3_EXP = -3; // constante fixe à connaître par cœur : 1 L = 10⁻³ m³
+
+function volumeUnitExpM3(u) {
+  if (u === 'm3') return 0;
+  if (u === 'cm3') return -6; // 1 cm³ = 1 mL = 10⁻³ L = 10⁻⁶ m³
+  return VOLUME_PREFIX_UNITS[u].exp + L_TO_M3_EXP;
+}
+
+function getExpectedVolume(ex) {
+  return ex.value * Math.pow(10, volumeUnitExpM3(ex.fromUnit) - volumeUnitExpM3(ex.toUnit));
+}
+
+function fmtExpectedVolume(ex) {
+  const val = getExpectedVolume(ex);
+  const toLabel = VOLUME_LABEL[ex.toUnit];
+  const abs = Math.abs(val);
+  if (abs >= 1e-3 && abs < 1e5) {
+    return `${parseFloat(val.toPrecision(8)).toLocaleString('fr-FR', { maximumSignificantDigits: 8 })} ${toLabel}`;
+  }
+  const exp10 = Math.floor(Math.log10(abs));
+  const mant = val / Math.pow(10, exp10);
+  return `${fv(parseFloat(mant.toPrecision(6)))} × 10${sup(exp10)} ${toLabel}`;
+}
+
+// Convertit value+unit (préfixe du litre, ou cm³) vers les litres, avec le
+// texte de justification (réutilise la même méthode que pour les autres grandeurs).
+function stepsVersLitres(value, unit) {
+  const rows = [];
+  let currentUnit = unit;
+  if (unit === 'cm3') {
+    rows.push(`<strong>1 cm³ = 1 mL</strong> (équivalence à connaître, très utile en chimie)`);
+    currentUnit = 'mL';
+  }
+  let litres = value;
+  if (currentUnit !== 'L') {
+    const p = VOLUME_PREFIX_UNITS[currentUnit];
+    const pName = PREFIXES[p.prefix].name;
+    litres = value * Math.pow(10, p.exp);
+    rows.push(`Préfixe <strong>${p.prefix || '(base)'}</strong> (${pName}) = 10${sup(p.exp)} — même méthode que d'habitude`);
+    rows.push(`${fv(value)} ${VOLUME_LABEL[currentUnit]} = ${fv(value)} × 10${sup(p.exp)} L`);
+  }
+  return { rows, litres };
+}
+
+// Convertit une valeur en litres vers unit (préfixe du litre, ou cm³).
+function stepsDepuisLitres(litres, unit) {
+  const rows = [];
+  const targetUnit = unit === 'cm3' ? 'mL' : unit;
+  let value = litres;
+  if (targetUnit !== 'L') {
+    const p = VOLUME_PREFIX_UNITS[targetUnit];
+    const pName = PREFIXES[p.prefix].name;
+    value = litres * Math.pow(10, -p.exp);
+    rows.push(`Préfixe <strong>${p.prefix || '(base)'}</strong> (${pName}) = 10${sup(p.exp)} — même méthode que d'habitude, en sens inverse`);
+    rows.push(`${fv(litres)} L = ${fv(litres)} × 10${sup(-p.exp)} ${VOLUME_LABEL[targetUnit]}`);
+  }
+  if (unit === 'cm3') {
+    rows.push(`<strong>1 mL = 1 cm³</strong> (équivalence à connaître)`);
+  }
+  return rows;
+}
+
+function genCorrectionVolume(ex) {
+  const row = (txt) => `<div class="step"><span class="step-arrow">→</span> <span>${txt}</span></div>`;
+  const rows = [];
+
+  if (ex.toUnit === 'm3') {
+    const { rows: r1, litres } = stepsVersLitres(ex.value, ex.fromUnit);
+    rows.push(...r1);
+    rows.push(`<strong>1 L = 10⁻³ m³</strong> (constante fixe à connaître par cœur)`);
+    rows.push(`${fv(litres)} L = ${fv(litres)} × 10⁻³ m³ = <strong>${fmtExpectedVolume(ex)}</strong>`);
+  } else if (ex.fromUnit === 'm3') {
+    rows.push(`<strong>1 m³ = 10³ L</strong> (constante fixe à connaître par cœur, inverse de 1 L = 10⁻³ m³)`);
+    const litres = ex.value * 1000;
+    rows.push(`${fv(ex.value)} m³ = ${fv(ex.value)} × 10³ L = ${fv(litres)} L`);
+    rows.push(...stepsDepuisLitres(litres, ex.toUnit));
+    rows.push(`<strong>= ${fmtExpectedVolume(ex)}</strong>`);
+  }
+  return rows.map(row).join('');
+}
+
+function genHintVolume(ex) {
+  const base = `Le litre n'est pas une unité de base : <strong>1 L = 10⁻³ m³</strong>.`;
+  const cm3note = (ex.fromUnit === 'cm3' || ex.toUnit === 'cm3') ? ` Et <strong>1 cm³ = 1 mL</strong>.` : '';
+  return `${base}${cm3note} Passe d'abord par le litre avec la méthode habituelle, puis applique cette constante.`;
+}
+
+// Dispatch grandeur "normale" (UNITS) vs cas particulier volume
+function expectedOf(ex)      { return ex.type === 'volume' ? getExpectedVolume(ex) : getExpected(ex); }
+function fmtOf(ex)           { return ex.type === 'volume' ? fmtExpectedVolume(ex) : fmtExpected(ex); }
+function correctionOf(ex)    { return ex.type === 'volume' ? genCorrectionVolume(ex) : genCorrection(ex); }
+function hintOf(ex)          { return ex.type === 'volume' ? genHintVolume(ex) : genHint(ex); }
+function grandeurOf(ex)      { return ex.type === 'volume' ? 'Volume' : UNITS[ex.fromUnit].grandeur; }
+function unitLabelOf(ex, which) {
+  const u = which === 'from' ? ex.fromUnit : ex.toUnit;
+  return ex.type === 'volume' ? VOLUME_LABEL[u] : u;
+}
+
 // Phase 2 — pratique guidée
 const PHASE2 = [
   { value: 25,   fromUnit: 'mm',  toUnit: 'm'   },
@@ -524,6 +636,8 @@ const PHASE2 = [
   { value: 8,    fromUnit: 'µs',  toUnit: 's'   },
   { value: 0.5,  fromUnit: 'GHz', toUnit: 'Hz'  },
   { value: 3,    fromUnit: 'km',  toUnit: 'cm'  },
+  { value: 50,   fromUnit: 'mL',  toUnit: 'm3', type: 'volume' },
+  { value: 25,   fromUnit: 'cm3', toUnit: 'm3', type: 'volume' },
 ];
 
 // Phase 3 — pratique autonome
@@ -538,6 +652,9 @@ const PHASE3 = [
   { value: 250,  fromUnit: 'mA',  toUnit: 'µA'  },
   { value: 150,  fromUnit: 'kHz', toUnit: 'MHz' },
   { value: 6,    fromUnit: 'km',  toUnit: 'mm'  },
+  { value: 250,    fromUnit: 'mL',  toUnit: 'm3', type: 'volume' },
+  { value: 0.0025, fromUnit: 'm3',  toUnit: 'mL', type: 'volume' },
+  { value: 800,    fromUnit: 'cm3', toUnit: 'm3', type: 'volume' },
 ];
 
 // ═══════════════════════════════════════════════════════
@@ -712,19 +829,19 @@ function exerciseCardHTML(ex, idx, phase) {
   return `
   <div class="exercise-card" id="card${pid}">
     <div class="exercise-num">Exercice ${idx + 1} / ${phase === 2 ? PHASE2.length : PHASE3.length}</div>
-    <span class="grandeur-tag">${UNITS[ex.fromUnit].grandeur}</span>
+    <span class="grandeur-tag">${grandeurOf(ex)}</span>
     <div class="exercise-question">
-      Convertir <strong>${fv(ex.value)} ${ex.fromUnit}</strong> en <strong>${ex.toUnit}</strong>
+      Convertir <strong>${fv(ex.value)} ${unitLabelOf(ex, 'from')}</strong> en <strong>${unitLabelOf(ex, 'to')}</strong>
     </div>
     <div class="format-hint">Formats acceptés : <code>3*10^-2</code> ou <code>0,03</code> ou <code>3e-2</code></div>
     <div class="input-row">
       <input class="answer-input" id="inp${pid}" inputmode="text" placeholder="Ta réponse…" autocomplete="off"
              ${withVerify ? `onkeydown="if(event.key==='Enter') checkEx(${phase},${idx})"` : ''}>
-      <span class="unit-suffix">${ex.toUnit}</span>
+      <span class="unit-suffix">${unitLabelOf(ex, 'to')}</span>
       ${withVerify ? `<button class="btn btn-primary" id="vbtn${pid}" onclick="checkEx(${phase},${idx})">Vérifier</button>` : ''}
       ${withHint ? `<button class="btn btn-hint" id="hbtn${idx}" onclick="showHint(${idx})">Indice</button>` : ''}
     </div>
-    ${withHint ? `<div class="hint-box" id="hint${idx}">${genHint(ex)}</div>` : ''}
+    ${withHint ? `<div class="hint-box" id="hint${idx}">${hintOf(ex)}</div>` : ''}
     <div class="feedback-box" id="fb${pid}"></div>
   </div>`;
 }
@@ -748,7 +865,7 @@ function showHome() {
       <div>
         <div class="phase-card-num">Phase 1</div>
         <div class="phase-card-title">Modelage — Apprendre la méthode</div>
-        <div class="phase-card-desc">Tableau des préfixes · Conversion vers l'unité de base · Conversion entre deux préfixes</div>
+        <div class="phase-card-desc">Tableau des préfixes · Conversion vers l'unité de base · Conversion entre deux préfixes · Cas particulier du volume</div>
       </div>
       <div class="phase-card-arrow">→</div>
     </div>
@@ -855,6 +972,64 @@ function showPhase1() {
     </div>
   </div>
 
+  <!-- ── MÉTHODE C ─────────────────────────── -->
+  <div class="technique">
+    <div class="technique-header">Méthode C — Cas particulier : le volume</div>
+    <div class="technique-body">
+      <div class="objectif-line">
+        Le <strong>litre</strong> n'est pas une unité de base du Système International : c'est un raccourci pour
+        <strong>1 dm³</strong>. Convertir un volume vers ou depuis les <strong>m³</strong> demande donc une étape
+        de plus par rapport aux autres grandeurs.
+      </div>
+
+      <div class="example-header">Exemple 1 — Depuis un préfixe du litre</div>
+      <div class="example-q">On veut convertir <strong>50 mL</strong> en <strong>m³</strong>.</div>
+      <div class="bloc bloc-alg">
+        <div class="bloc-title">Démarche en deux étapes</div>
+        <div class="step"><span class="step-num">1</span>
+          <span><strong>mL → L</strong> : même méthode que d'habitude (Méthode A). Préfixe m (milli) = 10<sup>−3</sup><br>
+          <span style="margin-left:4px">50 mL = 50 × 10<sup>−3</sup> L = 0,050 L</span></span>
+        </div>
+        <div class="step" style="margin-top:8px"><span class="step-num">2</span>
+          <span><strong>L → m³</strong> : constante fixe à connaître par cœur, 1 L = 10<sup>−3</sup> m³<br>
+          <span style="margin-left:4px">0,050 L = 0,050 × 10<sup>−3</sup> m³</span></span>
+        </div>
+      </div>
+      <div class="bloc bloc-result">
+        <div class="bloc-title">Résultat</div>
+        <span class="formula-box">50 mL = 5 × 10<sup>−5</sup> m³</span>
+      </div>
+
+      <div class="example-header">Exemple 2 — Depuis des cm³ (courant en chimie)</div>
+      <div class="example-q">On veut convertir <strong>25 cm³</strong> en <strong>m³</strong>.</div>
+      <div class="bloc bloc-alg">
+        <div class="bloc-title">Démarche en trois étapes</div>
+        <div class="step"><span class="step-num">1</span>
+          <span><strong>cm³ → mL</strong> : équivalence directe, 1 cm³ = 1 mL<br>
+          <span style="margin-left:4px">25 cm³ = 25 mL</span></span>
+        </div>
+        <div class="step" style="margin-top:8px"><span class="step-num">2</span>
+          <span><strong>mL → L</strong> : préfixe m (milli) = 10<sup>−3</sup><br>
+          <span style="margin-left:4px">25 mL = 25 × 10<sup>−3</sup> L = 0,025 L</span></span>
+        </div>
+        <div class="step" style="margin-top:8px"><span class="step-num">3</span>
+          <span><strong>L → m³</strong> : 1 L = 10<sup>−3</sup> m³<br>
+          <span style="margin-left:4px">0,025 L = 0,025 × 10<sup>−3</sup> m³</span></span>
+        </div>
+      </div>
+      <div class="bloc bloc-result">
+        <div class="bloc-title">Résultat</div>
+        <span class="formula-box">25 cm³ = 2,5 × 10<sup>−5</sup> m³</span>
+      </div>
+
+      <div style="background:#f0f0ff; border:1.5px solid #c4b5fd; border-radius:8px; padding:12px 16px; margin-top:14px; font-size:0.93rem; color:#3b2b8a;">
+        <strong>À connaître par cœur :</strong><br>
+        • 1 L = 1 dm³ = 10<sup>−3</sup> m³<br>
+        • 1 mL = 1 cm³ (verrerie de chimie graduée en mL)
+      </div>
+    </div>
+  </div>
+
   <div class="nav-bottom">
     <button class="btn btn-p2" onclick="showPhase2()">Passer à la pratique guidée →</button>
   </div>`;
@@ -866,7 +1041,7 @@ function showPhase2() {
   <button class="btn-back" onclick="showHome()">← Accueil</button>
   <a href="../index.html" class="btn-back" style="margin-left:8px">↖ Portail</a>
   <div class="phase-label p2-label">Phase 2 — Pratique guidée</div>
-  <h1>6 exercices — indices disponibles</h1>
+  <h1>${PHASE2.length} exercices — indices disponibles</h1>
 
   ${prefixTableHTML()}
 
@@ -887,7 +1062,7 @@ function showPhase3() {
   <button class="btn-back" onclick="showHome()">← Accueil</button>
   <a href="../index.html" class="btn-back" style="margin-left:8px">↖ Portail</a>
   <div class="phase-label p3-label">Phase 3 — Pratique autonome</div>
-  <h1>10 exercices — sans aide</h1>
+  <h1>${PHASE3.length} exercices — sans aide</h1>
 
   <div style="background:#f0fff8; border:1.5px solid #6ee7b7; border-radius:8px; padding:12px 16px; margin-bottom:24px; font-size:0.93rem; color:#064e3b; font-family:sans-serif;">
     Le tableau des préfixes n'est plus affiché. Remplis tous les exercices, puis clique sur <strong>Voir mon score</strong>.
@@ -923,7 +1098,7 @@ function checkEx(phase, idx) {
 
   const raw    = inp.value;
   const parsed = parseAnswer(raw);
-  const exp    = getExpected(ex);
+  const exp    = expectedOf(ex);
   const ok     = isCorrect(parsed, exp);
 
   inp.classList.toggle('correct',   ok);
@@ -939,11 +1114,11 @@ function checkEx(phase, idx) {
 
   fb.className = `feedback-box visible feedback-${ok ? 'ok' : 'err'}`;
   if (ok) {
-    fb.innerHTML = `<strong>✓ Correct !</strong> &nbsp; ${fmtExpected(ex)}`;
+    fb.innerHTML = `<strong>✓ Correct !</strong> &nbsp; ${fmtOf(ex)}`;
   } else {
     const yourTxt = raw.trim() ? `Ta réponse : <em>${raw}</em>` : 'Aucune réponse saisie.';
     fb.innerHTML = `<strong>✗ Incorrect.</strong> ${yourTxt}
-      <div class="corr-steps">${genCorrection(ex)}</div>`;
+      <div class="corr-steps">${correctionOf(ex)}</div>`;
   }
 }
 
@@ -959,7 +1134,7 @@ function submitPhase3() {
     const inp = document.getElementById(`inp${pid}`);
     const raw = inp ? inp.value : '';
     const parsed = parseAnswer(raw);
-    const expected = getExpected(ex);
+    const expected = expectedOf(ex);
     const ok = isCorrect(parsed, expected);
 
     if (inp) { inp.disabled = true; inp.classList.toggle('correct', ok); inp.classList.toggle('incorrect', !ok); }
@@ -969,7 +1144,7 @@ function submitPhase3() {
     if (ok) {
       score++;
       const fb = document.getElementById(`fb${pid}`);
-      if (fb) { fb.className = 'feedback-box visible feedback-ok'; fb.innerHTML = `<strong>✓ Correct !</strong> &nbsp; ${fmtExpected(ex)}`; }
+      if (fb) { fb.className = 'feedback-box visible feedback-ok'; fb.innerHTML = `<strong>✓ Correct !</strong> &nbsp; ${fmtOf(ex)}`; }
     } else {
       errors.push({ ex, idx: i, raw });
       const fb = document.getElementById(`fb${pid}`);
@@ -977,9 +1152,9 @@ function submitPhase3() {
     }
   });
 
-  const msg = score === 10 ? 'Parfait ! Tu maîtrises les conversions avec les préfixes.'
-            : score >= 8   ? 'Très bien ! Quelques points à retravailler.'
-            : score >= 5   ? 'Bon début. Revois les erreurs ci-dessous.'
+  const msg = score === PHASE3.length             ? 'Parfait ! Tu maîtrises les conversions avec les préfixes.'
+            : score >= Math.ceil(PHASE3.length * 0.8) ? 'Très bien ! Quelques points à retravailler.'
+            : score >= Math.ceil(PHASE3.length * 0.5) ? 'Bon début. Revois les erreurs ci-dessous.'
             : 'Continue à t\'entraîner — la méthode est en Phase 1.';
 
   let errHTML = '';
@@ -987,17 +1162,17 @@ function submitPhase3() {
     errHTML = `<div class="section-label">Corrections des erreurs</div>` +
     errors.map(({ ex, idx, raw }) => `
       <div class="correction-item">
-        <div class="ci-q">Ex. ${idx + 1} — Convertir ${fv(ex.value)} ${ex.fromUnit} en ${ex.toUnit}</div>
+        <div class="ci-q">Ex. ${idx + 1} — Convertir ${fv(ex.value)} ${unitLabelOf(ex, 'from')} en ${unitLabelOf(ex, 'to')}</div>
         ${raw.trim() ? `<div class="ci-your">Ta réponse : ${raw}</div>` : ''}
         <div class="ci-title">Correction :</div>
-        <div class="corr-steps">${genCorrection(ex)}</div>
+        <div class="corr-steps">${correctionOf(ex)}</div>
       </div>`).join('');
   }
 
   const zone = document.getElementById('score-zone');
   zone.innerHTML = `
   <div class="score-card">
-    <div class="score-big">${score} / 10</div>
+    <div class="score-big">${score} / ${PHASE3.length}</div>
     <div class="score-label">Score final</div>
     <div class="score-msg">${msg}</div>
   </div>
