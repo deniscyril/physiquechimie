@@ -491,6 +491,18 @@ async function renderEnseignant(niveauInitial) {
   </div>
   <div id="apercu-zone"></div>
 
+  <div class="section-label">Zone de réinitialisation</div>
+  <div class="notice notice-warn">
+    À utiliser pour des tests, ou en début d'année scolaire pour repartir sur une classe vierge.
+    Les feuilles déjà générées dans <span class="dl-file">data/feuilles/</span> ne sont pas supprimées par ces boutons
+    (tu peux les effacer toi-même dans le dossier si tu veux repartir totalement à zéro).
+  </div>
+  <div class="nav-bottom">
+    <button class="btn btn-outline" onclick="resetHistorique('${niveau}')">🔄 Réinitialiser l'historique (tests)</button>
+    <button class="btn btn-outline" onclick="resetAnnee('${niveau}')">🗑️ Nouvelle rentrée (progression + historique)</button>
+  </div>
+  <div id="reset-zone"></div>
+
   <div class="footer-link"><a href="?niveau=${niveau}">Voir la feuille de révision (élèves) →</a></div>`;
 
   window.__revisionState = { niveau, banque, progression, historique };
@@ -592,6 +604,75 @@ function telechargerFeuilleGeneree() {
   const v = window.__validation;
   if (!v) return;
   downloadFile(`${v.niveau}-semaine-${v.semaine}.json`, JSON.stringify(v.feuille, null, 2));
+}
+
+// ═══════════════════════════════════════════════════════
+// RÉINITIALISATION
+// ═══════════════════════════════════════════════════════
+
+function resetHistorique(niveau) {
+  if (!confirm(`Réinitialiser l'historique de ${LEVELS[niveau].label} ?\n\nToutes les questions redeviendront "jamais posées" pour l'algorithme de révision espacée. La progression (chapitres cochés) n'est pas touchée.`)) return;
+
+  const state = window.__revisionState;
+  state.historique = {};
+  window.__resetHistorique = { niveau };
+
+  const zone = document.getElementById('reset-zone');
+  zone.innerHTML = `
+  <div class="notice notice-warn">
+    <strong>1 fichier à télécharger et déposer à cet emplacement exact :</strong>
+    <div class="dl-path">
+      <button class="btn btn-outline" onclick="telechargerHistoriqueVide()">⬇ historique-${niveau}.json</button>
+      <span class="dl-arrow">→</span><span class="dl-dest">revision-hebdo/data/historique-${niveau}.json</span>
+      <span class="dl-note">(remplace le fichier existant, contenu vidé : {})</span>
+    </div>
+    Puis, depuis le dossier du projet : <code>git add revision-hebdo/data/historique-${niveau}.json</code> · <code>git commit -m "Réinitialise l'historique — ${LEVELS[niveau].label}"</code> · <code>git push</code>.
+  </div>`;
+}
+
+function telechargerHistoriqueVide() {
+  const r = window.__resetHistorique;
+  if (!r) return;
+  downloadFile(`historique-${r.niveau}.json`, '{}\n');
+}
+
+function resetAnnee(niveau) {
+  if (!confirm(`Nouvelle rentrée pour ${LEVELS[niveau].label} ?\n\nTous les chapitres seront décochés ET l'historique sera vidé — à utiliser en début d'année scolaire, pas en cours d'année.`)) return;
+
+  const state = window.__revisionState;
+  state.historique = {};
+  state.progression = state.progression.map(it => ({ ...it, checked: false }));
+  document.querySelectorAll('.progression-item input[type=checkbox]').forEach(cb => { cb.checked = false; });
+  window.__resetAnnee = { niveau, progressionText: serializeProgression(state.progression) };
+
+  const zone = document.getElementById('reset-zone');
+  zone.innerHTML = `
+  <div class="notice notice-warn">
+    <strong>2 fichiers à télécharger (un clic chacun) et à déposer à ces emplacements exacts :</strong>
+    <div class="dl-path">
+      <button class="btn btn-outline" onclick="telechargerProgressionVide()">⬇ progression-${niveau}.txt</button>
+      <span class="dl-arrow">→</span><span class="dl-dest">revision-hebdo/data/progression-${niveau}.txt</span>
+      <span class="dl-note">(tous les chapitres décochés)</span>
+    </div>
+    <div class="dl-path">
+      <button class="btn btn-outline" onclick="telechargerHistoriqueVide2()">⬇ historique-${niveau}.json</button>
+      <span class="dl-arrow">→</span><span class="dl-dest">revision-hebdo/data/historique-${niveau}.json</span>
+      <span class="dl-note">(contenu vidé : {})</span>
+    </div>
+    Puis, depuis le dossier du projet : <code>git add revision-hebdo/data/</code> · <code>git commit -m "Nouvelle rentrée — ${LEVELS[niveau].label}"</code> · <code>git push</code>.
+  </div>`;
+}
+
+function telechargerProgressionVide() {
+  const r = window.__resetAnnee;
+  if (!r) return;
+  downloadFile(`progression-${r.niveau}.txt`, r.progressionText);
+}
+
+function telechargerHistoriqueVide2() {
+  const r = window.__resetAnnee;
+  if (!r) return;
+  downloadFile(`historique-${r.niveau}.json`, '{}\n');
 }
 
 // ═══════════════════════════════════════════════════════
