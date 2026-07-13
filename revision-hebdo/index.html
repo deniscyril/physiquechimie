@@ -286,9 +286,10 @@ function shuffle(arr) {
 }
 
 function weight(q, historique, semaine) {
+  const poids = q.poids ?? 1; // pondération optionnelle par question (ex. 0.3 = 3× plus rare)
   const last = historique[q.id];
-  if (last == null) return NEVER_SEEN_WEIGHT;
-  return Math.max(1, semaine - last);
+  if (last == null) return NEVER_SEEN_WEIGHT * poids;
+  return Math.max(1, semaine - last) * poids;
 }
 
 function weightedPickDiverse(pool, historique, semaine, n, diversifyKey) {
