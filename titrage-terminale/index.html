@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Titrage pH-métrique &amp; conductimétrique — Terminale Spé</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #f0f4f8;
+    --bg2:       #ffffff;
+    --bg3:       #e8eef5;
+    --border:    #c8d6e5;
+    --text:      #1a2a3a;
+    --text2:     #4a6278;
+    --text3:     #7a96aa;
+    --accent:    #2563eb;
+    --green:     #16a34a;
+    --violet:    #7c3aed;
+    --amber:     #d97706;
+    --radius:    12px;
+    --radius-sm: 7px;
+  }
+
+  html { font-size: 16px; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .container { max-width: 900px; margin: 0 auto; }
+
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 1rem; padding: 7px 14px;
+    font-size: 13px; color: var(--text2);
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 8px; text-decoration: none;
+    transition: color 0.15s, border-color 0.15s, transform 0.1s;
+  }
+  .back-link:hover { color: var(--accent); border-color: var(--accent); transform: translateX(-2px); }
+
+  header { text-align: center; margin-bottom: 2rem; }
+  header .eyebrow {
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text3); margin-bottom: 6px;
+  }
+  header h1 {
+    font-size: clamp(1.3rem, 4vw, 1.9rem); font-weight: 600;
+    color: var(--text); line-height: 1.2;
+  }
+  header h1 span { color: var(--accent); }
+
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.2rem; margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .section-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text3); margin-bottom: 12px;
+  }
+
+  /* ── Choix du système ── */
+  .reaction-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  select#sys-select {
+    appearance: none; -webkit-appearance: none;
+    background: var(--bg3); color: var(--text);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    padding: 9px 34px 9px 12px; cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234a6278' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+  }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+  .seg button {
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    padding: 8px 14px; border: none; background: var(--bg2);
+    color: var(--text2); cursor: pointer; border-right: 1px solid var(--border);
+  }
+  .seg button:last-child { border-right: none; }
+  .seg button.active { background: var(--accent); color: #fff; }
+  .seg button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .equation {
+    margin-top: 12px; font-size: 15px; font-weight: 500;
+    background: var(--bg3); border-radius: var(--radius-sm);
+    padding: 10px 14px; text-align: center;
+  }
+  .equation .sp-a { color: var(--green); font-weight: 700; }
+  .equation .sp-b { color: var(--violet); font-weight: 700; }
+  .data-line {
+    margin-top: 10px; font-size: 13px; color: var(--text2);
+    text-align: center; line-height: 1.6;
+  }
+  .data-line strong { color: var(--text); }
+  .data-line .unknown { color: var(--amber); font-weight: 700; }
+
+  /* ── Scène ── */
+  .scene-wrap { display: flex; justify-content: center; }
+  svg#scene { width: 100%; max-width: 460px; height: auto; display: block; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
+  .btn {
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    padding: 10px 18px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); background: var(--bg2);
+    color: var(--text); cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, transform 0.08s;
+  }
+  .btn:hover:not(:disabled) { background: var(--bg3); }
+  .btn:active:not(:disabled) { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: #1d4ed8; }
+  .btn-pouring { background: var(--violet); border-color: var(--violet); color: #fff; }
+  .btn-pouring:hover:not(:disabled) { background: #6d28d9; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 14px; }
+  .chip {
+    font-size: 13px; padding: 7px 12px; border-radius: 999px;
+    background: var(--bg3); border: 1px solid var(--border); color: var(--text2);
+  }
+  .chip strong { color: var(--text); }
+
+  .notice-warn {
+    margin-top: 12px; padding: 9px 12px; font-size: 13px;
+    background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c;
+    border-radius: var(--radius-sm); display: none; text-align: center;
+  }
+
+  /* ── Exploitation ── */
+  .tool-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .tool-btn {
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    padding: 8px 14px; border-radius: 999px;
+    border: 1.5px solid var(--border); background: var(--bg2);
+    color: var(--text2); cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, color 0.12s;
+  }
+  .tool-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .tool-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .tool-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .tool-hint { font-size: 12.5px; color: var(--text3); margin-bottom: 10px; }
+
+  .chart-inner { position: relative; height: 300px; }
+  .chart-inner-small { position: relative; height: 190px; margin-top: 14px; display: none; }
+  .chart-inner-small.visible { display: block; }
+
+  .result-box {
+    margin-top: 12px; padding: 11px 14px; border-radius: var(--radius-sm);
+    font-size: 13.5px; line-height: 1.6; color: #78350f;
+    background: #fef3c7; border-left: 4px solid var(--amber); display: none;
+  }
+  .result-box.visible { display: block; }
+  .result-box strong { color: #92400e; }
+
+  /* ── Indicateurs ── */
+  .indic-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .indic-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    padding: 8px 13px; border-radius: 999px;
+    border: 1.5px solid var(--border); background: var(--bg2);
+    color: var(--text2); cursor: pointer;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .indic-btn:hover { border-color: var(--accent); }
+  .indic-btn.active { border-color: var(--accent); background: #eff6ff; color: var(--text); }
+  .indic-swatch {
+    width: 26px; height: 13px; border-radius: 3px; flex-shrink: 0;
+    border: 1px solid rgba(0,0,0,0.15);
+  }
+  .verdict-box {
+    margin-top: 12px; padding: 11px 14px; border-radius: var(--radius-sm);
+    font-size: 13.5px; line-height: 1.6; display: none;
+    background: var(--bg3); border-left: 4px solid var(--border); color: var(--text2);
+  }
+  .verdict-box.visible { display: block; }
+  .verdict-box strong { color: var(--text); }
+  .verdict-box .v-ok  { color: var(--green); font-weight: 700; }
+  .verdict-box .v-mid { color: var(--amber); font-weight: 700; }
+  .verdict-box .v-no  { color: #dc2626; font-weight: 700; }
+
+  /* ── Blocs escamotables ── */
+  .tableau-toggle {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer; user-select: none;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text3);
+    padding: 0; background: none; border: none;
+    width: 100%; text-align: left; font-family: inherit;
+  }
+  .tableau-toggle:hover { color: var(--text2); }
+  .tableau-toggle .chevron {
+    display: inline-block; transition: transform 0.25s;
+    font-size: 10px; color: var(--accent);
+  }
+  .tableau-toggle.open .chevron { transform: rotate(90deg); }
+  .tableau-body { display: none; margin-top: 14px; }
+  .tableau-body.open { display: block; }
+
+  .comprendre p { font-size: 13.5px; color: var(--text2); line-height: 1.6; margin-bottom: 10px; }
+  .comprendre p:last-child { margin-bottom: 0; }
+  .comprendre strong { color: var(--text); }
+  .comprendre h3 {
+    font-size: 13px; font-weight: 700; color: var(--text);
+    margin: 16px 0 6px; padding-top: 12px; border-top: 1px dashed var(--border);
+  }
+  .comprendre h3:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+  footer { text-align: center; margin-top: 2.5rem; font-size: 11px; color: var(--text3); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <a class="back-link" href="../">← Retour au portail</a>
+
+  <header>
+    <div class="eyebrow">Chimie — Terminale Spécialité</div>
+    <h1>Titrage acide-base : <span>suivi pH-métrique &amp; conductimétrique</span></h1>
+  </header>
+
+  <!-- Choix du système -->
+  <div class="card">
+    <div class="section-label">Système titré &amp; type de suivi</div>
+    <div class="reaction-row">
+      <select id="sys-select" aria-label="Choisir le système titré">
+        <option value="fort">Acide fort : HCl titré par NaOH</option>
+        <option value="faible">Acide faible : CH₃COOH titré par NaOH</option>
+        <option value="diacide">Diacide H₂A titré par NaOH (deux sauts)</option>
+      </select>
+      <div class="seg" id="suivi-seg" role="group" aria-label="Choisir le type de suivi">
+        <button data-suivi="ph" class="active">Suivi pH-métrique</button>
+        <button data-suivi="cond" id="btn-cond">Suivi conductimétrique</button>
+      </div>
+    </div>
+    <div class="equation" id="equation"></div>
+    <div class="data-line" id="data-line"></div>
+  </div>
+
+  <!-- Scène -->
+  <div class="card">
+    <div class="section-label">Montage</div>
+    <div class="scene-wrap">
+      <svg id="scene" viewBox="0 0 460 480" role="img" aria-label="Burette versant la soude dans un bécher, sonde reliée à un appareil de mesure">
+        <!-- Burette -->
+        <g id="burette">
+          <rect x="184" y="16" width="32" height="206" rx="3" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+          <rect id="burette-liquid" x="187" y="20" width="26" height="202" fill="#8b5cf6" opacity="0.85"/>
+          <polygon id="burette-cone" points="184,222 216,222 204,248 196,248" fill="#8b5cf6" opacity="0.85"/>
+          <polygon points="184,222 216,222 204,248 196,248" fill="none" stroke="#94a3b8" stroke-width="2"/>
+          <rect x="190" y="249" width="20" height="8" rx="2" fill="#64748b"/>
+          <rect x="198" y="257" width="4" height="12" fill="#94a3b8"/>
+          <g id="graduations"></g>
+          <g id="level-marker">
+            <polygon points="218,0 226,-5 226,5" fill="#2563eb"/>
+            <text id="level-text" x="230" y="4" font-size="11" fill="#2563eb" font-weight="600" font-family="Space Grotesk, sans-serif"></text>
+          </g>
+          <text x="130" y="34" font-size="12" fill="#7a96aa" text-anchor="end" font-family="Space Grotesk, sans-serif">Burette</text>
+          <text x="130" y="49" font-size="12" fill="#7c3aed" text-anchor="end" font-weight="600" font-family="Space Grotesk, sans-serif">NaOH</text>
+        </g>
+
+        <!-- Gouttes -->
+        <g id="drops"></g>
+
+        <!-- Bécher -->
+        <g id="becher">
+          <path id="becher-liquid" fill="#dbeafe" d=""/>
+          <path id="becher-tint" fill="#8b5cf6" opacity="0" d=""/>
+          <path d="M98,296 L98,434 Q98,452 116,452 L284,452 Q302,452 302,434 L302,296"
+                fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+          <text x="98" y="472" font-size="12" fill="#7a96aa" font-family="Space Grotesk, sans-serif">Bécher — solution titrée</text>
+        </g>
+
+        <!-- Sonde -->
+        <g id="sonde">
+          <rect x="252" y="252" width="10" height="180" rx="4" fill="#cbd5e1" stroke="#94a3b8" stroke-width="1.5"/>
+          <rect x="254" y="410" width="6" height="20" rx="3" fill="#475569"/>
+          <path d="M262,262 Q330,262 348,286" fill="none" stroke="#64748b" stroke-width="2.5"/>
+          <text x="257" y="245" font-size="11" fill="#7a96aa" text-anchor="middle" font-family="Space Grotesk, sans-serif" id="sonde-label">sonde pH</text>
+        </g>
+
+        <!-- Appareil de mesure -->
+        <g id="metre">
+          <rect x="322" y="286" width="126" height="66" rx="8" fill="#1a2a3a"/>
+          <rect x="332" y="296" width="106" height="34" rx="4" fill="#0f2417"/>
+          <text id="metre-value" x="385" y="320" font-size="17" fill="#4ade80" text-anchor="middle" font-weight="600" font-family="'Courier New', monospace">pH 2.60</text>
+          <text id="metre-label" x="385" y="344" font-size="10" fill="#7a96aa" text-anchor="middle" font-family="Space Grotesk, sans-serif">pH-mètre</text>
+        </g>
+
+        <!-- Agitateur -->
+        <g id="agitateur">
+          <ellipse cx="200" cy="440" rx="18" ry="5" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5">
+            <animateTransform attributeName="transform" type="rotate" from="0 200 440" to="360 200 440" dur="1.2s" repeatCount="indefinite"/>
+          </ellipse>
+        </g>
+      </svg>
+    </div>
+
+    <div class="controls">
+      <button class="btn btn-primary" id="btn-drop">💧 Une goutte (0,2 mL)</button>
+      <button class="btn" id="btn-pour">▶ Verser en continu</button>
+      <button class="btn" id="btn-ml">+ 1 mL</button>
+      <button class="btn" id="btn-reset">↺ Réinitialiser</button>
+    </div>
+
+    <div class="chips">
+      <span class="chip" id="chip-v"></span>
+      <span class="chip" id="chip-mesure"></span>
+    </div>
+    <div class="notice-warn" id="notice-empty">⚠ Burette vide — réinitialise la simulation pour recommencer.</div>
+  </div>
+
+  <!-- Courbe + exploitation -->
+  <div class="card">
+    <div class="section-label" id="graph-title">Courbe de titrage — pH en fonction de V</div>
+    <div class="tool-row" id="tools-ph">
+      <button class="tool-btn" id="tool-tangentes">Méthode des tangentes</button>
+      <button class="tool-btn" id="tool-derivee">Courbe dérivée dpH/dV</button>
+    </div>
+    <div class="tool-row" id="tools-cond" style="display:none">
+      <button class="tool-btn" id="tool-droites">Modéliser par deux droites</button>
+    </div>
+    <div class="tool-hint" id="tool-hint">Verse suffisamment de solution titrante (bien au-delà du saut) pour pouvoir exploiter la courbe.</div>
+    <div class="chart-inner"><canvas id="mainChart" role="img" aria-label="Courbe de titrage"></canvas></div>
+    <div class="chart-inner-small" id="derivWrap"><canvas id="derivChart" role="img" aria-label="Courbe dérivée dpH/dV"></canvas></div>
+    <div class="result-box" id="result-box"></div>
+  </div>
+
+  <!-- Indicateurs colorés -->
+  <div class="card" id="indic-card">
+    <div class="section-label">Choisir un indicateur coloré (titrage colorimétrique)</div>
+    <div class="indic-row" id="indic-row"></div>
+    <div class="verdict-box" id="verdict-box"></div>
+  </div>
+
+  <!-- Comprendre -->
+  <div class="card comprendre">
+    <button class="tableau-toggle" id="comp-toggle" aria-expanded="false">
+      <span class="chevron">▶</span>
+      Comprendre — exploiter une courbe de titrage
+    </button>
+    <div class="tableau-body" id="comp-body">
+      <h3>Le pH à l'équivalence dépend du système</h3>
+      <p><strong>Acide fort / base forte :</strong> à l'équivalence, la solution ne contient que des ions spectateurs (Na⁺, Cl⁻) : pH = 7. <strong>Acide faible / base forte :</strong> à l'équivalence il reste la <strong>base conjuguée</strong> (ex. CH₃COO⁻), qui rend la solution basique : pH &gt; 7. C'est pourquoi il faut <em>toujours</em> déterminer le pH à l'équivalence avant de choisir un indicateur.</p>
+      <p>Au passage : à la <strong>demi-équivalence</strong> d'un acide faible (V = V<sub>éq</sub>/2), la moitié de l'acide a été convertie en sa base conjuguée, donc pH = pK<sub>A</sub>. La courbe permet ainsi de mesurer le pK<sub>A</sub> du couple.</p>
+
+      <h3>Déterminer V<sub>éq</sub> : tangentes et dérivée</h3>
+      <p><strong>Méthode des tangentes :</strong> on trace deux tangentes <em>parallèles</em> à la courbe de part et d'autre du saut, puis la parallèle équidistante des deux. Son intersection avec la courbe est le point d'équivalence : son abscisse donne V<sub>éq</sub>.</p>
+      <p><strong>Méthode de la dérivée :</strong> le saut de pH est le point où la courbe est la plus « raide » : la dérivée dpH/dV passe par un <strong>maximum</strong> à l'équivalence. C'est la méthode qu'appliquent les logiciels de traitement de données.</p>
+
+      <h3>Suivi conductimétrique : deux droites</h3>
+      <p>La conductivité vaut σ = Σ λ<sub>i</sub>·[X<sub>i</sub>] : chaque ion y contribue selon sa concentration et sa conductivité molaire ionique λ. Or λ(H₃O⁺) et λ(HO⁻) sont <strong>très supérieures</strong> à celles des autres ions.</p>
+      <p><strong>Avant l'équivalence</strong> (acide fort) : chaque ajout remplace des ions H₃O⁺ (très conducteurs) par des ions Na⁺ (peu conducteurs) → σ <strong>diminue</strong>. <strong>Après l'équivalence :</strong> Na⁺ et HO⁻ s'accumulent → σ <strong>augmente</strong>. On modélise chaque portion par une droite : leur <strong>intersection</strong> donne V<sub>éq</sub> — pas besoin de saut !</p>
+      <p>On ajoute un grand volume d'eau au départ pour que la <strong>dilution</strong> due aux ajouts reste négligeable : c'est elle qui incurverait les droites. (L'eau ajoutée ne change pas les quantités de matière, donc pas V<sub>éq</sub>.)</p>
+
+      <h3>Choisir un indicateur coloré</h3>
+      <p>Un indicateur coloré est un couple acide/base dont les deux formes ont des couleurs différentes ; il change de couleur dans sa <strong>zone de virage</strong> (environ pK<sub>A,ind</sub> ± 1). Il convient au titrage si sa zone de virage <strong>contient le pH à l'équivalence</strong> — en pratique, si elle est incluse dans le saut de pH. Sinon, le virage a lieu avant ou après l'équivalence et fausse V<sub>éq</sub>.</p>
+
+      <h3>Titrage d'un diacide : deux sauts</h3>
+      <p>Un diacide H₂A cède ses deux protons <strong>successivement</strong> (si pK<sub>A1</sub> et pK<sub>A2</sub> sont assez éloignés) : H₂A est d'abord transformé en HA⁻ (1ᵉʳ saut à V<sub>éq1</sub>), puis HA⁻ en A²⁻ (2ᵉ saut à V<sub>éq2</sub>). Comme chaque étape consomme la même quantité de HO⁻ : <strong>V<sub>éq2</sub> = 2 × V<sub>éq1</sub></strong> — un bon test de cohérence. Situation hors programme strict, mais déjà rencontrée dans des sujets de bac.</p>
+    </div>
+  </div>
+
+  <footer>Simulation pédagogique — modèle : bilan de charges résolu exactement, λ° à 25 °C — aucune donnée collectée</footer>
+
+</div>
+
+<script>
+'use strict';
+
+/* ══════════ Configuration ══════════ */
+const DROP_ML    = 0.2;    // volume d'une goutte
+const BURETTE_ML = 25;     // capacité de la burette
+const PX_PER_ML  = 8;      // graduation burette
+const KW = 1e-14;
+const SVGNS = 'http://www.w3.org/2000/svg';
+
+// Conductivités molaires ioniques λ° (S·m²·mol⁻¹) à 25 °C
+const LAMBDA = { H: 35.0e-3, OH: 19.9e-3, Na: 5.01e-3, Cl: 7.63e-3, AcO: 4.09e-3 };
+
+const SYSTEMS = {
+  fort: {
+    nom: 'HCl',
+    eq: `<span class="sp-a">H₃O⁺</span>(aq) + <span class="sp-b">HO⁻</span>(aq) → 2 H₂O(l)`,
+    acide: { type: 'fort' },
+    Ca: 0.050, Va: 20.0, Cb: 0.100,
+    CaHtml: 'C<sub>a</sub> = <span class="unknown">?</span>',
+    lambdaAnion: LAMBDA.Cl,
+    condOk: true,
+    titreHtml: 'acide chlorhydrique (H₃O⁺ + Cl⁻)',
+  },
+  faible: {
+    nom: 'CH₃COOH',
+    eq: `<span class="sp-a">CH₃COOH</span>(aq) + <span class="sp-b">HO⁻</span>(aq) → CH₃COO⁻(aq) + H₂O(l)`,
+    acide: { type: 'faible', pKa: 4.8 },
+    Ca: 0.050, Va: 20.0, Cb: 0.100,
+    lambdaAnion: LAMBDA.AcO,
+    condOk: true,
+    titreHtml: 'acide éthanoïque (pK<sub>A</sub> = 4,8)',
+  },
+  diacide: {
+    nom: 'H₂A',
+    eq: `<span class="sp-a">H₂A</span> + <span class="sp-b">HO⁻</span> → HA⁻ + H₂O &nbsp;&nbsp;puis&nbsp;&nbsp; <span class="sp-a">HA⁻</span> + <span class="sp-b">HO⁻</span> → A²⁻ + H₂O`,
+    acide: { type: 'diacide', pKa1: 3.0, pKa2: 7.8 },
+    Ca: 0.025, Va: 20.0, Cb: 0.100,
+    condOk: false,
+    titreHtml: 'diacide H₂A (pK<sub>A1</sub> = 3,0 ; pK<sub>A2</sub> = 7,8)',
+  },
+};
+
+// Volume d'eau ajouté pour le suivi conductimétrique (dilution négligeable)
+const V_EAU_COND = 180;
+
+const INDICATEURS = [
+  { id: 'helianthine', nom: 'Hélianthine',           lo: 3.1, hi: 4.4,  cAcide: '#ef4444', cBase: '#f59e0b', bande: 'rgba(245,158,11,0.16)' },
+  { id: 'rougemethyle', nom: 'Rouge de méthyle',     lo: 4.2, hi: 6.2,  cAcide: '#ef4444', cBase: '#facc15', bande: 'rgba(250,204,21,0.16)' },
+  { id: 'bbt',          nom: 'Bleu de bromothymol',  lo: 6.0, hi: 7.6,  cAcide: '#eab308', cBase: '#2563eb', bande: 'rgba(37,99,235,0.12)' },
+  { id: 'phenol',       nom: 'Phénolphtaléine',      lo: 8.2, hi: 10.0, cAcide: null,      cBase: '#ec4899', bande: 'rgba(236,72,153,0.13)' },
+];
+
+/* ══════════ État ══════════ */
+let sysKey = 'fort';
+let suivi = 'ph';            // 'ph' | 'cond'
+let V = 0;                   // volume versé (mL)
+let pouring = false, pourTimer = null;
+let indicateur = null;       // objet INDICATEURS ou null
+let tools = { tangentes: false, derivee: false, droites: false };
+let mainChart = null, derivChart = null;
+let overlay = {};            // éléments dessinés par le plugin (lignes, bande, marqueurs)
+
+function sys() { return SYSTEMS[sysKey]; }
+function fmt(v, d = 1) { return v.toFixed(d).replace('.', ','); }
+
+/* ══════════ Moteur chimique — bilan de charges exact ══════════ */
+// pH d'un mélange : acide (CT mol/L au total) + Na⁺ (CNa mol/L)
+function pHof(CT, CNa, acide) {
+  // f(pH) strictement décroissant → dichotomie
+  const f = (pH) => {
+    const h = Math.pow(10, -pH);
+    let anions;
+    if (acide.type === 'fort') {
+      anions = CT; // Cl⁻
+    } else if (acide.type === 'faible') {
+      const Ka = Math.pow(10, -acide.pKa);
+      anions = CT * Ka / (h + Ka);
+    } else { // diacide
+      const K1 = Math.pow(10, -acide.pKa1), K2 = Math.pow(10, -acide.pKa2);
+      const D = h * h + h * K1 + K1 * K2;
+      anions = CT * (h * K1 + 2 * K1 * K2) / D; // [HA⁻] + 2[A²⁻]
+    }
+    return h + CNa - KW / h - anions;
+  };
+  let lo = 0, hi = 14;
+  for (let i = 0; i < 60; i++) {
+    const mid = (lo + hi) / 2;
+    if (f(mid) > 0) lo = mid; else hi = mid;
+  }
+  return (lo + hi) / 2;
+}
+
+// Concentrations & mesure pour un volume versé Vb (mL)
+function mesure(Vb) {
+  const s = sys();
+  const Veau = suivi === 'cond' ? V_EAU_COND : 0;
+  const Vtot = s.Va + Veau + Vb;                 // mL
+  const CT  = s.Ca * s.Va / Vtot;                // mol/L
+  const CNa = s.Cb * Vb / Vtot;
+  const pH = pHof(CT, CNa, s.acide);
+  const h  = Math.pow(10, -pH), oh = KW / h;
+
+  // σ (S/m) : concentrations en mol/m³ = 1000 × mol/L
+  let anionSigma = 0;
+  if (s.acide.type === 'fort') anionSigma = s.lambdaAnion * CT * 1000;
+  else if (s.acide.type === 'faible') {
+    const Ka = Math.pow(10, -s.acide.pKa);
+    anionSigma = s.lambdaAnion * (CT * Ka / (h + Ka)) * 1000;
+  }
+  const sigmaSm = LAMBDA.H * h * 1000 + LAMBDA.OH * oh * 1000 + LAMBDA.Na * CNa * 1000 + anionSigma;
+  return { pH, sigma: sigmaSm * 10 };            // σ en mS/cm
+}
+
+function VeqTheorique(n) { // n = 1 ou 2 (diacide)
+  const s = sys();
+  const base = s.Ca * s.Va / s.Cb;
+  return s.acide.type === 'diacide' ? base * n : base;
+}
+
+/* ══════════ Courbe dense (pour les outils d'exploitation) ══════════ */
+function denseCurve(Vmax, step = 0.05) {
+  const Vs = [], ys = [];
+  for (let v = 0; v <= Vmax + 1e-9; v += step) {
+    Vs.push(v);
+    const m = mesure(v);
+    ys.push(suivi === 'ph' ? m.pH : m.sigma);
+  }
+  return { Vs, ys };
+}
+
+function derivee(Vs, ys) {
+  const d = ys.map((_, i) => {
+    const i0 = Math.max(0, i - 1), i1 = Math.min(ys.length - 1, i + 1);
+    return (ys[i1] - ys[i0]) / (Vs[i1] - Vs[i0]);
+  });
+  return d;
+}
+
+// Pics de la dérivée (sauts de pH) : maxima locaux séparés d'au moins 2 mL
+function findPeaks(Vs, d) {
+  const peaks = [];
+  for (let i = 2; i < d.length - 2; i++) {
+    if (d[i] >= d[i - 1] && d[i] >= d[i + 1] && d[i] > 1.5 && Vs[i] > 0.5) {
+      if (peaks.length && Vs[i] - peaks[peaks.length - 1].V < 2) {
+        if (d[i] > peaks[peaks.length - 1].val) peaks[peaks.length - 1] = { V: Vs[i], val: d[i] };
+      } else peaks.push({ V: Vs[i], val: d[i] });
+    }
+  }
+  return peaks.sort((a, b) => b.val - a.val).slice(0, 2).sort((a, b) => a.V - b.V);
+}
+
+/* ══════════ Méthode des tangentes (construction automatique) ══════════ */
+function tangentesConstruct() {
+  const { Vs, ys } = denseCurve(V);
+  const d = derivee(Vs, ys);
+  const peaks = findPeaks(Vs, d);
+  if (!peaks.length) return null;
+  const peak = peaks[peaks.length - 1]; // dernier saut franchi
+  const iPeak = Vs.findIndex(v => v >= peak.V);
+  const sTarget = peak.val * 0.12;      // pente des tangentes : dans les « coudes »
+
+  let i1 = -1, i2 = -1;
+  for (let i = iPeak; i >= 1; i--) if (d[i] <= sTarget) { i1 = i; break; }
+  for (let i = iPeak; i < d.length - 1; i++) if (d[i] <= sTarget) { i2 = i; break; }
+  if (i1 < 0 || i2 < 0 || V < Vs[i2] + 1) return null;
+
+  const slope = (d[i1] + d[i2]) / 2;
+  const b1 = ys[i1] - slope * Vs[i1];   // tangente basse
+  const b2 = ys[i2] - slope * Vs[i2];   // tangente haute (parallèle)
+  const bm = (b1 + b2) / 2;             // parallèle équidistante
+
+  // Intersection de la médiane avec la courbe (entre les deux points de tangence)
+  let Vstar = peak.V, ystar = ys[iPeak];
+  for (let i = i1; i < i2; i++) {
+    const g0 = ys[i] - (slope * Vs[i] + bm);
+    const g1 = ys[i + 1] - (slope * Vs[i + 1] + bm);
+    if (g0 <= 0 && g1 >= 0) {
+      const t = g0 / (g0 - g1);
+      Vstar = Vs[i] + t * (Vs[i + 1] - Vs[i]);
+      ystar = ys[i] + t * (ys[i + 1] - ys[i]);
+      break;
+    }
+  }
+  return { slope, b1, b2, bm, Vstar, ystar };
+}
+
+/* ══════════ Conductimétrie : régression sur deux portions ══════════ */
+function fitLine(pts) {
+  const n = pts.length;
+  let sx = 0, sy = 0, sxx = 0, sxy = 0;
+  pts.forEach(([x, y]) => { sx += x; sy += y; sxx += x * x; sxy += x * y; });
+  const a = (n * sxy - sx * sy) / (n * sxx - sx * sx);
+  return { a, b: (sy - a * sx) / n };
+}
+
+function droitesConstruct() {
+  const Veq = VeqTheorique(1);
+  if (V < Veq + 3) return null;
+  const { Vs, ys } = denseCurve(V);
+  const seg = (vmin, vmax) => Vs.map((v, i) => [v, ys[i]]).filter(([v]) => v >= vmin && v <= vmax);
+  const l1 = fitLine(seg(0.1 * Veq, 0.8 * Veq));
+  const l2 = fitLine(seg(Veq * 1.2, V));
+  const Vx = (l2.b - l1.b) / (l1.a - l2.a);
+  return { l1, l2, Vx, yx: l1.a * Vx + l1.b };
+}
+
+/* ══════════ Burette & bécher ══════════ */
+function buildGraduations() {
+  const g = document.getElementById('graduations');
+  g.innerHTML = '';
+  for (let k = 0; k <= BURETTE_ML; k++) {
+    const y = 20 + k * PX_PER_ML;
+    const major = k % 5 === 0;
+    const line = document.createElementNS(SVGNS, 'line');
+    line.setAttribute('x1', 184); line.setAttribute('x2', major ? 196 : 191);
+    line.setAttribute('y1', y);   line.setAttribute('y2', y);
+    line.setAttribute('stroke', '#64748b'); line.setAttribute('stroke-width', '1');
+    g.appendChild(line);
+    if (major) {
+      const t = document.createElementNS(SVGNS, 'text');
+      t.setAttribute('x', 178); t.setAttribute('y', y + 3);
+      t.setAttribute('font-size', '9'); t.setAttribute('text-anchor', 'end');
+      t.setAttribute('fill', '#7a96aa'); t.setAttribute('font-family', 'Space Grotesk, sans-serif');
+      t.textContent = k;
+      g.appendChild(t);
+    }
+  }
+}
+
+function updateBurette() {
+  const top = 20 + V * PX_PER_ML;
+  const liq = document.getElementById('burette-liquid');
+  liq.setAttribute('y', top);
+  liq.setAttribute('height', Math.max(0, 222 - top));
+  document.getElementById('burette-cone').style.display = V >= BURETTE_ML ? 'none' : '';
+  const marker = document.getElementById('level-marker');
+  marker.setAttribute('transform', `translate(0,${top})`);
+  document.getElementById('level-text').textContent = `V = ${fmt(V)} mL`;
+}
+
+function surfaceY() { return 356 - V * 0.9; }
+
+function liquidPath() {
+  const sy = surfaceY();
+  return `M104,${sy} L104,432 Q104,446 118,446 L282,446 Q296,446 296,432 L296,${sy} Z`;
+}
+
+// Couleur du bécher selon l'indicateur et le pH courant
+function beakerColor(pH) {
+  if (!indicateur) return null;
+  const { lo, hi, cAcide, cBase } = indicateur;
+  // phénolphtaléine : forme acide incolore (cAcide = null → pas de teinte)
+  if (pH <= lo) return cAcide ? { c: cAcide, o: 0.55 } : null;
+  if (pH >= hi) return { c: cBase, o: 0.55 };
+  const t = (pH - lo) / (hi - lo);
+  return { c: cBase, o: 0.15 + 0.4 * t };
+}
+
+function updateBeaker() {
+  const d = liquidPath();
+  document.getElementById('becher-liquid').setAttribute('d', d);
+  const tint = document.getElementById('becher-tint');
+  tint.setAttribute('d', d);
+  const m = mesure(V);
+  const col = beakerColor(m.pH);
+  if (col) { tint.setAttribute('fill', col.c); tint.setAttribute('opacity', col.o); }
+  else tint.setAttribute('opacity', 0);
+}
+
+/* ══════════ Verser ══════════ */
+function pourDrop(silent) {
+  if (V >= BURETTE_ML) { stopPouring(); return; }
+  V = Math.min(BURETTE_ML, Math.round((V + DROP_ML) * 10) / 10);
+  updateBurette();
+  if (!silent) {
+    const drop = document.createElementNS(SVGNS, 'circle');
+    drop.setAttribute('cx', 200); drop.setAttribute('r', 4.5);
+    drop.setAttribute('fill', '#8b5cf6');
+    document.getElementById('drops').appendChild(drop);
+    const y0 = 272, y1 = surfaceY() - 3, dur = 420, t0 = performance.now();
+    (function step(t) {
+      const k = Math.min(1, (t - t0) / dur);
+      drop.setAttribute('cy', y0 + (y1 - y0) * k * k);
+      if (k < 1) requestAnimationFrame(step);
+      else drop.remove();
+    })(t0);
+  }
+  land();
+}
+
+function addMl() {
+  for (let i = 0; i < 5 && V < BURETTE_ML; i++) pourDrop(i < 4);
+}
+
+function land() {
+  pushChartPoint();
+  refreshTools();
+  updateUI();
+}
+
+function startPouring() {
+  if (V >= BURETTE_ML) return;
+  pouring = true;
+  const btn = document.getElementById('btn-pour');
+  btn.textContent = '⏸ Arrêter';
+  btn.classList.add('btn-pouring');
+  pourDrop();
+  pourTimer = setInterval(pourDrop, 320);
+}
+function stopPouring() {
+  pouring = false;
+  clearInterval(pourTimer);
+  const btn = document.getElementById('btn-pour');
+  btn.textContent = '▶ Verser en continu';
+  btn.classList.remove('btn-pouring');
+}
+
+/* ══════════ Graphique principal ══════════ */
+// Plugin : bande de virage, droites (tangentes / conducti), marqueur Véq
+const overlayPlugin = {
+  id: 'overlayPlugin',
+  beforeDatasetsDraw(ch) {
+    if (ch.canvas.id !== 'mainChart' || !overlay.band) return;
+    const { left, right } = ch.chartArea;
+    const y1 = ch.scales.y.getPixelForValue(overlay.band.hi);
+    const y2 = ch.scales.y.getPixelForValue(overlay.band.lo);
+    const ctx = ch.ctx;
+    ctx.save();
+    ctx.fillStyle = overlay.band.color;
+    ctx.fillRect(left, y1, right - left, y2 - y1);
+    ctx.fillStyle = '#92400e';
+    ctx.font = '600 10.5px "Space Grotesk", sans-serif';
+    ctx.textAlign = 'right';
+    ctx.fillText(overlay.band.label, right - 6, y1 + 12);
+    ctx.restore();
+  },
+  afterDatasetsDraw(ch) {
+    if (ch.canvas.id !== 'mainChart') return;
+    const area = ch.chartArea;
+    const ctx = ch.ctx;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(area.left, area.top, area.right - area.left, area.bottom - area.top);
+    ctx.clip();
+
+    (overlay.lines || []).forEach(l => {
+      const x1 = ch.scales.x.min, x2 = ch.scales.x.max;
+      ctx.strokeStyle = l.color;
+      ctx.lineWidth = 1.8;
+      ctx.setLineDash(l.dash || []);
+      ctx.beginPath();
+      ctx.moveTo(ch.scales.x.getPixelForValue(x1), ch.scales.y.getPixelForValue(l.a * x1 + l.b));
+      ctx.lineTo(ch.scales.x.getPixelForValue(x2), ch.scales.y.getPixelForValue(l.a * x2 + l.b));
+      ctx.stroke();
+      ctx.setLineDash([]);
+    });
+
+    (overlay.marks || []).forEach(mk => {
+      const px = ch.scales.x.getPixelForValue(mk.x);
+      ctx.strokeStyle = '#d97706';
+      ctx.setLineDash([5, 4]);
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(px, area.top); ctx.lineTo(px, area.bottom); ctx.stroke();
+      ctx.setLineDash([]);
+      if (mk.y !== undefined) {
+        ctx.fillStyle = '#d97706';
+        ctx.beginPath(); ctx.arc(px, ch.scales.y.getPixelForValue(mk.y), 4.5, 0, 7); ctx.fill();
+      }
+      ctx.fillStyle = '#d97706';
+      ctx.font = '600 11px "Space Grotesk", sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(mk.label, px, area.top + 11);
+    });
+    ctx.restore();
+  }
+};
+
+function initCharts() {
+  Chart.defaults.font.family = '"Space Grotesk", system-ui, sans-serif';
+  mainChart = new Chart(document.getElementById('mainChart'), {
+    type: 'line',
+    data: { datasets: [{
+      label: 'pH mesuré', data: [],
+      borderColor: '#2563eb', backgroundColor: '#2563eb',
+      pointRadius: 2, borderWidth: 2, tension: 0,
+    }]},
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      scales: {
+        x: { type: 'linear', min: 0, max: BURETTE_ML,
+             title: { display: true, text: 'Volume de NaOH versé (mL)' } },
+        y: { min: 0, max: 14, title: { display: true, text: 'pH' } },
+      },
+      plugins: { legend: { display: false } },
+    },
+    plugins: [overlayPlugin],
+  });
+
+  derivChart = new Chart(document.getElementById('derivChart'), {
+    type: 'line',
+    data: { datasets: [{
+      label: 'dpH/dV', data: [],
+      borderColor: '#7c3aed', backgroundColor: '#7c3aed',
+      pointRadius: 0, borderWidth: 2, tension: 0,
+    }]},
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      scales: {
+        x: { type: 'linear', min: 0, max: BURETTE_ML,
+             title: { display: true, text: 'V (mL)' } },
+        y: { min: 0, title: { display: true, text: 'dpH/dV (mL⁻¹)' } },
+      },
+      plugins: { legend: { display: false } },
+    },
+    plugins: [{
+      id: 'derivMarks',
+      afterDatasetsDraw(ch) {
+        const ctx = ch.ctx, area = ch.chartArea;
+        (overlay.derivMarks || []).forEach(mk => {
+          const px = ch.scales.x.getPixelForValue(mk.x);
+          ctx.save();
+          ctx.strokeStyle = '#d97706';
+          ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(px, area.top); ctx.lineTo(px, area.bottom); ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = '#d97706';
+          ctx.font = '600 11px "Space Grotesk", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(mk.label, px, area.top + 11);
+          ctx.restore();
+        });
+      }
+    }],
+  });
+}
+
+function resetChart() {
+  const isPH = suivi === 'ph';
+  mainChart.data.datasets[0].label = isPH ? 'pH mesuré' : 'σ mesurée';
+  mainChart.options.scales.y.max = isPH ? 14 : undefined;
+  mainChart.options.scales.y.title.text = isPH ? 'pH' : 'σ (mS/cm)';
+  mainChart.data.datasets[0].data = [{ x: 0, y: isPH ? mesure(0).pH : mesure(0).sigma }];
+  document.getElementById('graph-title').textContent =
+    isPH ? 'Courbe de titrage — pH en fonction de V' : 'Courbe de titrage — conductivité σ en fonction de V';
+  mainChart.update();
+}
+
+function pushChartPoint() {
+  const m = mesure(V);
+  mainChart.data.datasets[0].data.push({ x: V, y: suivi === 'ph' ? m.pH : m.sigma });
+  mainChart.update('none');
+}
+
+/* ══════════ Outils d'exploitation ══════════ */
+function toolsReady() {
+  const s = sys();
+  const lastVeq = s.acide.type === 'diacide' ? VeqTheorique(2) : VeqTheorique(1);
+  return V >= lastVeq + 2.5;
+}
+function firstToolReady() { // diacide : la dérivée peut montrer le 1er saut plus tôt
+  return V >= VeqTheorique(1) + 2.5;
+}
+
+function refreshTools() {
+  const ready = toolsReady();
+  document.getElementById('tool-tangentes').disabled = !ready;
+  document.getElementById('tool-derivee').disabled = !firstToolReady();
+  document.getElementById('tool-droites').disabled = !ready;
+  document.getElementById('tool-hint').style.display = ready ? 'none' : 'block';
+  if (tools.tangentes || tools.derivee || tools.droites) applyTools();
+}
+
+function applyTools() {
+  overlay = {};
+  const resBox = document.getElementById('result-box');
+  let resHTML = '';
+  const s = sys();
+
+  if (suivi === 'ph' && tools.tangentes && toolsReady()) {
+    const t = tangentesConstruct();
+    if (t) {
+      overlay.lines = [
+        { a: t.slope, b: t.b1, color: '#94a3b8', dash: [] },
+        { a: t.slope, b: t.b2, color: '#94a3b8', dash: [] },
+        { a: t.slope, b: t.bm, color: '#d97706', dash: [6, 4] },
+      ];
+      overlay.marks = [{ x: t.Vstar, y: t.ystar, label: `Véq ≈ ${fmt(t.Vstar)} mL` }];
+      resHTML += `<strong>Méthode des tangentes :</strong> les deux tangentes parallèles (grises) encadrent le saut ;
+        la parallèle équidistante (orange) coupe la courbe au point d'équivalence :
+        <strong>V<sub>éq</sub> ≈ ${fmt(t.Vstar)} mL</strong>.`;
+      resHTML += caResult(t.Vstar);
+    }
+  }
+
+  if (suivi === 'ph' && tools.derivee && firstToolReady()) {
+    const { Vs, ys } = denseCurve(V);
+    const d = derivee(Vs, ys);
+    derivChart.data.datasets[0].data = Vs.map((v, i) => ({ x: v, y: d[i] }));
+    const peaks = findPeaks(Vs, d).filter(p => p.V <= V - 1);
+    overlay.derivMarks = peaks.map((p, i) => ({
+      x: p.V, label: peaks.length > 1 ? `Véq${i + 1} ≈ ${fmt(p.V)} mL` : `Véq ≈ ${fmt(p.V)} mL`
+    }));
+    derivChart.update();
+    if (peaks.length) {
+      const list = peaks.map((p, i) => `${peaks.length > 1 ? 'V<sub>éq' + (i + 1) + '</sub>' : 'V<sub>éq</sub>'} ≈ <strong>${fmt(p.V)} mL</strong>`).join(' ; ');
+      resHTML += (resHTML ? '<br><br>' : '') + `<strong>Méthode de la dérivée :</strong> dpH/dV passe par un maximum à chaque équivalence : ${list}.`;
+      if (peaks.length > 1) resHTML += ` On vérifie bien <strong>V<sub>éq2</sub> ≈ 2 × V<sub>éq1</sub></strong>.`;
+      if (peaks.length === 1 && s.acide.type !== 'diacide') resHTML += caResult(peaks[0].V);
+      if (s.acide.type === 'diacide' && peaks.length) resHTML += caResult(peaks[0].V, true);
+    }
+  }
+
+  if (suivi === 'cond' && tools.droites && toolsReady()) {
+    const dr = droitesConstruct();
+    if (dr) {
+      overlay.lines = [
+        { a: dr.l1.a, b: dr.l1.b, color: '#16a34a', dash: [] },
+        { a: dr.l2.a, b: dr.l2.b, color: '#7c3aed', dash: [] },
+      ];
+      overlay.marks = [{ x: dr.Vx, y: dr.yx, label: `Véq ≈ ${fmt(dr.Vx)} mL` }];
+      resHTML += `<strong>Modélisation par deux droites :</strong> avant l'équivalence (verte) et après (violette).
+        Leur intersection donne <strong>V<sub>éq</sub> ≈ ${fmt(dr.Vx)} mL</strong> — aucun saut n'est nécessaire.`;
+      resHTML += caResult(dr.Vx);
+    }
+  }
+
+  // Bande de virage de l'indicateur (uniquement en pH-métrie)
+  if (suivi === 'ph' && indicateur) {
+    overlay.band = {
+      lo: indicateur.lo, hi: indicateur.hi,
+      color: indicateur.bande,
+      label: `zone de virage — ${indicateur.nom} (${fmt(indicateur.lo)} – ${fmt(indicateur.hi)})`,
+    };
+  }
+
+  resBox.innerHTML = resHTML;
+  resBox.classList.toggle('visible', !!resHTML);
+  mainChart.update();
+}
+
+function caResult(Veq, diacide = false) {
+  const s = sys();
+  const Ca = s.Cb * Veq / s.Va;
+  const rel = diacide
+    ? `C<sub>a</sub> = C<sub>b</sub> × V<sub>éq1</sub> / V<sub>a</sub>`
+    : `C<sub>a</sub> = C<sub>b</sub> × V<sub>éq</sub> / V<sub>a</sub>`;
+  return `<br>→ ${rel} = ${fmt(s.Cb * 1000, 0)} × ${fmt(Veq)} / ${fmt(s.Va)} =
+    <strong>${fmt(Ca * 1000, 1)} mmol/L</strong> soit ${fmt(Ca * 1000, 1)} × 10⁻³ mol/L.`;
+}
+
+/* ══════════ Indicateurs colorés ══════════ */
+function buildIndicRow() {
+  const row = document.getElementById('indic-row');
+  row.innerHTML = '';
+  const none = document.createElement('button');
+  none.className = 'indic-btn active';
+  none.textContent = 'Aucun';
+  none.onclick = () => selectIndic(null, none);
+  row.appendChild(none);
+  INDICATEURS.forEach(ind => {
+    const b = document.createElement('button');
+    b.className = 'indic-btn';
+    const grad = ind.cAcide
+      ? `linear-gradient(90deg, ${ind.cAcide}, ${ind.cBase})`
+      : `linear-gradient(90deg, #f1f5f9, ${ind.cBase})`;
+    b.innerHTML = `<span class="indic-swatch" style="background:${grad}"></span>${ind.nom} (${fmt(ind.lo)} – ${fmt(ind.hi)})`;
+    b.onclick = () => selectIndic(ind, b);
+    row.appendChild(b);
+  });
+}
+
+function selectIndic(ind, btn) {
+  indicateur = ind;
+  document.querySelectorAll('.indic-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateVerdict();
+  applyTools();
+  updateBeaker();
+}
+
+// pH du saut : valeurs à ±2 % de Véq (portion quasi verticale)
+function sautDePH(n) {
+  const Veq = VeqTheorique(n);
+  const sauvSuivi = suivi; suivi = 'ph';
+  const lo = mesure(Veq * 0.98).pH, hi = mesure(Veq * 1.02).pH, eq = mesure(Veq).pH;
+  suivi = sauvSuivi;
+  return { lo, hi, eq };
+}
+
+function updateVerdict() {
+  const box = document.getElementById('verdict-box');
+  if (!indicateur) { box.classList.remove('visible'); return; }
+  const s = sys();
+  const nEq = s.acide.type === 'diacide' ? [1, 2] : [1];
+  let html = '';
+  nEq.forEach(n => {
+    const saut = sautDePH(n);
+    const nomEq = nEq.length > 1 ? `${n}ᵉ équivalence` : `l'équivalence`;
+    const contient = indicateur.lo <= saut.eq && saut.eq <= indicateur.hi;
+    const dansSaut = indicateur.lo >= saut.lo && indicateur.hi <= saut.hi;
+    let verdict;
+    if (contient) verdict = `<span class="v-ok">✓ bien adapté</span> — la zone de virage contient le pH à l'équivalence.`;
+    else if (dansSaut) verdict = `<span class="v-mid">✓ acceptable</span> — la zone de virage ne contient pas le pH à l'équivalence, mais elle est entièrement comprise dans le saut de pH : le virage a lieu à V<sub>éq</sub> à une goutte près.`;
+    else if (indicateur.hi < saut.eq) verdict = `<span class="v-no">✗ inadapté</span> — l'indicateur vire <strong>avant</strong> l'équivalence : V<sub>éq</sub> serait sous-estimé.`;
+    else verdict = `<span class="v-no">✗ inadapté</span> — l'indicateur vire <strong>après</strong> l'équivalence : V<sub>éq</sub> serait surestimé.`;
+    html += `<p style="margin-bottom:${n < nEq.length ? '8px' : '0'}">pH à ${nomEq} : <strong>${fmt(saut.eq)}</strong>
+      (saut ≈ ${fmt(saut.lo)} → ${fmt(saut.hi)}). ${verdict}</p>`;
+  });
+  box.innerHTML = html;
+  box.classList.add('visible');
+}
+
+/* ══════════ Interface ══════════ */
+function updateUI() {
+  const m = mesure(V);
+  document.getElementById('chip-v').innerHTML = `V versé : <strong>${fmt(V)} mL</strong>`;
+  document.getElementById('chip-mesure').innerHTML = suivi === 'ph'
+    ? `pH : <strong>${fmt(m.pH, 2)}</strong>`
+    : `σ : <strong>${fmt(m.sigma, 2)} mS/cm</strong>`;
+  document.getElementById('metre-value').textContent = suivi === 'ph'
+    ? `pH ${m.pH.toFixed(2)}` : `${m.sigma.toFixed(2)} mS/cm`;
+  document.getElementById('metre-label').textContent = suivi === 'ph' ? 'pH-mètre' : 'conductimètre';
+  document.getElementById('sonde-label').textContent = suivi === 'ph' ? 'sonde pH' : 'cellule';
+
+  const empty = V >= BURETTE_ML;
+  document.getElementById('btn-drop').disabled = empty;
+  document.getElementById('btn-pour').disabled = empty;
+  document.getElementById('btn-ml').disabled = empty;
+  document.getElementById('notice-empty').style.display = empty ? 'block' : 'none';
+  if (empty) stopPouring();
+
+  updateBeaker();
+}
+
+function updateHeaderTexts() {
+  const s = sys();
+  document.getElementById('equation').innerHTML = s.eq;
+  const eau = suivi === 'cond' ? ` + <strong>${V_EAU_COND} mL d'eau distillée</strong> (pour rendre la dilution négligeable)` : '';
+  document.getElementById('data-line').innerHTML =
+    `Solution titrée : <strong>${s.titreHtml}</strong>, C<sub>a</sub> = <span class="unknown">à déterminer</span>,
+     V<sub>a</sub> = <strong>${fmt(s.Va)} mL</strong>${eau} —
+     Titrant : <strong>soude (Na⁺ + HO⁻)</strong>, C<sub>b</sub> = <strong>${fmt(s.Cb * 1000, 0)} mmol/L</strong>`;
+  document.getElementById('btn-cond').disabled = !s.condOk;
+  document.getElementById('btn-cond').title = s.condOk ? '' : 'Suivi conductimétrique non proposé pour le diacide';
+  document.getElementById('tools-ph').style.display = suivi === 'ph' ? '' : 'none';
+  document.getElementById('tools-cond').style.display = suivi === 'cond' ? '' : 'none';
+  document.getElementById('indic-card').style.display = suivi === 'ph' ? '' : 'none';
+}
+
+/* ══════════ Réinitialisation ══════════ */
+function resetSim() {
+  stopPouring();
+  V = 0;
+  tools = { tangentes: false, derivee: false, droites: false };
+  overlay = {};
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('derivWrap').classList.remove('visible');
+  document.getElementById('result-box').classList.remove('visible');
+  document.getElementById('drops').innerHTML = '';
+  updateHeaderTexts();
+  updateBurette();
+  resetChart();
+  refreshTools();
+  updateVerdict();
+  applyTools();
+  updateUI();
+}
+
+/* ══════════ Écouteurs ══════════ */
+document.getElementById('btn-drop').addEventListener('click', () => pourDrop());
+document.getElementById('btn-pour').addEventListener('click', () => pouring ? stopPouring() : startPouring());
+document.getElementById('btn-ml').addEventListener('click', addMl);
+document.getElementById('btn-reset').addEventListener('click', resetSim);
+
+document.getElementById('sys-select').addEventListener('change', e => {
+  sysKey = e.target.value;
+  if (!sys().condOk && suivi === 'cond') {
+    suivi = 'ph';
+    document.querySelectorAll('#suivi-seg button').forEach(b => b.classList.toggle('active', b.dataset.suivi === 'ph'));
+  }
+  resetSim();
+});
+
+document.getElementById('suivi-seg').addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn || btn.disabled) return;
+  document.querySelectorAll('#suivi-seg button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  suivi = btn.dataset.suivi;
+  resetSim();
+});
+
+document.getElementById('tool-tangentes').addEventListener('click', function () {
+  tools.tangentes = !tools.tangentes;
+  this.classList.toggle('active', tools.tangentes);
+  applyTools();
+});
+document.getElementById('tool-derivee').addEventListener('click', function () {
+  tools.derivee = !tools.derivee;
+  this.classList.toggle('active', tools.derivee);
+  document.getElementById('derivWrap').classList.toggle('visible', tools.derivee);
+  if (tools.derivee) { derivChart.resize(); }
+  applyTools();
+});
+document.getElementById('tool-droites').addEventListener('click', function () {
+  tools.droites = !tools.droites;
+  this.classList.toggle('active', tools.droites);
+  applyTools();
+});
+
+const compBtn = document.getElementById('comp-toggle');
+const compBody = document.getElementById('comp-body');
+compBtn.addEventListener('click', () => {
+  const open = !compBody.classList.contains('open');
+  compBtn.classList.toggle('open', open);
+  compBody.classList.toggle('open', open);
+  compBtn.setAttribute('aria-expanded', open);
+});
+
+/* ══════════ Démarrage ══════════ */
+buildGraduations();
+initCharts();
+buildIndicRow();
+resetSim();
+</script>
+</body>
+</html>
