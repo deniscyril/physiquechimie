@@ -486,6 +486,46 @@ h1 {
 
 .corr-steps { margin-top: 10px; font-size: 0.92rem; }
 .corr-steps .step { margin-bottom: 4px; }
+
+.step-tag {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  font-family: sans-serif;
+  color: var(--alg);
+  margin-bottom: 8px;
+}
+
+/* ── Interactions graphiques ── */
+.graph.clickable { cursor: crosshair; }
+.pt-click { cursor: pointer; }
+.pt-click:hover { stroke: var(--amber); stroke-width: 2.5; }
+
+.rs-status {
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  font-size: 0.93rem;
+  background: #f3f4fd;
+  border: 1.5px solid var(--border);
+  color: var(--muted);
+}
+.rs-status.warn { background: var(--amber-bg); border-color: var(--amber-bd); color: #78350f; }
+.rs-status.good { background: var(--ok-bg);   border-color: var(--ok-bd);   color: #14532d; }
+
+/* QCM à choix visuels (graphiques ou tableaux) */
+.mcq-options.mcq-visual { flex-direction: row; flex-wrap: wrap; align-items: stretch; }
+.mcq-visual .mcq-btn { flex: 1 1 200px; min-width: 180px; }
+.mcq-visual .prop-table-wrap { margin-bottom: 0; overflow-x: visible; display: flex; justify-content: center; }
+.mcq-glab {
+  font-size: 0.78rem;
+  font-family: sans-serif;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 6px;
+  text-align: center;
+}
 </style>
 </head>
 <body>
@@ -540,12 +580,27 @@ function isCorrect(parsed, expected, tol) {
 //       slope?, intercept?, curve? (a : y = a·x²),
 //       points? [[x,y]], readPoint? [x,y] }
 
-function graphSVG(g) {
-  const W = 420, H = 320;
-  const ml = 54, mr = 18, mt = 26, mb = 44;
+const GDIM = { W: 420, H: 320, ml: 54, mr: 18, mt: 26, mb: 44 };
+
+// Correspondance coordonnées graphique ↔ pixels SVG (et clics utilisateur)
+function graphMap(g) {
+  const { W, H, ml, mr, mt, mb } = GDIM;
   const pw = W - ml - mr, ph = H - mt - mb;
-  const X = x => ml + x / g.xmax * pw;
-  const Y = y => mt + ph - y / g.ymax * ph;
+  return {
+    X: x => ml + x / g.xmax * pw,
+    Y: y => mt + ph - y / g.ymax * ph,
+    fromEvent(evt, svg) {
+      const r = svg.getBoundingClientRect();
+      const sx = (evt.clientX - r.left) * W / r.width;
+      const sy = (evt.clientY - r.top) * H / r.height;
+      return { x: (sx - ml) / pw * g.xmax, y: (mt + ph - sy) / ph * g.ymax };
+    },
+  };
+}
+
+function graphSVG(g) {
+  const { W, H, ml, mt } = GDIM;
+  const { X, Y } = graphMap(g);
   const flab = v => fv(parseFloat(v.toFixed(6)));
   let s = '';
 
@@ -584,9 +639,10 @@ function graphSVG(g) {
     s += `<path d="${d}" fill="none" stroke="#5448c8" stroke-width="2.5"/>`;
   }
 
-  // Points de mesure
-  (g.points || []).forEach(([x, y]) => {
-    s += `<circle cx="${X(x)}" cy="${Y(y)}" r="4.5" fill="#5448c8" stroke="#fff" stroke-width="1.5"/>`;
+  // Points de mesure (cliquables si g.pointAttr est fourni)
+  (g.points || []).forEach(([x, y], idx) => {
+    const attr = g.pointAttr ? ' ' + g.pointAttr(idx) : '';
+    s += `<circle cx="${X(x)}" cy="${Y(y)}" r="${g.pointAttr ? 7 : 4.5}" fill="#5448c8" stroke="#fff" stroke-width="1.5"${attr}/>`;
   });
 
   // Point de lecture avec pointillés
@@ -602,7 +658,9 @@ function graphSVG(g) {
   s += `<text x="${W - 6}" y="${H - 6}" text-anchor="end" class="ax-t">${g.xlabel}</text>`;
   s += `<text x="${ml}" y="14" text-anchor="start" class="ax-t">${g.ylabel}</text>`;
 
-  return `<svg viewBox="0 0 ${W} ${H}" class="graph" role="img" aria-label="Graphique : ${g.ylabel} en fonction de ${g.xlabel}">${s}</svg>`;
+  if (g.extra) s += g.extra;
+
+  return `<svg ${g.svgAttrs || ''} viewBox="0 0 ${W} ${H}" class="graph${g.svgClass ? ' ' + g.svgClass : ''}" role="img" aria-label="Graphique : ${g.ylabel} en fonction de ${g.xlabel}">${s}</svg>`;
 }
 
 function tableHTML(t) {
@@ -675,6 +733,34 @@ const PHASE2_EXOS = [
     ],
   },
   {
+    tag: 'Quatrième proportionnelle — produit en croix',
+    kind: 'num',
+    table: { rows: [
+      { label: 'x', vals: ['3', '7'] },
+      { label: 'y', vals: ['8,4', '?'] },
+    ]},
+    q: `Les grandeurs x et y sont proportionnelles. Déterminer la <strong>valeur manquante</strong> du tableau (notée « ? »).`,
+    answer: 19.6, tol: 0.001, unit: '', fmt: '? = 19,6',
+    hint: `Produit en croix : ? = (8,4 × 7) / 3. Ou retour au coefficient : k = 8,4 / 3, puis ? = k × 7.`,
+    corr: [
+      `<strong>Produit en croix</strong> : 3 × ? = 8,4 × 7, donc ? = 58,8 / 3 = <strong>19,6</strong>`,
+      `<strong>Ou par le coefficient</strong> : k = 8,4 / 3 = 2,8, puis ? = 2,8 × 7 = 19,6.`,
+      `Les deux stratégies donnent toujours le même résultat : choisis la plus rapide selon les nombres.`,
+    ],
+  },
+  {
+    tag: 'Quatrième proportionnelle — linéarité',
+    kind: 'num',
+    q: `Deux grandeurs x et y sont proportionnelles. Lorsque x = 12, y = 30. <strong>Sans calculer k</strong>, déterminer y lorsque x = 6.`,
+    answer: 15, tol: 0.001, unit: '', fmt: 'y = 15',
+    hint: `6, c'est 12 divisé par 2. Que devient y quand on divise x par 2 dans une proportionnalité ?`,
+    corr: [
+      `Dans une proportionnalité, si x est divisé par 2, y est divisé par 2 aussi (<strong>propriété de linéarité</strong>).`,
+      `y = 30 / 2 = <strong>15</strong>`,
+      `Pour les valeurs « simples » (double, moitié, triple…), c'est plus rapide que de calculer k.`,
+    ],
+  },
+  {
     tag: 'Reconnaître — graphique',
     kind: 'mcq',
     graph: { xmax: 6, xstep: 1, ymax: 12, ystep: 2, xlabel: 'x', ylabel: 'y', slope: 1.5, intercept: 3 },
@@ -685,19 +771,57 @@ const PHASE2_EXOS = [
     corr: [
       `La représentation est bien une droite, mais elle <strong>ne passe pas par l'origine</strong> : quand x = 0, y = 3 (et non 0).`,
       `Il faut <strong>les deux conditions</strong> : points alignés <em>et</em> droite passant par l'origine.`,
-      `Ce n'est donc <strong>pas</strong> une proportionnalité (c'est une relation affine : y = 1,5x + 3).`,
+      `Ce n'est donc <strong>pas</strong> une proportionnalité (c'est une <strong>fonction affine</strong> : y = 1,5x + 3, et non une fonction linéaire).`,
     ],
   },
   {
-    tag: 'Coefficient directeur — graphique',
-    kind: 'num',
-    graph: { xmax: 10, xstep: 1, ymax: 8, ystep: 1, xlabel: 'x', ylabel: 'y', slope: 0.6 },
-    q: `La droite passe par l'origine. Déterminer son <strong>coefficient directeur k</strong>.`,
-    answer: 0.6, tol: 0.07, unit: '', fmt: 'k = 0,6',
-    hint: `Choisis toi-même un point de la droite bien lisible sur le quadrillage, le plus loin possible de l'origine, puis calcule k = y / x.`,
+    tag: 'Registre — du tableau au graphique',
+    kind: 'mcq', choiceType: 'graph',
+    table: { rows: [
+      { label: 'x', vals: ['1', '2', '4'] },
+      { label: 'y', vals: ['2', '4', '8'] },
+    ]},
+    q: `Un seul de ces trois graphiques peut représenter ce tableau. <strong>Lequel ?</strong> (clique dessus)`,
+    choices: [
+      { xmax: 5, xstep: 1, ymax: 10, ystep: 2, xlabel: 'x', ylabel: 'y', slope: 2 },
+      { xmax: 5, xstep: 1, ymax: 10, ystep: 2, xlabel: 'x', ylabel: 'y', slope: 1, intercept: 4 },
+      { xmax: 5, xstep: 1, ymax: 10, ystep: 2, xlabel: 'x', ylabel: 'y', slope: 4 },
+    ],
+    correct: 0,
+    hint: `Deux vérifications : la droite passe-t-elle par l'origine ? Et passe-t-elle par les points du tableau — teste (1 ; 2) et (4 ; 8).`,
     corr: [
-      `On choisit un point de la droite dont les coordonnées se lisent exactement sur le quadrillage : par exemple (10 ; 6), ou (5 ; 3).`,
-      `k = y / x = 6 / 10 = <strong>0,6</strong>`,
+      `Le tableau est proportionnel (y/x = 2 partout) : il faut une droite <strong>par l'origine</strong> passant par (1 ; 2), (2 ; 4) et (4 ; 8) — c'est le graphique 1.`,
+      `Graphique 2 : il passe bien par (4 ; 8)… mais pas par l'origine (fonction affine y = x + 4) — piège !`,
+      `Graphique 3 : droite par l'origine, mais de coefficient 4 : elle passerait par (1 ; 4), pas par (1 ; 2).`,
+    ],
+  },
+  {
+    tag: 'Registre — du graphique au tableau',
+    kind: 'mcq', choiceType: 'table',
+    graph: { xmax: 8, xstep: 1, ymax: 12, ystep: 2, xlabel: 'x', ylabel: 'y', slope: 1.5 },
+    q: `Un seul de ces trois tableaux de mesures correspond à cette droite. <strong>Lequel ?</strong>`,
+    choices: [
+      { rows: [ { label: 'x', vals: ['2', '4', '6'] }, { label: 'y', vals: ['3', '6', '9'] } ]},
+      { rows: [ { label: 'x', vals: ['2', '4', '6'] }, { label: 'y', vals: ['4', '7', '10'] } ]},
+      { rows: [ { label: 'x', vals: ['2', '4', '6'] }, { label: 'y', vals: ['3', '5', '8'] } ]},
+    ],
+    correct: 0,
+    hint: `Lis y sur la droite pour x = 2, 4 et 6 — ou teste le rapport y/x de chaque tableau (la droite passe par l'origine : il doit être constant).`,
+    corr: [
+      `Sur la droite : x = 2 → y = 3 ; x = 4 → y = 6 ; x = 6 → y = 9 : c'est le <strong>tableau 1</strong> (k = 1,5).`,
+      `Tableau 2 : y/x vaut 2, puis 1,75, puis ≈ 1,67 — pas constant (c'est y = 1,5x + 1, une fonction affine).`,
+      `Tableau 3 : y/x vaut 1,5, puis 1,25, puis ≈ 1,33 — pas constant non plus.`,
+    ],
+  },
+  {
+    tag: 'Coefficient directeur — lecture active',
+    kind: 'readslope',
+    graph: { xmax: 10, xstep: 1, ymax: 8, ystep: 1, xlabel: 'x', ylabel: 'y', slope: 0.6 },
+    q: `La droite passe par l'origine. <strong>① Clique sur la droite</strong> pour choisir un bon point de lecture, puis <strong>② calcule son coefficient directeur k</strong>.`,
+    answer: 0.6, tol: 0.02, unit: '', fmt: 'k = 0,6',
+    hint: `Un bon point de lecture : <strong>loin de l'origine</strong> (précision) et sur un <strong>croisement du quadrillage</strong> (ses deux coordonnées se lisent exactement). Ensuite k = y / x.`,
+    corr: [
+      `Avec le point (10 ; 6) : k = y / x = 6 / 10 = <strong>0,6</strong> — le point (5 ; 3) donne la même valeur : 3/5 = 0,6.`,
       `L'équation de la droite est donc y = 0,6 × x.`,
     ],
   },
@@ -817,7 +941,7 @@ const SECONDE_EXOS = [
     hint: `Une proportionnalité s'écrit toujours y = k × x, sans rien d'ajouté. Y a-t-il un « + » quelque part ?`,
     corr: [
       `Les trois premières relations sont de la forme <strong>y = k × x</strong> : ce sont des proportionnalités.`,
-      `θ(°F) = 1,8 × θ(°C) + 32 contient un terme ajouté (« + 32 ») : c'est une relation <strong>affine</strong>.`,
+      `θ(°F) = 1,8 × θ(°C) + 32 contient un terme ajouté (« + 32 ») : c'est une fonction <strong>affine</strong>, pas une fonction linéaire.`,
       `Sa représentation est une droite qui ne passe pas par l'origine : 0 °C correspond à 32 °F, pas à 0 °F.`,
     ],
   },
@@ -848,10 +972,11 @@ const PREMIERE_EXOS = [
     intro: `<strong>Dosage par étalonnage</strong> : on mesure l'absorbance A de solutions étalons de concentrations connues (même espèce colorée, même cuve). Les points obtenus sont alignés avec l'origine — c'est la loi de Beer-Lambert.`,
     graph: { xmax: 10, xstep: 1, ymax: 1.4, ystep: 0.2, xlabel: 'C (mmol/L)', ylabel: 'Absorbance A', slope: 0.14,
              points: [[2, 0.28], [4, 0.56], [6, 0.84], [8, 1.12]], readPoint: [10, 1.4] },
-    q: `Déterminer le <strong>coefficient directeur k</strong> de la droite d'étalonnage (A = k × C, avec C en mmol/L).`,
+    q: `Écrire la relation entre A et C, puis déterminer le <strong>coefficient directeur k</strong> de la droite d'étalonnage (C en mmol/L).`,
     answer: 0.14, tol: 0.07, unit: 'L·mmol⁻¹', fmt: 'k = 0,14 L·mmol⁻¹',
-    hint: `k = y<sub>A</sub> / x<sub>A</sub> avec le point A (10 ; 1,4). L'absorbance n'a pas d'unité.`,
+    hint: `Points alignés avec l'origine → A = k × C. Puis k = y<sub>A</sub> / x<sub>A</sub> avec le point A (10 ; 1,4). L'absorbance n'a pas d'unité.`,
     corr: [
+      `Les points sont alignés sur une droite passant par l'origine : <strong>A = k × C</strong>.`,
       `Le point A a pour coordonnées (10 ; 1,4).`,
       `k = A / C = 1,4 / 10 = <strong>0,14 L·mmol⁻¹</strong>`,
       `Loi de Beer-Lambert : A = ε × ℓ × C. À espèce et cuve fixées, ε × ℓ est constant : A est proportionnelle à C.`,
@@ -868,6 +993,22 @@ const PREMIERE_EXOS = [
       `A = k × C, donc C = A / k`,
       `C = 0,84 / 0,14 = <strong>6,0 mmol/L</strong>`,
       `C'est le principe du <strong>dosage par étalonnage</strong> : la droite (donc son coefficient directeur) sert à remonter à une concentration inconnue.`,
+    ],
+  },
+  {
+    tag: 'Chimie — Esprit critique sur la mesure',
+    kind: 'pickpoint',
+    intro: `Un élève a mesuré l'absorbance de six solutions étalons pour tracer sa droite d'étalonnage. Voici ses points expérimentaux :`,
+    graph: { xmax: 7, xstep: 1, ymax: 1, ystep: 0.2, xlabel: 'C (mmol/L)', ylabel: 'Absorbance A',
+             points: [[1, 0.15], [2, 0.30], [3, 0.45], [4, 0.72], [5, 0.75], [6, 0.90]] },
+    aberrant: 3,
+    modelSlope: 0.15,
+    q: `L'une des mesures est <strong>aberrante</strong> (erreur de manipulation). <strong>Clique sur le point</strong> qu'il faut écarter avant de tracer la droite moyenne.`,
+    hint: `Imagine la droite qui passe par l'origine et par la majorité des points : lequel s'en écarte nettement ?`,
+    corr: [
+      `Tous les points suivent A ≈ 0,15 × C… sauf la mesure C = 4 mmol/L : A = 0,72 au lieu de ≈ 0,60 attendu.`,
+      `On <strong>écarte ce point</strong> avant de tracer la droite moyenne — sans le « corriger » : on ne modifie jamais une mesure.`,
+      `Causes possibles : cuve sale ou rayée, bulle dans la cuve, erreur de dilution de l'étalon…`,
     ],
   },
   {
@@ -919,17 +1060,47 @@ const PREMIERE_EXOS = [
       `Remarque : à concentration trop élevée, la loi n'est d'ailleurs plus valable (les points ne sont plus alignés).`,
     ],
   },
+  {
+    tag: 'Chimie — TP virtuel : dosage par étalonnage',
+    kind: 'tp',
+    intro: `<strong>À toi de jouer, de bout en bout.</strong> On a mesuré l'absorbance de quatre solutions étalons :`,
+    table: { rows: [
+      { label: 'C (mmol/L)', vals: ['2', '4', '6', '8'] },
+      { label: 'A', vals: ['0,2', '0,4', '0,6', '0,8'] },
+    ]},
+    graph: { xmax: 10, xstep: 1, ymax: 1, ystep: 0.1, xlabel: 'C (mmol/L)', ylabel: 'Absorbance A' },
+    etalons: [[2, 0.2], [4, 0.4], [6, 0.6], [8, 0.8]],
+    k: 0.1,
+    unknownA: 0.7,
+    q: `Construis la droite d'étalonnage, puis dose la solution inconnue.`,
+    answer: 7, tol: 0.02, unit: 'mmol/L', fmt: 'C = 7,0 mmol/L',
+    hint: `Étape 1 : chaque mesure du tableau se place sur un croisement du quadrillage. Étape 2 : pars de A = 0,7 sur l'axe vertical, rejoins la droite, descends sur l'axe des concentrations — ou calcule k, puis C = A / k.`,
+    corr: [
+      `Lecture graphique : A = 0,7 → droite → C = <strong>7,0 mmol/L</strong> (pointillés orange sur le graphique).`,
+      `Par le calcul : k = 0,2 / 2 = 0,1 L·mmol⁻¹, puis C = A / k = 0,7 / 0,1 = 7,0 mmol/L.`,
+      `C'est exactement le protocole du <strong>dosage par étalonnage</strong> mené au laboratoire.`,
+    ],
+  },
 ];
 
 // ─── TERMINALE SPÉ ──────────────────────────────────────
 const TERMINALE_EXOS = [
   {
-    tag: 'Chimie — Conductimétrie',
+    tag: 'Chimie',
     kind: 'num',
     intro: `<strong>Dosage par étalonnage conductimétrique</strong> : on mesure la conductivité σ de solutions étalons d'une même espèce ionique :`,
     graph: { xmax: 10, xstep: 1, ymax: 1.2, ystep: 0.2, xlabel: 'C (mmol/L)', ylabel: 'σ (mS/cm)', slope: 0.12,
              points: [[2, 0.24], [4, 0.48], [6, 0.72], [8, 0.96], [10, 1.2]] },
-    q: `Déterminer le <strong>coefficient directeur k</strong> de la droite d'étalonnage (σ = k × C, avec C en mmol/L).`,
+    pre: {
+      q: `Ce graphique d'étalonnage montre-t-il que σ est <strong>proportionnelle</strong> à C ?`,
+      choices: ['Oui : les deux conditions graphiques sont réunies', 'Non : il manque une des deux conditions'],
+      correct: 0,
+      corr: [
+        `Les points d'étalonnage sont <strong>alignés</strong> <em>et</em> la droite <strong>passe par l'origine</strong> : σ et C sont proportionnelles.`,
+        `C'est la loi de Kohlrausch, valable pour les solutions diluées.`,
+      ],
+    },
+    q: `Déterminer le <strong>coefficient directeur k</strong> de la droite d'étalonnage (C en mmol/L).`,
     answer: 0.12, tol: 0.07, unit: 'mS·cm⁻¹ par mmol·L⁻¹', fmt: 'k = 0,12 mS·cm⁻¹ par mmol·L⁻¹',
     hint: `Choisis un point de la droite dont les coordonnées se lisent exactement sur le quadrillage — par exemple là où elle croise une ligne horizontale — puis k = y / x.`,
     corr: [
@@ -939,7 +1110,7 @@ const TERMINALE_EXOS = [
     ],
   },
   {
-    tag: 'Chimie — Conductimétrie',
+    tag: 'Chimie',
     kind: 'num',
     intro: `On utilise la droite d'étalonnage précédente (k = 0,12 mS·cm⁻¹ par mmol·L⁻¹). Une solution de <strong>concentration inconnue</strong> a une conductivité <strong>σ = 0,66 mS/cm</strong>.`,
     q: `En déduire la <strong>concentration C</strong> de cette solution.`,
@@ -952,14 +1123,23 @@ const TERMINALE_EXOS = [
     ],
   },
   {
-    tag: 'Physique — Énergie d\'un photon',
+    tag: 'Physique',
     kind: 'num',
     intro: `On mesure l'énergie E de photons de différentes fréquences ν :`,
     table: { rows: [
       { label: 'ν (×10¹⁴ Hz)', vals: ['5,0', '6,0', '7,5'] },
       { label: 'E (×10⁻¹⁹ J)', vals: ['3,31', '3,98', '4,97'] },
     ]},
-    q: `L'énergie E est proportionnelle à la fréquence ν : E = k × ν. Déterminer le coefficient k (en J·s). Quelle constante fondamentale reconnais-tu ?`,
+    pre: {
+      q: `Ces mesures montrent-elles que E est <strong>proportionnelle</strong> à ν ?`,
+      choices: ['Oui : le rapport E/ν est constant', 'Non : le rapport E/ν varie d\'une colonne à l\'autre'],
+      correct: 0,
+      corr: [
+        `E/ν = 3,31/5,0 = 0,662 ; 3,98/6,0 ≈ 0,663 ; 4,97/7,5 ≈ 0,663 (en unités de 10⁻³³ J·s).`,
+        `Le rapport est constant (aux arrondis de mesure près) : E est proportionnelle à ν.`,
+      ],
+    },
+    q: `Écrire la relation entre E et ν, puis déterminer le <strong>coefficient de proportionnalité k</strong> (en J·s). Quelle constante fondamentale reconnais-tu ?`,
     answer: 6.63e-34, tol: 0.02, unit: 'J·s', fmt: 'k = 6,63 × 10⁻³⁴ J·s ≈ h (constante de Planck)',
     formatHint: `Formats acceptés : <code>6,63*10^-34</code> ou <code>6,63e-34</code>`,
     hint: `k = E / ν avec une colonne, en gardant les puissances de 10 : (3,31 × 10⁻¹⁹) / (5,0 × 10¹⁴). Rappel : 10⁻¹⁹ / 10¹⁴ = 10⁻³³.`,
@@ -970,14 +1150,23 @@ const TERMINALE_EXOS = [
     ],
   },
   {
-    tag: 'Chimie — Cinétique d\'ordre 1',
+    tag: 'Chimie',
     kind: 'num',
-    intro: `Pour une réaction d'<strong>ordre 1</strong> par rapport au réactif A, on mesure la vitesse volumique de disparition de A pour différentes concentrations :`,
+    intro: `On étudie une réaction chimique : on mesure la vitesse volumique de disparition du réactif A pour différentes concentrations :`,
     table: { rows: [
       { label: '[A] (mmol/L)', vals: ['2,0', '5,0', '8,0'] },
       { label: 'v (mmol·L⁻¹·s⁻¹)', vals: ['0,50', '1,25', '2,00'] },
     ]},
-    q: `La vitesse v est proportionnelle à [A] : v = k × [A]. Déterminer la <strong>constante de vitesse k</strong>.`,
+    pre: {
+      q: `Ces mesures montrent-elles que la vitesse v est <strong>proportionnelle</strong> à [A] ?`,
+      choices: ['Oui : le rapport v/[A] est constant', 'Non : le rapport v/[A] varie d\'une colonne à l\'autre'],
+      correct: 0,
+      corr: [
+        `v/[A] = 0,50/2,0 = 0,25 ; 1,25/5,0 = 0,25 ; 2,00/8,0 = 0,25 : rapport constant.`,
+        `La vitesse est proportionnelle à la concentration : c'est la signature d'une <strong>loi de vitesse d'ordre 1</strong>.`,
+      ],
+    },
+    q: `Déterminer le coefficient de proportionnalité : c'est la <strong>constante de vitesse k</strong> de cette loi d'ordre 1.`,
     answer: 0.25, tol: 0.01, unit: 's⁻¹', fmt: 'k = 0,25 s⁻¹',
     hint: `k = v / [A], avec n'importe quelle colonne du tableau.`,
     corr: [
@@ -987,7 +1176,7 @@ const TERMINALE_EXOS = [
     ],
   },
   {
-    tag: 'Physique — Diffraction des ondes',
+    tag: 'Physique',
     kind: 'mcq',
     intro: `On éclaire des fentes calibrées de différentes largeurs a avec un même faisceau laser, et on mesure l'écart angulaire θ du faisceau diffracté :`,
     table: { rows: [
@@ -1010,7 +1199,7 @@ const TERMINALE_EXOS = [
     ],
   },
   {
-    tag: 'Physique — Diffraction des ondes',
+    tag: 'Physique',
     kind: 'num',
     intro: `On reprend les mesures de diffraction précédentes. Puisque θ = λ/a, le produit θ × a est constant et vaut λ : c'est le coefficient directeur de la droite obtenue en traçant θ en fonction de 1/a.`,
     q: `Déterminer la <strong>longueur d'onde λ</strong> du laser, en nm. (Attention aux unités : 1 mrad = 10⁻³ rad, 1 µm = 10⁻⁶ m.)`,
@@ -1051,8 +1240,8 @@ const EXO_PAGES = {
     exos: PHASE2_EXOS,
     labelClass: 'p2-label',
     label: 'Phase 2 — Pratique guidée',
-    title: '7 exercices — indices disponibles',
-    intro: `Tableaux et graphiques sans contexte physique, pour installer les réflexes : tester la proportionnalité, déterminer k, l'utiliser dans les deux sens.`,
+    title: '11 exercices — indices disponibles',
+    intro: `Tableaux et graphiques sans contexte physique, pour installer les réflexes : tester la proportionnalité, déterminer k, calculer une quatrième proportionnelle, passer du tableau au graphique (et inversement), choisir un bon point de lecture.`,
     nav: `<button class="btn btn-lvl2" onclick="showExoPage('s2')">Réinvestir en Seconde →</button>
           <button class="btn btn-outline" onclick="showPhase1()">← Revoir la méthode</button>`,
   },
@@ -1061,7 +1250,7 @@ const EXO_PAGES = {
     labelClass: 'lvl2-label',
     label: 'Réinvestissement — Seconde',
     title: 'La proportionnalité en physique-chimie de Seconde',
-    intro: `Masse volumique, concentration en masse, loi d'Ohm, mouvement uniforme : à chaque fois, le coefficient directeur <strong>est</strong> une grandeur physique.`,
+    intro: `Masse volumique, concentration en masse, loi d'Ohm, mouvement uniforme : à chaque fois, le coefficient directeur <strong>est</strong> une grandeur physique. <em>Aide maximale : la proportionnalité est affirmée dans chaque énoncé.</em>`,
     nav: `<button class="btn btn-lvl1" onclick="showExoPage('p1e')">Situations de Première →</button>
           <button class="btn btn-outline" onclick="showHome()">← Accueil</button>`,
   },
@@ -1070,7 +1259,7 @@ const EXO_PAGES = {
     labelClass: 'lvl1-label',
     label: 'Réinvestissement — Première Spé',
     title: 'La proportionnalité en physique-chimie de Première',
-    intro: `Masse molaire, loi de Beer-Lambert et dosage par étalonnage, énergie électrique, poids : la droite d'étalonnage devient un véritable outil de mesure.`,
+    intro: `Masse molaire, loi de Beer-Lambert et dosage par étalonnage, énergie électrique, poids : la droite d'étalonnage devient un véritable outil de mesure. <em>L'aide diminue : c'est à toi d'écrire la relation entre les grandeurs.</em>`,
     nav: `<button class="btn btn-lvlT" onclick="showExoPage('term')">Situations de Terminale →</button>
           <button class="btn btn-outline" onclick="showHome()">← Accueil</button>`,
   },
@@ -1079,27 +1268,102 @@ const EXO_PAGES = {
     labelClass: 'lvlT-label',
     label: 'Réinvestissement — Terminale Spé',
     title: 'La proportionnalité en physique-chimie de Terminale',
-    intro: `Conductimétrie, énergie d'un photon, cinétique d'ordre 1, diffraction des ondes : mêmes réflexes, notions de Terminale — jusqu'à retrouver la constante de Planck et vérifier une inverse proportionnalité.`,
+    intro: `Conductimétrie, énergie d'un photon, cinétique, diffraction des ondes : mêmes réflexes, notions de Terminale — jusqu'à retrouver la constante de Planck et vérifier une inverse proportionnalité. <em>Étayage minimal : teste d'abord toi-même la proportionnalité, puis exploite-la.</em>`,
     nav: `<button class="btn btn-outline" onclick="showHome()">← Accueil</button>`,
   },
 };
 
+function stepsHTML(arr) {
+  return arr.map(txt => `<div class="step"><span class="step-arrow">→</span> <span>${txt}</span></div>`).join('');
+}
 function corrHTML(ex) {
-  return ex.corr.map(txt => `<div class="step"><span class="step-arrow">→</span> <span>${txt}</span></div>`).join('');
+  return stepsHTML(ex.corr);
+}
+
+// Étape 1 (Terminale) : tester soi-même la proportionnalité avant de l'exploiter
+function pickPre(key, i, j) {
+  const ex = EXO_PAGES[key].exos[i];
+  const pid = `${key}-${i}`;
+  const card = document.getElementById(`card${pid}`);
+  if (!card || card.dataset.preDone) return;
+  card.dataset.preDone = '1';
+
+  ex.pre.choices.forEach((_, c) => {
+    const b = document.getElementById(`pre${pid}-${c}`);
+    if (!b) return;
+    b.disabled = true;
+    if (c === ex.pre.correct) b.classList.add('correct');
+    else if (c === j) b.classList.add('incorrect');
+  });
+
+  const ok = j === ex.pre.correct;
+  const fb = document.getElementById(`pfb${pid}`);
+  fb.className = `feedback-box visible feedback-${ok ? 'ok' : 'err'}`;
+  fb.innerHTML = `<strong>${ok ? '✓ Exact.' : '✗ Non.'}</strong>
+    <div class="corr-steps">${stepsHTML(ex.pre.corr)}</div>`;
+  document.getElementById(`main${pid}`).style.display = '';
 }
 
 function exoCardHTML(ex, i, key) {
   const pid = `${key}-${i}`;
   const total = EXO_PAGES[key].exos.length;
-  let body = `<div class="exercise-num">Exercice ${i + 1} / ${total}</div>
+  let head = `<div class="exercise-num">Exercice ${i + 1} / ${total}</div>
     <span class="contexte-tag">${ex.tag}</span>`;
-  if (ex.intro) body += `<div class="exo-intro">${ex.intro}</div>`;
-  if (ex.table) body += tableHTML(ex.table);
-  if (ex.graph) body += `<div class="graph-wrap">${graphSVG(ex.graph)}</div>`;
-  body += `<div class="exercise-question">${ex.q}</div>`;
+  if (ex.intro) head += `<div class="exo-intro">${ex.intro}</div>`;
+  if (ex.table) head += tableHTML(ex.table);
+  // les exercices interactifs rendent eux-mêmes leur graphique (id + gestion du clic)
+  const interactive = ex.kind === 'readslope' || ex.kind === 'pickpoint' || ex.kind === 'tp';
+  if (ex.graph && !interactive) head += `<div class="graph-wrap">${graphSVG(ex.graph)}</div>`;
 
-  if (ex.kind === 'num') {
-    body += `
+  let main = `<div class="exercise-question">${ex.q}</div>`;
+
+  if (ex.kind === 'readslope') {
+    main += `
+    <div class="graph-wrap">${graphSVG({ ...ex.graph, svgClass: 'clickable',
+      svgAttrs: `id="rsvg${pid}" onclick="clickReadSlope(event,'${key}',${i})"` })}</div>
+    <div class="rs-status" id="rstat${pid}">① Clique sur la droite pour choisir ton point de lecture…</div>
+    <div class="input-row">
+      <button class="btn btn-hint" id="hbtn${pid}" onclick="showHint('${pid}')">Indice</button>
+    </div>
+    <div id="rinp${pid}" style="display:none">
+      <div class="format-hint">${ex.formatHint || FORMAT_HINT_STD}</div>
+      <div class="input-row">
+        <input class="answer-input" id="inp${pid}" inputmode="text" placeholder="k = …" autocomplete="off"
+               onkeydown="if(event.key==='Enter') checkExo('${key}',${i})">
+        ${ex.unit ? `<span class="unit-suffix">${ex.unit}</span>` : ''}
+        <button class="btn btn-primary" id="vbtn${pid}" onclick="checkExo('${key}',${i})">Vérifier</button>
+      </div>
+    </div>`;
+  } else if (ex.kind === 'pickpoint') {
+    main += `
+    <div class="graph-wrap">${graphSVG({ ...ex.graph, svgAttrs: `id="ppsvg${pid}"`,
+      pointAttr: idx => `onclick="pickAberrant('${key}',${i},${idx})" class="pt-click"` })}</div>
+    <div class="input-row">
+      <button class="btn btn-hint" id="hbtn${pid}" onclick="showHint('${pid}')">Indice</button>
+    </div>`;
+  } else if (ex.kind === 'tp') {
+    TP_STATE[pid] = { placed: [], done: false };
+    main += `
+    <div class="step-tag">Étape 1 — Place les ${ex.etalons.length} points d'étalonnage (clique sur le quadrillage)</div>
+    <div class="graph-wrap">${graphSVG({ ...ex.graph, svgClass: 'clickable',
+      svgAttrs: `id="tpsvg${pid}" onclick="clickTP(event,'${key}',${i})"` })}</div>
+    <div class="rs-status" id="tpstat${pid}">0 / ${ex.etalons.length} point placé — clique sur le croisement correspondant à chaque mesure du tableau.</div>
+    <div class="input-row">
+      <button class="btn btn-hint" id="hbtn${pid}" onclick="showHint('${pid}')">Indice</button>
+    </div>
+    <div id="tpinp${pid}" style="display:none">
+      <div class="step-tag" style="margin-top:16px">Étape 2 — Doser la solution inconnue</div>
+      <div class="exercise-question">La solution inconnue a une absorbance <strong>A = ${fv(ex.unknownA)}</strong>. Détermine sa <strong>concentration C</strong>.</div>
+      <div class="format-hint">${ex.formatHint || FORMAT_HINT_STD}</div>
+      <div class="input-row">
+        <input class="answer-input" id="inp${pid}" inputmode="text" placeholder="Ta réponse…" autocomplete="off"
+               onkeydown="if(event.key==='Enter') checkExo('${key}',${i})">
+        ${ex.unit ? `<span class="unit-suffix">${ex.unit}</span>` : ''}
+        <button class="btn btn-primary" id="vbtn${pid}" onclick="checkExo('${key}',${i})">Vérifier</button>
+      </div>
+    </div>`;
+  } else if (ex.kind === 'num') {
+    main += `
     <div class="format-hint">${ex.formatHint || FORMAT_HINT_STD}</div>
     <div class="input-row">
       <input class="answer-input" id="inp${pid}" inputmode="text" placeholder="Ta réponse…" autocomplete="off"
@@ -1109,20 +1373,42 @@ function exoCardHTML(ex, i, key) {
       <button class="btn btn-hint" id="hbtn${pid}" onclick="showHint('${pid}')">Indice</button>
     </div>`;
   } else {
-    body += `
-    <div class="mcq-options">
-      ${ex.choices.map((c, j) => `<button class="mcq-btn" id="mcq${pid}-${j}" onclick="pickMcq('${key}',${i},${j})">${c}</button>`).join('')}
+    // QCM : choix textuels, ou visuels (mini-graphiques / tableaux)
+    const renderChoice = (c, j) => {
+      if (ex.choiceType === 'graph') return `<div class="mcq-glab">Graphique ${j + 1}</div>${graphSVG(c)}`;
+      if (ex.choiceType === 'table') return `<div class="mcq-glab">Tableau ${j + 1}</div>${tableHTML(c)}`;
+      return c;
+    };
+    main += `
+    <div class="mcq-options${ex.choiceType ? ' mcq-visual' : ''}">
+      ${ex.choices.map((c, j) => `<button class="mcq-btn" id="mcq${pid}-${j}" onclick="pickMcq('${key}',${i},${j})">${renderChoice(c, j)}</button>`).join('')}
     </div>
     <div class="input-row">
       <button class="btn btn-hint" id="hbtn${pid}" onclick="showHint('${pid}')">Indice</button>
     </div>`;
   }
 
-  body += `
+  main += `
     <div class="hint-box" id="hint${pid}">${ex.hint}</div>
     <div class="feedback-box" id="fb${pid}"></div>`;
 
-  return `<div class="exercise-card" id="card${pid}">${body}</div>`;
+  // Exercice en deux étapes : d'abord tester la proportionnalité, ensuite l'exploiter
+  if (ex.pre) {
+    const pre = `
+    <div class="step-tag">Étape 1 — Tester la proportionnalité</div>
+    <div class="exercise-question">${ex.pre.q}</div>
+    <div class="mcq-options">
+      ${ex.pre.choices.map((c, j) => `<button class="mcq-btn" id="pre${pid}-${j}" onclick="pickPre('${key}',${i},${j})">${c}</button>`).join('')}
+    </div>
+    <div class="feedback-box" id="pfb${pid}"></div>
+    <div id="main${pid}" style="display:none">
+      <div class="step-tag" style="margin-top:16px">Étape 2 — Exploiter</div>
+      ${main}
+    </div>`;
+    return `<div class="exercise-card" id="card${pid}">${head}${pre}</div>`;
+  }
+
+  return `<div class="exercise-card" id="card${pid}">${head}${main}</div>`;
 }
 
 function showHint(pid) {
@@ -1130,6 +1416,162 @@ function showHint(pid) {
   const b = document.getElementById(`hbtn${pid}`);
   if (h) h.classList.add('visible');
   if (b) b.style.display = 'none';
+}
+
+// ─── B : lecture active du coefficient directeur ────────
+function clickReadSlope(evt, key, i) {
+  const ex = EXO_PAGES[key].exos[i];
+  const pid = `${key}-${i}`;
+  const card = document.getElementById(`card${pid}`);
+  if (!card || card.dataset.ptDone) return;
+  const g = ex.graph;
+  const map = graphMap(g);
+  const svg = document.getElementById(`rsvg${pid}`);
+  const p = map.fromEvent(evt, svg);
+  const stat = document.getElementById(`rstat${pid}`);
+  if (p.x < 0 || p.x > g.xmax || p.y < 0 || p.y > g.ymax) return;
+
+  if (Math.abs(p.y - g.slope * p.x) > 0.08 * g.ymax) {
+    stat.className = 'rs-status warn';
+    stat.textContent = 'Clique sur la droite elle-même.';
+    return;
+  }
+  const xs = Math.round(p.x / g.xstep) * g.xstep;
+  if (Math.abs(p.x - xs) > 0.3 * g.xstep) {
+    stat.className = 'rs-status warn';
+    stat.textContent = 'Vise un croisement du quadrillage : les coordonnées du point doivent se lire exactement.';
+    return;
+  }
+  const ys = g.slope * xs;
+  const ysnap = Math.round(ys / g.ystep) * g.ystep;
+  if (Math.abs(ys - ysnap) > 0.02 * g.ystep) {
+    stat.className = 'rs-status warn';
+    stat.innerHTML = `En x = ${fv(xs)}, la droite passe <em>entre</em> deux graduations : y ne se lit pas exactement. Essaie un autre croisement.`;
+    return;
+  }
+  if (xs < 0.45 * g.xmax) {
+    stat.className = 'rs-status warn';
+    stat.innerHTML = `Ce point se lit bien… mais il est <strong>trop proche de l'origine</strong> : la lecture serait peu précise. Choisis un point plus éloigné.`;
+    return;
+  }
+  // Bon point : guides pointillés + libellé, puis on demande k
+  card.dataset.ptDone = '1';
+  const lbl = fv(parseFloat(ys.toFixed(4)));
+  svg.insertAdjacentHTML('beforeend',
+    `<line x1="${map.X(xs)}" y1="${map.Y(ys)}" x2="${map.X(xs)}" y2="${map.Y(0)}" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4 3"/>
+     <line x1="${map.X(xs)}" y1="${map.Y(ys)}" x2="${map.X(0)}" y2="${map.Y(ys)}" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4 3"/>
+     <circle cx="${map.X(xs)}" cy="${map.Y(ys)}" r="5.5" fill="#d97706" stroke="#fff" stroke-width="1.5"/>
+     <text x="${map.X(xs) - 9}" y="${map.Y(ys) - 9}" text-anchor="end" class="pt-lbl">A (${fv(xs)} ; ${lbl})</text>`);
+  stat.className = 'rs-status good';
+  stat.innerHTML = `✓ Bon choix : A (${fv(xs)} ; ${lbl}) — loin de l'origine et lisible exactement. ② Calcule maintenant k = y<sub>A</sub> / x<sub>A</sub>.`;
+  document.getElementById(`rinp${pid}`).style.display = '';
+}
+
+// ─── D : repérer le point de mesure aberrant ────────────
+function pointRing(map, x, y, color) {
+  return `<circle cx="${map.X(x)}" cy="${map.Y(y)}" r="12" fill="none" stroke="${color}" stroke-width="3"/>`;
+}
+
+function pickAberrant(key, i, idx) {
+  const ex = EXO_PAGES[key].exos[i];
+  const pid = `${key}-${i}`;
+  const card = document.getElementById(`card${pid}`);
+  if (!card || card.dataset.done) return;
+  const map = graphMap(ex.graph);
+  const svg = document.getElementById(`ppsvg${pid}`);
+  const fb  = document.getElementById(`fb${pid}`);
+  const ok  = idx === ex.aberrant;
+  const tries = parseInt(card.dataset.tries || '0', 10) + 1;
+  card.dataset.tries = tries;
+
+  if (!ok && tries === 1) {
+    const [px, py] = ex.graph.points[idx];
+    svg.insertAdjacentHTML('beforeend', pointRing(map, px, py, '#dc2626'));
+    showHint(pid);
+    fb.className = 'feedback-box visible feedback-err';
+    fb.innerHTML = `<strong>✗ Pas celui-ci</strong> — ce point est cohérent avec les autres. Un indice s'est affiché ; il te reste un essai.`;
+    return;
+  }
+
+  card.dataset.done = '1';
+  if (!ok) {
+    const [px, py] = ex.graph.points[idx];
+    svg.insertAdjacentHTML('beforeend', pointRing(map, px, py, '#dc2626'));
+  }
+  // on entoure l'aberrant et on trace la droite moyenne (sans lui)
+  const [ax, ay] = ex.graph.points[ex.aberrant];
+  const xEnd = Math.min(ex.graph.xmax, ex.graph.ymax / ex.modelSlope);
+  svg.insertAdjacentHTML('beforeend',
+    pointRing(map, ax, ay, '#16a34a') +
+    `<line x1="${map.X(0)}" y1="${map.Y(0)}" x2="${map.X(xEnd)}" y2="${map.Y(ex.modelSlope * xEnd)}" stroke="#5448c8" stroke-width="2" stroke-dasharray="6 4"/>`);
+  const hbtn = document.getElementById(`hbtn${pid}`);
+  if (hbtn) hbtn.style.display = 'none';
+  fb.className = `feedback-box visible feedback-${ok ? 'ok' : 'err'}`;
+  fb.innerHTML = `<strong>${ok ? '✓ Bien vu !' : '✗ Incorrect — c\'était le point entouré en vert.'}</strong>
+    <div class="corr-steps">${corrHTML(ex)}</div>`;
+}
+
+// ─── F : TP virtuel — construire la droite d'étalonnage ─
+const TP_STATE = {};
+
+function clickTP(evt, key, i) {
+  const ex = EXO_PAGES[key].exos[i];
+  const pid = `${key}-${i}`;
+  const st = TP_STATE[pid];
+  if (!st || st.done) return;
+  const g = ex.graph;
+  const map = graphMap(g);
+  const svg = document.getElementById(`tpsvg${pid}`);
+  const p = map.fromEvent(evt, svg);
+  const stat = document.getElementById(`tpstat${pid}`);
+  if (p.x < 0 || p.x > g.xmax || p.y < 0 || p.y > g.ymax) return;
+
+  // accrochage au croisement de quadrillage le plus proche
+  const xs = Math.round(p.x / g.xstep) * g.xstep;
+  const ys = Math.round(p.y / g.ystep) * g.ystep;
+  const idx = ex.etalons.findIndex(([cx, cy]) =>
+    Math.abs(cx - xs) < g.xstep * 0.01 && Math.abs(cy - ys) < g.ystep * 0.01);
+
+  if (idx === -1) {
+    stat.className = 'rs-status warn';
+    stat.innerHTML = `(${fv(parseFloat(xs.toFixed(4)))} ; ${fv(parseFloat(ys.toFixed(4)))}) ne correspond à aucune mesure du tableau — vérifie tes coordonnées.`;
+    return;
+  }
+  if (st.placed.includes(idx)) {
+    stat.className = 'rs-status warn';
+    stat.textContent = 'Ce point est déjà placé — il en reste d\'autres !';
+    return;
+  }
+  st.placed.push(idx);
+  const [px, py] = ex.etalons[idx];
+  svg.insertAdjacentHTML('beforeend',
+    `<circle cx="${map.X(px)}" cy="${map.Y(py)}" r="5" fill="#16a34a" stroke="#fff" stroke-width="1.5"/>`);
+
+  if (st.placed.length < ex.etalons.length) {
+    stat.className = 'rs-status good';
+    stat.textContent = `✓ ${st.placed.length} / ${ex.etalons.length} points placés — continue !`;
+    return;
+  }
+  // tous placés : la droite d'étalonnage se trace
+  st.done = true;
+  const xEnd = Math.min(g.xmax, g.ymax / ex.k);
+  svg.insertAdjacentHTML('beforeend',
+    `<line x1="${map.X(0)}" y1="${map.Y(0)}" x2="${map.X(xEnd)}" y2="${map.Y(ex.k * xEnd)}" stroke="#5448c8" stroke-width="2.5"/>`);
+  stat.className = 'rs-status good';
+  stat.innerHTML = `✓ Les ${ex.etalons.length} points sont <strong>alignés avec l'origine</strong> : on trace la droite d'étalonnage. Passe à l'étape 2.`;
+  document.getElementById(`tpinp${pid}`).style.display = '';
+}
+
+// après un dosage réussi : matérialiser la lecture graphique
+function tpShowReading(pid, ex) {
+  const svg = document.getElementById(`tpsvg${pid}`);
+  if (!svg) return;
+  const map = graphMap(ex.graph);
+  const cx = ex.answer, cy = ex.unknownA;
+  svg.insertAdjacentHTML('beforeend',
+    `<line x1="${map.X(0)}" y1="${map.Y(cy)}" x2="${map.X(cx)}" y2="${map.Y(cy)}" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4 3"/>
+     <line x1="${map.X(cx)}" y1="${map.Y(cy)}" x2="${map.X(cx)}" y2="${map.Y(0)}" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4 3"/>
+     <circle cx="${map.X(cx)}" cy="${map.Y(cy)}" r="5.5" fill="#d97706" stroke="#fff" stroke-width="1.5"/>`);
 }
 
 function checkExo(key, i) {
@@ -1142,6 +1584,23 @@ function checkExo(key, i) {
   const raw    = inp.value;
   const parsed = parseAnswer(raw);
   const ok     = isCorrect(parsed, ex.answer, ex.tol);
+  const card   = document.getElementById(`card${pid}`);
+  const tries  = parseInt(card.dataset.tries || '0', 10) + 1;
+  card.dataset.tries = tries;
+
+  // Première erreur : indice automatique, l'élève retente (la correction attendra)
+  if (!ok && tries === 1) {
+    inp.classList.add('incorrect');
+    showHint(pid);
+    fb.className = 'feedback-box visible feedback-err';
+    fb.innerHTML = `<strong>✗ Pas encore.</strong> Un indice s'est affiché — corrige ta réponse et vérifie à nouveau.`;
+    inp.addEventListener('input', () => {
+      inp.classList.remove('incorrect');
+      fb.classList.remove('visible');
+    }, { once: true });
+    inp.focus();
+    return;
+  }
 
   inp.classList.toggle('correct',   ok);
   inp.classList.toggle('incorrect', !ok);
@@ -1155,6 +1614,7 @@ function checkExo(key, i) {
   if (ok) {
     fb.innerHTML = `<strong>✓ Correct !</strong> &nbsp; ${ex.fmt}
       <div class="corr-steps">${corrHTML(ex)}</div>`;
+    if (ex.kind === 'tp') tpShowReading(pid, ex);
   } else {
     const yourTxt = raw.trim() ? `Ta réponse : <em>${raw}</em>` : 'Aucune réponse saisie.';
     fb.innerHTML = `<strong>✗ Incorrect.</strong> ${yourTxt}
@@ -1167,6 +1627,20 @@ function pickMcq(key, i, j) {
   const pid = `${key}-${i}`;
   const card = document.getElementById(`card${pid}`);
   if (!card || card.dataset.done) return;
+
+  const tries = parseInt(card.dataset.tries || '0', 10) + 1;
+  card.dataset.tries = tries;
+
+  // Première erreur sur un QCM à plus de 2 choix : indice automatique + second essai
+  if (j !== ex.correct && tries === 1 && ex.choices.length > 2) {
+    const b = document.getElementById(`mcq${pid}-${j}`);
+    if (b) { b.classList.add('incorrect'); b.disabled = true; }
+    showHint(pid);
+    const fb0 = document.getElementById(`fb${pid}`);
+    fb0.className = 'feedback-box visible feedback-err';
+    fb0.innerHTML = `<strong>✗ Pas celle-ci.</strong> Un indice s'est affiché — il te reste un essai.`;
+    return;
+  }
   card.dataset.done = '1';
 
   ex.choices.forEach((_, c) => {
@@ -1215,15 +1689,15 @@ function showHome() {
       <div>
         <div class="phase-card-num">Phase 1</div>
         <div class="phase-card-title">Modelage — Comprendre la proportionnalité</div>
-        <div class="phase-card-desc">Définition et test du rapport constant · Droite passant par l'origine · Rôle et détermination du coefficient directeur</div>
+        <div class="phase-card-desc">Test du rapport constant · Quatrième proportionnelle · Fonction linéaire et droite par l'origine · Coefficient directeur</div>
       </div>
       <div class="phase-card-arrow">→</div>
     </div>
     <div class="phase-card p2" onclick="showExoPage('p2')">
       <div>
         <div class="phase-card-num">Phase 2</div>
-        <div class="phase-card-title">Pratique guidée — 7 exercices avec indices</div>
-        <div class="phase-card-desc">Tableaux et graphiques · Tester, déterminer k, l'utiliser dans les deux sens</div>
+        <div class="phase-card-title">Pratique guidée — 11 exercices avec indices</div>
+        <div class="phase-card-desc">Tableaux et graphiques · Tester, produit en croix, appariement tableau ↔ graphique, lecture active de k</div>
       </div>
       <div class="phase-card-arrow">→</div>
     </div>
@@ -1243,7 +1717,7 @@ function showHome() {
       <div>
         <div class="phase-card-num">Première Spé</div>
         <div class="phase-card-title">Masse molaire · Beer-Lambert · Énergie · Poids</div>
-        <div class="phase-card-desc">6 situations, dont le dosage par étalonnage : la droite devient un outil de mesure</div>
+        <div class="phase-card-desc">8 situations, dont un point de mesure aberrant à débusquer et un TP virtuel de dosage par étalonnage</div>
       </div>
       <div class="phase-card-arrow">→</div>
     </div>
@@ -1313,7 +1787,49 @@ function showPhase1() {
 
   <!-- ── MÉTHODE B ─────────────────────────── -->
   <div class="technique">
-    <div class="technique-header">Méthode B — La représentation graphique</div>
+    <div class="technique-header">Méthode B — Calculer une quatrième proportionnelle</div>
+    <div class="technique-body">
+      <div class="objectif-line">
+        Dans un tableau de proportionnalité, on peut calculer n'importe quelle <strong>valeur manquante</strong>
+        (la « quatrième proportionnelle ») — trois stratégies au choix.
+      </div>
+
+      <div class="example-header">Exemple — Toujours l'essence à 1,70 €/L</div>
+      <div class="example-q">Combien coûtent <strong>12 L</strong> d'essence ?</div>
+      ${tableHTML({ rows: [
+        { label: 'V (L)', vals: ['5', '12'] },
+        { label: 'Prix (€)', vals: ['8,50', '?'] },
+      ]})}
+      <div class="bloc bloc-alg">
+        <div class="bloc-title">Stratégie 1 — Retour au coefficient</div>
+        <div class="step"><span class="step-num">1</span><span>k = 8,50 / 5 = 1,70 €/L</span></div>
+        <div class="step"><span class="step-num">2</span><span>? = k × 12 = 1,70 × 12 = <strong>20,40 €</strong></span></div>
+      </div>
+      <div class="bloc bloc-alg">
+        <div class="bloc-title">Stratégie 2 — Produit en croix</div>
+        <div class="step"><span class="step-num">1</span><span>Dans un tableau de proportionnalité, les « produits en croix » sont égaux : 5 × ? = 8,50 × 12</span></div>
+        <div class="step"><span class="step-num">2</span><span>? = (8,50 × 12) / 5 = <strong>20,40 €</strong></span></div>
+      </div>
+      <div class="bloc bloc-alg">
+        <div class="bloc-title">Stratégie 3 — Linéarité (pour les cas simples)</div>
+        <div class="step"><span class="step-arrow">→</span><span>Si le volume double, le prix double : 20 L coûtent 2 × 17,00 = 34,00 € — sans calculer k. Imbattable quand les valeurs sont doubles, moitiés, triples…</span></div>
+      </div>
+      <div class="bloc bloc-result">
+        <div class="bloc-title">Résultat</div>
+        <span class="formula-box">12 L → 20,40 €</span>
+      </div>
+
+      <div class="note-box">
+        <strong>Trois chemins, un même résultat.</strong> Le retour au coefficient est le plus universel
+        (et k a presque toujours un sens physique), le produit en croix est rapide pour une valeur isolée,
+        la linéarité est la plus élégante quand les nombres s'y prêtent.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MÉTHODE C ─────────────────────────── -->
+  <div class="technique">
+    <div class="technique-header">Méthode C — La représentation graphique</div>
     <div class="technique-body">
       <div class="objectif-line">
         Deux grandeurs sont proportionnelles <strong>si et seulement si</strong> les points du graphique sont
@@ -1342,12 +1858,20 @@ function showPhase1() {
         <strong>Les deux conditions sont obligatoires :</strong> points alignés <em>et</em> passage par l'origine.
         Une seule des deux ne suffit jamais.
       </div>
+
+      <div class="note-box">
+        <strong>🔗 Le pont avec le cours de maths :</strong> la relation y = k × x s'appelle une
+        <strong>fonction linéaire</strong> — sa représentation est précisément une droite passant par l'origine.
+        Une droite qui ne passe pas par l'origine représente une <strong>fonction affine</strong> y = a x + b
+        (avec b ≠ 0) : il n'y a alors pas proportionnalité. Retiens l'équivalence :
+        <em>grandeurs proportionnelles ⇔ fonction linéaire ⇔ droite passant par l'origine</em>.
+      </div>
     </div>
   </div>
 
-  <!-- ── MÉTHODE C ─────────────────────────── -->
+  <!-- ── MÉTHODE D ─────────────────────────── -->
   <div class="technique">
-    <div class="technique-header">Méthode C — Le coefficient directeur : rôle et détermination</div>
+    <div class="technique-header">Méthode D — Le coefficient directeur : rôle et détermination</div>
     <div class="technique-body">
       <div class="objectif-line">
         La droite d'une proportionnalité a pour équation <strong>y = k × x</strong>.
