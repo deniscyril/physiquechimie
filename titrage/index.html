@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulation d'un titrage — Première Spé</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #f0f4f8;
+    --bg2:       #ffffff;
+    --bg3:       #e8eef5;
+    --border:    #c8d6e5;
+    --text:      #1a2a3a;
+    --text2:     #4a6278;
+    --text3:     #7a96aa;
+    --accent:    #2563eb;
+    --green:     #16a34a;
+    --violet:    #7c3aed;
+    --amber:     #d97706;
+    --radius:    12px;
+    --radius-sm: 7px;
+  }
+
+  html { font-size: 16px; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    min-height: 100vh;
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .container { max-width: 900px; margin: 0 auto; }
+
+  /* ── Bouton retour au portail ── */
+  .back-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 1rem; padding: 7px 14px;
+    font-size: 13px; color: var(--text2);
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 8px; text-decoration: none;
+    transition: color 0.15s, border-color 0.15s, transform 0.1s;
+  }
+  .back-link:hover { color: var(--accent); border-color: var(--accent); transform: translateX(-2px); }
+
+  header { text-align: center; margin-bottom: 2rem; }
+  header .eyebrow {
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text3); margin-bottom: 6px;
+  }
+  header h1 {
+    font-size: clamp(1.3rem, 4vw, 1.9rem); font-weight: 600;
+    color: var(--text); line-height: 1.2;
+  }
+  header h1 span { color: var(--accent); }
+
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.2rem; margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .section-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text3); margin-bottom: 12px;
+  }
+
+  /* ── Choix de la réaction ── */
+  .reaction-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+  select#mode-select {
+    appearance: none; -webkit-appearance: none;
+    background: var(--bg3); color: var(--text);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    padding: 9px 34px 9px 12px; cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%234a6278' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+  }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden; }
+  .seg button {
+    font-family: inherit; font-size: 13px; font-weight: 500;
+    padding: 8px 14px; border: none; background: var(--bg2);
+    color: var(--text2); cursor: pointer; border-right: 1px solid var(--border);
+  }
+  .seg button:last-child { border-right: none; }
+  .seg button.active { background: var(--accent); color: #fff; }
+  .equation {
+    margin-top: 12px; font-size: 16px; font-weight: 500;
+    background: var(--bg3); border-radius: var(--radius-sm);
+    padding: 10px 14px; text-align: center;
+  }
+  .equation .sp-a { color: var(--green); font-weight: 700; }
+  .equation .sp-b { color: var(--violet); font-weight: 700; }
+  .prod-toggle {
+    display: flex; align-items: center; gap: 8px; margin-top: 10px;
+    font-size: 13px; color: var(--text2); cursor: pointer; user-select: none;
+  }
+  .prod-toggle input { accent-color: var(--accent); width: 15px; height: 15px; cursor: pointer; }
+  .prod-symbol { color: #0e7490; font-weight: 700; }
+  .relation-eq {
+    margin: 4px 0 10px; padding: 10px 14px; text-align: center;
+    background: var(--bg3); border-radius: var(--radius-sm);
+    font-size: 15px; font-weight: 600; color: var(--text);
+    white-space: nowrap; overflow-x: auto;
+  }
+
+  /* ── Scène ── */
+  .scene-wrap { display: flex; justify-content: center; }
+  svg#scene { width: 100%; max-width: 440px; height: auto; display: block; }
+  .obj { transition: opacity 0.45s; }
+  .obj.fade { opacity: 0; }
+  .obj.born { animation: obj-born 0.45s ease; }
+  @keyframes obj-born { from { opacity: 0; } }
+
+  .scene-legend {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;
+    margin-top: 10px; font-size: 13px; color: var(--text2);
+  }
+  .scene-legend .leg-a { color: var(--green); font-weight: 700; }
+  .scene-legend .leg-b { color: var(--violet); font-weight: 700; }
+  .model-note { text-align: center; font-size: 11.5px; color: var(--text3); margin-top: 6px; }
+
+  /* ── Boutons de commande ── */
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 14px; }
+  .btn {
+    font-family: inherit; font-size: 14px; font-weight: 600;
+    padding: 10px 18px; border-radius: var(--radius-sm);
+    border: 1px solid var(--border); background: var(--bg2);
+    color: var(--text); cursor: pointer;
+    transition: background 0.12s, border-color 0.12s, transform 0.08s;
+  }
+  .btn:hover:not(:disabled) { background: var(--bg3); }
+  .btn:active:not(:disabled) { transform: scale(0.97); }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: #1d4ed8; }
+  .btn-pouring { background: var(--violet); border-color: var(--violet); color: #fff; }
+  .btn-pouring:hover:not(:disabled) { background: #6d28d9; }
+
+  /* ── Compteurs ── */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 14px; }
+  .chip {
+    font-size: 13px; padding: 7px 12px; border-radius: 999px;
+    background: var(--bg3); border: 1px solid var(--border); color: var(--text2);
+  }
+  .chip strong { color: var(--text); }
+  .chip-a strong { color: var(--green); }
+  .chip-b strong { color: var(--violet); }
+  .chip-veq { background: #fef3c7; border-color: #f59e0b; color: #92400e; display: none; }
+  .chip-veq strong { color: #92400e; }
+
+  /* ── Phase ── */
+  .phase-box {
+    margin-top: 14px; padding: 12px 14px; border-radius: var(--radius-sm);
+    font-size: 13.5px; line-height: 1.55; color: var(--text2);
+    background: var(--bg3); border-left: 4px solid var(--border);
+  }
+  .phase-box.ph-avant { border-left-color: var(--accent); background: #eff6ff; }
+  .phase-box.ph-equiv { border-left-color: var(--amber); background: #fef3c7; animation: pulse-eq 0.9s ease 2; }
+  .phase-box.ph-apres { border-left-color: var(--violet); background: #f5f3ff; }
+  @keyframes pulse-eq { 0% { transform: scale(1); } 50% { transform: scale(1.015); } 100% { transform: scale(1); } }
+  .phase-box .ph-title { font-weight: 700; color: var(--text); }
+
+  .notice-warn {
+    margin-top: 12px; padding: 9px 12px; font-size: 13px;
+    background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c;
+    border-radius: var(--radius-sm); display: none; text-align: center;
+  }
+
+  /* ── Blocs escamotables (même patron que tableau_avancement) ── */
+  .tableau-toggle {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer; user-select: none;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text3);
+    padding: 0; background: none; border: none;
+    width: 100%; text-align: left; font-family: inherit;
+  }
+  .tableau-toggle:hover { color: var(--text2); }
+  .tableau-toggle .chevron {
+    display: inline-block; transition: transform 0.25s;
+    font-size: 10px; color: var(--accent);
+  }
+  .tableau-toggle.open .chevron { transform: rotate(90deg); }
+  .tableau-body { display: none; margin-top: 14px; }
+  .tableau-body.open { display: block; }
+
+  .chart-inner { position: relative; height: 240px; }
+
+  .comprendre p { font-size: 13.5px; color: var(--text2); line-height: 1.6; margin-bottom: 10px; }
+  .comprendre p:last-child { margin-bottom: 0; }
+  .comprendre strong { color: var(--text); }
+  .comprendre .k-avant { color: var(--accent); }
+  .comprendre .k-equiv { color: var(--amber); }
+  .comprendre .k-apres { color: var(--violet); }
+
+  footer { text-align: center; margin-top: 2.5rem; font-size: 11px; color: var(--text3); }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <a class="back-link" href="../">← Retour au portail</a>
+
+  <header>
+    <div class="eyebrow">Chimie — Première Spécialité</div>
+    <h1>Simulation d'un <span>titrage colorimétrique</span></h1>
+  </header>
+
+  <!-- Choix de la réaction -->
+  <div class="card">
+    <div class="section-label">Réaction support du titrage</div>
+    <div class="reaction-row">
+      <select id="mode-select" aria-label="Choisir la réaction">
+        <option value="generique">Réaction générique : A + B</option>
+        <option value="permanganate">Exemple réel : Fe²⁺ titré par MnO₄⁻</option>
+      </select>
+      <div class="seg" id="stoichio-seg" role="group" aria-label="Choisir la stœchiométrie">
+        <button data-st="1,1" class="active">A + B</button>
+        <button data-st="1,2">A + 2 B</button>
+        <button data-st="2,1">2 A + B</button>
+      </div>
+    </div>
+    <div class="equation" id="equation"></div>
+    <label class="prod-toggle" id="prod-toggle-wrap">
+      <input type="checkbox" id="prod-check" checked>
+      Faire apparaître les produits formés (<span class="prod-symbol">■</span>) à la place du réactif titré consommé
+    </label>
+  </div>
+
+  <!-- Scène burette + bécher -->
+  <div class="card">
+    <div class="section-label">Montage</div>
+    <div class="scene-wrap">
+      <svg id="scene" viewBox="0 0 460 540" role="img" aria-label="Burette versant le réactif titrant dans un bécher contenant le réactif titré">
+        <!-- Burette -->
+        <g id="burette">
+          <rect x="214" y="16" width="32" height="206" rx="3" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+          <rect id="burette-liquid" x="217" y="20" width="26" height="202" fill="#8b5cf6" opacity="0.85"/>
+          <polygon id="burette-cone" points="214,222 246,222 234,248 226,248" fill="#8b5cf6" opacity="0.85"/>
+          <polygon points="214,222 246,222 234,248 226,248" fill="none" stroke="#94a3b8" stroke-width="2"/>
+          <rect x="220" y="249" width="20" height="8" rx="2" fill="#64748b"/>
+          <rect x="228" y="257" width="4" height="12" fill="#94a3b8"/>
+          <g id="graduations"></g>
+          <g id="level-marker">
+            <polygon points="248,0 256,-5 256,5" fill="var(--accent)"/>
+            <text id="level-text" x="260" y="4" font-size="11" fill="#2563eb" font-weight="600" font-family="Space Grotesk, sans-serif"></text>
+          </g>
+          <text x="160" y="34" font-size="12" fill="#7a96aa" text-anchor="end" font-family="Space Grotesk, sans-serif">Burette</text>
+          <text x="160" y="49" font-size="12" fill="#7c3aed" text-anchor="end" font-weight="600" font-family="Space Grotesk, sans-serif">réactif titrant</text>
+        </g>
+
+        <!-- Gouttes -->
+        <g id="drops"></g>
+
+        <!-- Bécher -->
+        <g id="becher">
+          <path id="becher-liquid" fill="#dbeafe" d=""/>
+          <path id="becher-tint" fill="#8b5cf6" opacity="0" d=""/>
+          <path d="M128,316 L128,494 Q128,512 146,512 L314,512 Q332,512 332,494 L332,316"
+                fill="none" stroke="#94a3b8" stroke-width="3" stroke-linecap="round"/>
+          <text x="360" y="480" font-size="12" fill="#7a96aa" font-family="Space Grotesk, sans-serif">Bécher</text>
+          <text x="360" y="495" font-size="12" fill="#16a34a" font-weight="600" font-family="Space Grotesk, sans-serif">réactif titré</text>
+        </g>
+
+        <!-- Entités chimiques -->
+        <g id="objets"></g>
+      </svg>
+    </div>
+
+    <div class="scene-legend" id="scene-legend"></div>
+    <div class="model-note">Modèle simplifié : chaque symbole représente un même « paquet » de quantité de matière.</div>
+
+    <div class="controls">
+      <button class="btn btn-primary" id="btn-drop">💧 Une goutte</button>
+      <button class="btn" id="btn-pour">▶ Verser en continu</button>
+      <button class="btn" id="btn-reset">↺ Réinitialiser</button>
+    </div>
+
+    <div class="chips">
+      <span class="chip chip-a" id="chip-na"></span>
+      <span class="chip chip-b" id="chip-bversed"></span>
+      <span class="chip chip-b" id="chip-bexcess"></span>
+      <span class="chip" id="chip-v"></span>
+      <span class="chip chip-veq" id="chip-veq"></span>
+    </div>
+
+    <div class="phase-box" id="phase-box"></div>
+    <div class="notice-warn" id="notice-empty">⚠ Burette vide — réinitialise la simulation pour recommencer.</div>
+  </div>
+
+  <!-- Graphique escamotable -->
+  <div class="card">
+    <button class="tableau-toggle" id="graph-toggle" aria-expanded="false">
+      <span class="chevron">▶</span>
+      Graphique — quantités en fonction du volume versé
+    </button>
+    <div class="tableau-body" id="graph-body">
+      <div class="chart-inner"><canvas id="graphCanvas" role="img" aria-label="Quantités de réactifs en fonction du volume de titrant versé"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Comprendre -->
+  <div class="card comprendre">
+    <button class="tableau-toggle" id="comp-toggle" aria-expanded="false">
+      <span class="chevron">▶</span>
+      Comprendre — les trois moments clés du titrage
+    </button>
+    <div class="tableau-body" id="comp-body">
+      <p><strong class="k-avant">Avant l'équivalence :</strong> le réactif titrant versé est le <strong>réactif limitant</strong> — il est entièrement consommé dès qu'il tombe dans le bécher, il ne s'accumule pas. La quantité de réactif titré diminue à chaque ajout.</p>
+      <p><strong class="k-equiv">À l'équivalence :</strong> les réactifs ont été introduits dans les <strong>proportions stœchiométriques</strong> — ils sont tous les deux entièrement consommés. C'est le <strong>changement de réactif limitant</strong>. La relation à l'équivalence s'écrit :</p>
+      <p class="relation-eq">n(réactif titré)<sub>initial</sub> / a &nbsp;=&nbsp; n(réactif titrant)<sub>versé à l'équivalence</sub> / b</p>
+      <p>où <strong>a</strong> est le coefficient stœchiométrique du <strong>réactif titré</strong> et <strong>b</strong> celui du <strong>réactif titrant</strong> dans l'équation de la réaction. Cette relation permet de déterminer la quantité de matière de réactif titré à partir du volume V<sub>éq</sub> versé à l'équivalence.</p>
+      <p><strong class="k-apres">Après l'équivalence :</strong> le réactif titré est épuisé — c'est lui le réactif limitant. Le titrant versé ne réagit plus : il <strong>s'accumule</strong> dans le bécher et la solution se colore durablement. C'est ce changement de couleur persistant qui permet de <strong>repérer l'équivalence</strong> dans un titrage colorimétrique.</p>
+    </div>
+  </div>
+
+  <footer>Simulation pédagogique — aucune donnée collectée</footer>
+
+</div>
+
+<script>
+'use strict';
+
+/* ══════════ Configuration ══════════ */
+const DROP_ML   = 0.5;   // volume d'une goutte (modèle)
+const BURETTE_ML = 20;   // capacité de la burette
+const PX_PER_ML = 10;    // graduation : 10 px par mL
+const SVGNS = 'http://www.w3.org/2000/svg';
+
+const MODES = {
+  generique: {
+    aHtml: 'A', bHtml: 'B',
+    aColor: '#16a34a', bColor: '#7c3aed',
+    stoichioChoice: true,
+    nA0: 16, bPerDrop: 1,
+  },
+  permanganate: {
+    aHtml: 'Fe<sup>2+</sup>', bHtml: 'MnO<sub>4</sub><sup>−</sup>',
+    aColor: '#65a30d', bColor: '#7c3aed',
+    stoichioChoice: false, a: 5, b: 1,
+    nA0: 40, bPerDrop: 1,
+  }
+};
+
+/* ══════════ État ══════════ */
+let mode = 'generique';
+let stoich = [1, 1];          // [a, b] pour le mode générique
+let nA = 0, bVersed = 0, bExcess = 0;
+let V = 0;                    // volume réagi (compteurs)
+let poured = 0;               // volume sorti de la burette (visuel)
+let Veq = null;
+let pouring = false, pourTimer = null;
+let slots = [], freeSlots = [], aObjs = [], bObjs = [];
+let chart = null;
+let resetGen = 0; // invalide les apparitions différées après une réinitialisation
+const PRODUCT_COLOR = '#0e7490';
+
+function cfg() {
+  const m = MODES[mode];
+  const a = m.stoichioChoice ? stoich[0] : m.a;
+  const b = m.stoichioChoice ? stoich[1] : m.b;
+  return { ...m, a, b };
+}
+function fmt(v) { return v.toFixed(1).replace('.', ','); }
+
+/* ══════════ Burette ══════════ */
+function buildGraduations() {
+  const g = document.getElementById('graduations');
+  g.innerHTML = '';
+  for (let k = 0; k <= BURETTE_ML; k++) {
+    const y = 20 + k * PX_PER_ML;
+    const major = k % 5 === 0;
+    const line = document.createElementNS(SVGNS, 'line');
+    line.setAttribute('x1', 214); line.setAttribute('x2', major ? 226 : 221);
+    line.setAttribute('y1', y);   line.setAttribute('y2', y);
+    line.setAttribute('stroke', '#64748b'); line.setAttribute('stroke-width', '1');
+    g.appendChild(line);
+    if (major) {
+      const t = document.createElementNS(SVGNS, 'text');
+      t.setAttribute('x', 208); t.setAttribute('y', y + 3);
+      t.setAttribute('font-size', '9'); t.setAttribute('text-anchor', 'end');
+      t.setAttribute('fill', '#7a96aa'); t.setAttribute('font-family', 'Space Grotesk, sans-serif');
+      t.textContent = k;
+      g.appendChild(t);
+    }
+  }
+}
+
+function updateBurette() {
+  const top = 20 + poured * PX_PER_ML;
+  const liq = document.getElementById('burette-liquid');
+  liq.setAttribute('y', top);
+  liq.setAttribute('height', Math.max(0, 222 - top));
+  document.getElementById('burette-cone').style.display = poured >= BURETTE_ML ? 'none' : '';
+  const marker = document.getElementById('level-marker');
+  marker.setAttribute('transform', `translate(0,${top})`);
+  document.getElementById('level-text').textContent = `V = ${fmt(poured)} mL`;
+}
+
+/* ══════════ Bécher ══════════ */
+function surfaceY() { return 430 - V * 1.2; }
+
+function liquidPath() {
+  const sy = surfaceY();
+  return `M134,${sy} L134,492 Q134,506 148,506 L312,506 Q326,506 326,492 L326,${sy} Z`;
+}
+
+function updateBeaker() {
+  const d = liquidPath();
+  document.getElementById('becher-liquid').setAttribute('d', d);
+  const tint = document.getElementById('becher-tint');
+  tint.setAttribute('d', d);
+  tint.setAttribute('opacity', Math.min(0.55, bExcess * 0.03));
+}
+
+/* ══════════ Entités (symboles) ══════════ */
+function buildSlots() {
+  slots = [];
+  for (let r = 0; r < 5; r++) {
+    for (let c = 0; c < 12; c++) {
+      slots.push({
+        x: 146 + c * 15 + (Math.random() * 6 - 3),
+        y: 442 + r * 13 + (Math.random() * 4 - 2),
+      });
+    }
+  }
+  // mélange
+  for (let i = slots.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [slots[i], slots[j]] = [slots[j], slots[i]];
+  }
+}
+
+function makeCircle(slot, color) {
+  const el = document.createElementNS(SVGNS, 'circle');
+  el.setAttribute('cx', slot.x); el.setAttribute('cy', slot.y);
+  el.setAttribute('r', 6); el.setAttribute('fill', color);
+  el.setAttribute('class', 'obj');
+  return el;
+}
+function makeTriangle(slot, color) {
+  const el = document.createElementNS(SVGNS, 'polygon');
+  const p = [[0, -6.5], [5.8, 4.5], [-5.8, 4.5]]
+    .map(([dx, dy]) => `${slot.x + dx},${slot.y + dy}`).join(' ');
+  el.setAttribute('points', p);
+  el.setAttribute('fill', color);
+  el.setAttribute('class', 'obj');
+  return el;
+}
+function makeSquare(slot, color) {
+  const el = document.createElementNS(SVGNS, 'rect');
+  el.setAttribute('x', slot.x - 5); el.setAttribute('y', slot.y - 5);
+  el.setAttribute('width', 10); el.setAttribute('height', 10);
+  el.setAttribute('rx', 2); el.setAttribute('fill', color);
+  el.setAttribute('class', 'obj');
+  return el;
+}
+
+function showProducts() {
+  return mode === 'generique' && document.getElementById('prod-check').checked;
+}
+
+function placeInitialA() {
+  const c = cfg();
+  const layer = document.getElementById('objets');
+  layer.innerHTML = '';
+  aObjs = []; bObjs = [];
+  freeSlots = slots.slice(c.nA0);
+  for (let i = 0; i < c.nA0; i++) {
+    const el = makeCircle(slots[i], c.aColor);
+    layer.appendChild(el);
+    aObjs.push({ el, slot: slots[i] });
+  }
+}
+
+function consumeA(count) {
+  const spawnProd = showProducts();
+  const layer = document.getElementById('objets');
+  const gen = resetGen;
+  for (let i = 0; i < count && aObjs.length; i++) {
+    const idx = Math.floor(Math.random() * aObjs.length);
+    const { el, slot } = aObjs.splice(idx, 1)[0];
+    el.classList.add('fade');
+    setTimeout(() => el.remove(), 500);
+    if (spawnProd) {
+      // le produit apparaît à la place du réactif consommé
+      setTimeout(() => {
+        if (gen !== resetGen) return;
+        const sq = makeSquare(slot, PRODUCT_COLOR);
+        sq.classList.add('born');
+        layer.appendChild(sq);
+      }, 300);
+    } else {
+      freeSlots.push(slot);
+    }
+  }
+}
+
+function addB(count) {
+  const c = cfg();
+  const layer = document.getElementById('objets');
+  for (let i = 0; i < count; i++) {
+    const slot = freeSlots.pop();
+    if (!slot) return; // plus de place : le compteur reste juste
+    const el = makeTriangle(slot, c.bColor);
+    el.classList.add('born');
+    layer.appendChild(el);
+    bObjs.push({ el, slot });
+  }
+}
+
+function removeB(count) {
+  for (let i = 0; i < count && bObjs.length; i++) {
+    const idx = Math.floor(Math.random() * bObjs.length);
+    const { el, slot } = bObjs.splice(idx, 1)[0];
+    el.classList.add('fade');
+    setTimeout(() => el.remove(), 500);
+    freeSlots.push(slot);
+  }
+}
+
+/* ══════════ Goutte animée ══════════ */
+function pourDrop() {
+  if (poured >= BURETTE_ML) { stopPouring(); return; }
+  poured = Math.min(BURETTE_ML, poured + DROP_ML);
+  updateBurette();
+
+  const c = cfg();
+  const drop = document.createElementNS(SVGNS, 'circle');
+  drop.setAttribute('cx', 230); drop.setAttribute('r', 5);
+  drop.setAttribute('fill', c.bColor);
+  document.getElementById('drops').appendChild(drop);
+
+  const y0 = 272, y1 = surfaceY() - 3, dur = 650, t0 = performance.now();
+  function step(t) {
+    const k = Math.min(1, (t - t0) / dur);
+    drop.setAttribute('cy', y0 + (y1 - y0) * k * k); // chute accélérée
+    if (k < 1) requestAnimationFrame(step);
+    else { drop.remove(); land(); }
+  }
+  requestAnimationFrame(step);
+}
+
+/* ══════════ Chimie d'une goutte ══════════ */
+function land() {
+  const c = cfg();
+  V += DROP_ML;
+  bVersed += c.bPerDrop;
+  // le B non réagi des gouttes précédentes reste disponible (cas A + 2B)
+  let pool = bExcess + c.bPerDrop;
+  const bBefore = bExcess;
+  let consumed = 0;
+  while (nA >= c.a && pool >= c.b) { nA -= c.a; pool -= c.b; consumed += c.a; }
+  bExcess = pool;
+  if (consumed) consumeA(consumed);
+  if (bExcess > bBefore) addB(bExcess - bBefore);
+  else if (bExcess < bBefore) removeB(bBefore - bExcess);
+  if (nA === 0 && Veq === null) Veq = V;
+  pushChartPoint();
+  updateUI();
+}
+
+/* ══════════ Verser en continu ══════════ */
+function startPouring() {
+  if (poured >= BURETTE_ML) return;
+  pouring = true;
+  const btn = document.getElementById('btn-pour');
+  btn.textContent = '⏸ Arrêter';
+  btn.classList.add('btn-pouring');
+  pourDrop();
+  pourTimer = setInterval(pourDrop, 700);
+}
+function stopPouring() {
+  pouring = false;
+  clearInterval(pourTimer);
+  const btn = document.getElementById('btn-pour');
+  btn.textContent = '▶ Verser en continu';
+  btn.classList.remove('btn-pouring');
+}
+
+/* ══════════ Interface ══════════ */
+function phase() {
+  if (V === 0) return 'initial';
+  if (nA > 0) return 'avant';
+  if (bExcess === 0) return 'equiv';
+  return 'apres';
+}
+
+function updateUI() {
+  const c = cfg();
+  document.getElementById('chip-na').innerHTML = `● ${c.aHtml} restant : <strong>${nA}</strong>`;
+  document.getElementById('chip-bversed').innerHTML = `▲ ${c.bHtml} versé : <strong>${bVersed}</strong>`;
+  document.getElementById('chip-bexcess').innerHTML = `▲ ${c.bHtml} en excès : <strong>${bExcess}</strong>`;
+  document.getElementById('chip-v').innerHTML = `V versé : <strong>${fmt(V)} mL</strong>`;
+
+  const chipVeq = document.getElementById('chip-veq');
+  if (Veq !== null) {
+    chipVeq.style.display = 'inline-block';
+    chipVeq.innerHTML = `V<sub>éq</sub> = <strong>${fmt(Veq)} mL</strong>`;
+  } else chipVeq.style.display = 'none';
+
+  const box = document.getElementById('phase-box');
+  const ph = phase();
+  box.className = 'phase-box' + (ph === 'avant' ? ' ph-avant' : ph === 'equiv' ? ' ph-equiv' : ph === 'apres' ? ' ph-apres' : '');
+  const A = c.aHtml, B = c.bHtml;
+  if (ph === 'initial') {
+    box.innerHTML = `Le bécher contient le réactif titré ${A} (● verts). Verse le titrant ${B} goutte à goutte ou en continu, et observe ce qui se passe…`;
+  } else if (ph === 'avant') {
+    box.innerHTML = `<span class="ph-title">Avant l'équivalence</span> — chaque goutte de ${B} est <strong>aussitôt consommée</strong> : le titrant est le réactif limitant, il ne s'accumule pas. La quantité de ${A} diminue.`;
+  } else if (ph === 'equiv') {
+    box.innerHTML = `<span class="ph-title">⚖ Équivalence !</span> — les deux réactifs sont exactement épuisés : le mélange est <strong>stœchiométrique</strong>. V<sub>éq</sub> = <strong>${fmt(Veq)} mL</strong>. Continue à verser pour voir ce qui se passe au-delà…`;
+  } else {
+    box.innerHTML = `<span class="ph-title">Après l'équivalence</span> — ${A} est épuisé : <strong>c'est lui le réactif limitant</strong>. Le titrant ${B} ne réagit plus, il <strong>s'accumule</strong> dans le bécher et colore la solution.`;
+  }
+
+  const empty = poured >= BURETTE_ML;
+  document.getElementById('btn-drop').disabled = empty;
+  document.getElementById('btn-pour').disabled = empty;
+  document.getElementById('notice-empty').style.display = empty ? 'block' : 'none';
+  if (empty) stopPouring();
+
+  updateBeaker();
+  updateLegendAndEquation();
+}
+
+function updateLegendAndEquation() {
+  const c = cfg();
+  document.getElementById('scene-legend').innerHTML =
+    `<span><span class="leg-a">●</span> ${c.aHtml} — réactif titré (bécher)</span>` +
+    `<span><span class="leg-b">▲</span> ${c.bHtml} — réactif titrant (burette)</span>` +
+    (showProducts() ? `<span><span class="prod-symbol">■</span> produit formé</span>` : '');
+
+  const eq = document.getElementById('equation');
+  if (mode === 'permanganate') {
+    eq.innerHTML = `<span class="sp-b">MnO<sub>4</sub><sup>−</sup></span>(aq) + 5 <span class="sp-a">Fe<sup>2+</sup></span>(aq) + 8 H<sup>+</sup>(aq) → Mn<sup>2+</sup>(aq) + 5 Fe<sup>3+</sup>(aq) + 4 H<sub>2</sub>O(l)`;
+  } else {
+    const ca = c.a > 1 ? c.a + ' ' : '';
+    const cb = c.b > 1 ? c.b + ' ' : '';
+    eq.innerHTML = `${ca}<span class="sp-a">A</span>(aq) + ${cb}<span class="sp-b">B</span>(aq) → produits`;
+  }
+  document.getElementById('stoichio-seg').style.display = c.stoichioChoice ? '' : 'none';
+  document.getElementById('prod-toggle-wrap').style.display = mode === 'generique' ? '' : 'none';
+}
+
+/* ══════════ Graphique ══════════ */
+const veqLinePlugin = {
+  id: 'veqLine',
+  afterDatasetsDraw(ch) {
+    if (Veq === null) return;
+    const x = ch.scales.x.getPixelForValue(Veq);
+    const { top, bottom } = ch.chartArea;
+    const ctx = ch.ctx;
+    ctx.save();
+    ctx.strokeStyle = '#d97706';
+    ctx.setLineDash([5, 4]);
+    ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(x, top); ctx.lineTo(x, bottom); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = '#d97706';
+    ctx.font = '600 11px "Space Grotesk", sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Véq', x, top - 4);
+    ctx.restore();
+  }
+};
+
+function initChart() {
+  const c = cfg();
+  Chart.defaults.font.family = '"Space Grotesk", system-ui, sans-serif';
+  chart = new Chart(document.getElementById('graphCanvas'), {
+    type: 'line',
+    data: { datasets: [
+      { label: '', data: [], borderColor: c.aColor, backgroundColor: c.aColor, pointRadius: 2.5, borderWidth: 2, tension: 0 },
+      { label: '', data: [], borderColor: c.bColor, backgroundColor: c.bColor, pointRadius: 2.5, borderWidth: 2, tension: 0 },
+    ]},
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      scales: {
+        x: { type: 'linear', min: 0, suggestedMax: 10,
+             title: { display: true, text: 'Volume de titrant versé (mL)' } },
+        y: { min: 0, title: { display: true, text: 'Quantité (nombre de symboles)' } },
+      },
+      plugins: { legend: { labels: { boxWidth: 12, boxHeight: 12 } } },
+    },
+    plugins: [veqLinePlugin],
+  });
+}
+
+function resetChart() {
+  const c = cfg();
+  const plain = h => h.replace(/<[^>]+>/g, '');
+  chart.data.datasets[0].label = `${plain(c.aHtml)} restant (titré)`;
+  chart.data.datasets[1].label = `${plain(c.bHtml)} en excès (titrant)`;
+  chart.data.datasets[0].borderColor = chart.data.datasets[0].backgroundColor = c.aColor;
+  chart.data.datasets[1].borderColor = chart.data.datasets[1].backgroundColor = c.bColor;
+  chart.data.datasets[0].data = [{ x: 0, y: c.nA0 }];
+  chart.data.datasets[1].data = [{ x: 0, y: 0 }];
+  chart.options.scales.y.suggestedMax = c.nA0;
+  chart.update();
+}
+
+function pushChartPoint() {
+  chart.data.datasets[0].data.push({ x: V, y: nA });
+  chart.data.datasets[1].data.push({ x: V, y: bExcess });
+  chart.update();
+}
+
+/* ══════════ Réinitialisation ══════════ */
+function resetSim() {
+  stopPouring();
+  resetGen++;
+  document.getElementById('drops').innerHTML = '';
+  const c = cfg();
+  nA = c.nA0; bVersed = 0; bExcess = 0; V = 0; poured = 0; Veq = null;
+  buildSlots();
+  placeInitialA();
+  updateBurette();
+  resetChart();
+  updateUI();
+}
+
+/* ══════════ Écouteurs ══════════ */
+document.getElementById('btn-drop').addEventListener('click', pourDrop);
+document.getElementById('btn-pour').addEventListener('click', () => pouring ? stopPouring() : startPouring());
+document.getElementById('btn-reset').addEventListener('click', resetSim);
+document.getElementById('prod-check').addEventListener('change', resetSim);
+
+document.getElementById('mode-select').addEventListener('change', e => {
+  mode = e.target.value;
+  resetSim();
+});
+
+document.getElementById('stoichio-seg').addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if (!btn) return;
+  document.querySelectorAll('#stoichio-seg button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  stoich = btn.dataset.st.split(',').map(Number);
+  resetSim();
+});
+
+function setupToggle(btnId, bodyId, onOpen) {
+  const btn = document.getElementById(btnId);
+  const body = document.getElementById(bodyId);
+  btn.addEventListener('click', () => {
+    const open = !body.classList.contains('open');
+    btn.classList.toggle('open', open);
+    body.classList.toggle('open', open);
+    btn.setAttribute('aria-expanded', open);
+    if (open && onOpen) onOpen();
+  });
+}
+setupToggle('graph-toggle', 'graph-body', () => { chart.resize(); chart.update(); });
+setupToggle('comp-toggle', 'comp-body');
+
+/* ══════════ Démarrage ══════════ */
+buildGraduations();
+initChart();
+resetSim();
+</script>
+</body>
+</html>
