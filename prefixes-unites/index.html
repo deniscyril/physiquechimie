@@ -664,9 +664,10 @@ const PHASE3 = [
 function parseAnswer(raw) {
   let s = raw.trim();
   if (!s) return null;
-  // Superscripts → ASCII
+  // Superscripts → ASCII ("10⁻³" → "10^-3")
   const sup = { '⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5',
                 '⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-','⁺':'+' };
+  s = s.replace(/(10)([⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]+)/g, '$1^$2');
   s = s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]/g, c => sup[c]);
   // Espaces (y compris séparateurs de milliers)
   s = s.replace(/[\s  ]/g, '');

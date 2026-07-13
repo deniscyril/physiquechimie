@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proportionnalité de deux grandeurs</title>
+<style>
+:root {
+  --bg:        #f3f4fd;
+  --card:      #ffffff;
+  --border:    #dde0f0;
+  --text:      #1e1e2e;
+  --muted:     #6b7280;
+  --primary:   #5448c8;
+  --primary-d: #3e34a8;
+  --p1:        #7c3aed;
+  --p2:        #0891b2;
+  --lvl2:      #059669;
+  --lvl1:      #d97706;
+  --lvlT:      #be185d;
+  --amber:     #d97706;
+  --amber-bg:  #fffbeb;
+  --amber-bd:  #fcd34d;
+  --alg:       #4f6dc8;
+  --alg-bg:    #eef1ff;
+  --alg-bd:    #a5b4fc;
+  --ok:        #16a34a;
+  --ok-bg:     #dcfce7;
+  --ok-bd:     #86efac;
+  --err:       #dc2626;
+  --err-bg:    #fef2f2;
+  --err-bd:    #fca5a5;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Georgia', serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.6;
+}
+#app {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: normal;
+  color: var(--text);
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 10px;
+  margin-bottom: 28px;
+}
+
+.phase-label {
+  display: inline-block;
+  color: white;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  font-family: sans-serif;
+  font-weight: 600;
+}
+.p1-label   { background: var(--p1); }
+.p2-label   { background: var(--p2); }
+.lvl2-label { background: var(--lvl2); }
+.lvl1-label { background: var(--lvl1); }
+.lvlT-label { background: var(--lvlT); }
+
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-family: inherit;
+  padding: 6px 14px;
+  cursor: pointer;
+  margin-bottom: 22px;
+  text-decoration: none;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.btn-back:hover { background: #e8eaff; border-color: var(--primary); color: var(--primary); }
+
+/* ── HOME ── */
+.home-title {
+  font-size: 1.7rem;
+  font-weight: bold;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+.home-subtitle {
+  color: var(--muted);
+  font-size: 0.97rem;
+  margin-bottom: 32px;
+  max-width: 620px;
+  line-height: 1.65;
+}
+.home-section {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  font-family: sans-serif;
+  color: var(--muted);
+  margin: 28px 0 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.phase-cards { display: flex; flex-direction: column; gap: 14px; }
+.phase-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, border-color 0.15s, transform 0.1s;
+}
+.phase-card:hover { box-shadow: 0 4px 16px rgba(84,72,200,0.13); transform: translateY(-1px); }
+.phase-card.p1:hover   { border-color: var(--p1); }
+.phase-card.p2:hover   { border-color: var(--p2); }
+.phase-card.lvl2:hover { border-color: var(--lvl2); }
+.phase-card.lvl1:hover { border-color: var(--lvl1); }
+.phase-card.lvlT:hover { border-color: var(--lvlT); }
+.phase-card-num {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 700;
+  margin-bottom: 4px;
+  font-family: sans-serif;
+}
+.p1 .phase-card-num   { color: var(--p1); }
+.p2 .phase-card-num   { color: var(--p2); }
+.lvl2 .phase-card-num { color: var(--lvl2); }
+.lvl1 .phase-card-num { color: var(--lvl1); }
+.lvlT .phase-card-num { color: var(--lvlT); }
+.phase-card-title { font-size: 1.05rem; font-weight: bold; color: var(--text); margin-bottom: 3px; }
+.phase-card-desc  { font-size: 0.87rem; color: var(--muted); }
+.phase-card-arrow { font-size: 1.3rem; color: #ccc; flex-shrink: 0; }
+.phase-card:hover .phase-card-arrow { color: var(--primary); }
+
+/* ── MODELAGE ── */
+.technique {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 28px;
+  overflow: hidden;
+}
+.technique-header {
+  background: linear-gradient(135deg, #ede9fe 0%, #dbeafe 100%);
+  padding: 12px 18px;
+  font-weight: bold;
+  font-size: 1rem;
+  border-bottom: 1.5px solid var(--border);
+  color: var(--primary-d);
+}
+.technique-body { padding: 18px; }
+
+.objectif-line {
+  background: #f0f0ff;
+  border: 1.5px solid #c4b5fd;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-size: 0.97rem;
+  color: #3b2b8a;
+}
+.objectif-line strong { color: var(--p1); }
+
+.example-header {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: sans-serif;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 10px;
+  margin-top: 18px;
+}
+.example-q {
+  font-size: 1.05rem;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+.example-q strong { color: var(--primary); }
+
+.bloc {
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.bloc:last-child { margin-bottom: 0; }
+.bloc-alg    { background: var(--alg-bg);   border-left: 4px solid var(--alg-bd); }
+.bloc-result { background: var(--amber-bg); border-left: 4px solid var(--amber-bd); }
+
+.bloc-title {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-family: sans-serif;
+}
+.bloc-alg    .bloc-title { color: var(--alg); }
+.bloc-result .bloc-title { color: var(--amber); }
+
+.step { display: flex; gap: 8px; margin-bottom: 5px; align-items: baseline; line-height: 1.5; }
+.step-arrow { color: var(--muted); flex-shrink: 0; font-size: 0.9rem; margin-top: 1px; }
+.step-num {
+  width: 20px; height: 20px;
+  background: var(--alg);
+  color: white;
+  border-radius: 50%;
+  font-size: 0.7rem;
+  font-family: sans-serif;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.formula-box {
+  font-size: 1.1rem;
+  font-weight: bold;
+  background: #fff;
+  border: 1.5px solid var(--amber-bd);
+  border-radius: 6px;
+  padding: 6px 14px;
+  display: inline-block;
+  margin-top: 6px;
+  color: #92400e;
+}
+
+.note-box {
+  background: #f0f0ff;
+  border: 1.5px solid #c4b5fd;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 14px;
+  font-size: 0.93rem;
+  color: #3b2b8a;
+}
+
+/* ── TABLEAU DE PROPORTIONNALITÉ ── */
+.prop-table-wrap { overflow-x: auto; margin-bottom: 14px; }
+.prop-table {
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+}
+.prop-table th {
+  background: #f0f0ff;
+  font-family: sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--primary-d);
+  text-align: left;
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.prop-table td {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  text-align: center;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+/* ── GRAPHIQUES ── */
+.graph-wrap { margin-bottom: 14px; }
+.graph {
+  display: block;
+  width: 100%;
+  max-width: 430px;
+  height: auto;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+}
+.graph .ax     { font: 11px sans-serif; fill: var(--muted); }
+.graph .ax-t   { font: 700 11.5px sans-serif; fill: var(--text); }
+.graph .pt-lbl { font: 700 12.5px sans-serif; fill: #92400e; }
+.graph-row { display: flex; gap: 14px; flex-wrap: wrap; }
+.graph-row > div { flex: 1 1 260px; min-width: 240px; }
+.graph-caption {
+  font-size: 0.85rem;
+  font-family: sans-serif;
+  color: var(--muted);
+  margin-top: 6px;
+  line-height: 1.45;
+}
+.graph-caption strong.oui { color: var(--ok); }
+.graph-caption strong.non { color: var(--err); }
+
+/* ── BOUTONS ── */
+.btn {
+  display: inline-block;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-family: inherit;
+  font-weight: 600;
+  transition: background 0.15s, transform 0.1s;
+}
+.btn:hover { transform: translateY(-1px); }
+.btn:disabled { opacity: 0.6; cursor: default; transform: none; }
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: var(--primary-d); }
+.btn-p2 { background: var(--p2); color: white; }
+.btn-p2:hover { background: #0e7490; }
+.btn-lvl2 { background: var(--lvl2); color: white; }
+.btn-lvl2:hover { background: #047857; }
+.btn-lvl1 { background: var(--lvl1); color: white; }
+.btn-lvl1:hover { background: #b45309; }
+.btn-lvlT { background: var(--lvlT); color: white; }
+.btn-lvlT:hover { background: #9d174d; }
+.btn-hint {
+  background: var(--amber-bg);
+  color: #92400e;
+  border: 1.5px solid var(--amber-bd);
+  font-size: 0.88rem;
+  padding: 7px 16px;
+  font-weight: normal;
+}
+.btn-hint:hover { background: #fef3c7; }
+.btn-outline {
+  background: none;
+  border: 1.5px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 9px 20px;
+}
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); background: #eef0ff; }
+
+.nav-bottom { margin-top: 32px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+.page-intro {
+  background: #f0fff8;
+  border: 1.5px solid #6ee7b7;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  font-size: 0.93rem;
+  color: #064e3b;
+  font-family: sans-serif;
+}
+
+/* ── EXERCICES ── */
+.exercise-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 18px;
+  transition: box-shadow 0.15s;
+}
+.exercise-card:focus-within { box-shadow: 0 0 0 3px rgba(84,72,200,0.12); }
+.exercise-num {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--muted);
+  margin-bottom: 4px;
+  font-family: sans-serif;
+  font-weight: 700;
+}
+.contexte-tag {
+  display: inline-block;
+  font-size: 0.73rem;
+  font-family: sans-serif;
+  color: var(--muted);
+  background: #f3f4fd;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1px 8px;
+  margin-bottom: 10px;
+}
+.exo-intro { font-size: 0.97rem; margin-bottom: 12px; color: var(--text); }
+.exercise-question { font-size: 1.05rem; margin-bottom: 10px; line-height: 1.7; }
+.exercise-question strong { color: var(--primary); }
+
+.format-hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-family: sans-serif;
+  margin-bottom: 10px;
+}
+.format-hint code {
+  background: #f3f4fd;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 0.78rem;
+  color: var(--primary);
+  font-family: 'Courier New', monospace;
+}
+
+.input-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.answer-input {
+  font-size: 16px;
+  font-family: 'Courier New', monospace;
+  padding: 8px 12px;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  width: 190px;
+  outline: none;
+  background: #fafbff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.answer-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(84,72,200,0.12); }
+.answer-input.correct   { border-color: var(--ok);  background: var(--ok-bg); }
+.answer-input.incorrect { border-color: var(--err); background: var(--err-bg); }
+.answer-input:disabled  { opacity: 0.7; }
+.unit-suffix { font-size: 0.98rem; font-weight: bold; color: var(--text); }
+
+/* QCM */
+.mcq-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+.mcq-btn {
+  text-align: left;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: #fafbff;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.95rem;
+  color: var(--text);
+  transition: border-color 0.12s, background 0.12s;
+}
+.mcq-btn:hover:not(:disabled) { border-color: var(--primary); background: #eef0ff; }
+.mcq-btn:disabled { cursor: default; }
+.mcq-btn.correct   { border-color: var(--ok);  background: var(--ok-bg); }
+.mcq-btn.incorrect { border-color: var(--err); background: var(--err-bg); }
+
+.hint-box {
+  background: var(--amber-bg);
+  border: 1.5px solid var(--amber-bd);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  font-size: 0.93rem;
+  color: #78350f;
+  display: none;
+}
+.hint-box.visible { display: block; }
+
+.feedback-box {
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-top: 8px;
+  font-size: 0.93rem;
+  display: none;
+}
+.feedback-box.visible { display: block; }
+.feedback-ok  { background: var(--ok-bg);  border: 1.5px solid var(--ok-bd);  color: #14532d; }
+.feedback-err { background: var(--err-bg); border: 1.5px solid var(--err-bd); color: #7f1d1d; }
+
+.corr-steps { margin-top: 10px; font-size: 0.92rem; }
+.corr-steps .step { margin-bottom: 4px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// UTILITAIRES
+// ═══════════════════════════════════════════════════════
+
+// Affiche une valeur avec virgule française
+function fv(v) {
+  return v.toString().replace('.', ',');
+}
+
+function sup(n) { return `<sup>${n}</sup>`; }
+
+function parseAnswer(raw) {
+  let s = raw.trim();
+  if (!s) return null;
+  // Superscripts → ASCII ("10⁻³⁴" → "10^-34")
+  const supMap = { '⁰':'0','¹':'1','²':'2','³':'3','⁴':'4','⁵':'5',
+                   '⁶':'6','⁷':'7','⁸':'8','⁹':'9','⁻':'-','⁺':'+' };
+  s = s.replace(/(10)([⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]+)/g, '$1^$2');
+  s = s.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹⁻⁺]/g, c => supMap[c]);
+  // Espaces (y compris séparateurs de milliers)
+  s = s.replace(/[\s  ]/g, '');
+  // Virgule française → point
+  s = s.replace(',', '.');
+  // Signes de multiplication → *
+  s = s.replace(/[×·]/g, '*');
+  // "3.10^-2" (notation française) → "3*10^-2"
+  s = s.replace(/(\d)\.(10\^)/g, '$1*$2');
+  // Forme 3*10^-2
+  const m = s.match(/^(-?[\d.]+)\*10\^([+-]?\d+)$/);
+  if (m) return parseFloat(m[1]) * Math.pow(10, parseInt(m[2]));
+  // Nombre simple ou notation e
+  const n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+
+function isCorrect(parsed, expected, tol) {
+  if (parsed === null || !isFinite(parsed)) return false;
+  if (expected === 0) return Math.abs(parsed) < 1e-15;
+  return Math.abs((parsed - expected) / expected) <= tol;
+}
+
+// ═══════════════════════════════════════════════════════
+// GRAPHIQUES SVG
+// ═══════════════════════════════════════════════════════
+// g : { xmax, xstep, ymax, ystep, xlabel, ylabel,
+//       slope?, intercept?, curve? (a : y = a·x²),
+//       points? [[x,y]], readPoint? [x,y] }
+
+function graphSVG(g) {
+  const W = 420, H = 320;
+  const ml = 54, mr = 18, mt = 26, mb = 44;
+  const pw = W - ml - mr, ph = H - mt - mb;
+  const X = x => ml + x / g.xmax * pw;
+  const Y = y => mt + ph - y / g.ymax * ph;
+  const flab = v => fv(parseFloat(v.toFixed(6)));
+  let s = '';
+
+  // Grille verticale + graduations x
+  const nx = Math.round(g.xmax / g.xstep);
+  for (let i = 0; i <= nx; i++) {
+    const x = i * g.xstep;
+    s += `<line x1="${X(x)}" y1="${Y(0)}" x2="${X(x)}" y2="${Y(g.ymax)}" stroke="${i === 0 ? '#9ca3af' : '#e8e8f2'}" stroke-width="${i === 0 ? 1.5 : 1}"/>`;
+    s += `<text x="${X(x)}" y="${Y(0) + 16}" text-anchor="middle" class="ax">${flab(x)}</text>`;
+  }
+  // Grille horizontale + graduations y
+  const ny = Math.round(g.ymax / g.ystep);
+  for (let i = 0; i <= ny; i++) {
+    const y = i * g.ystep;
+    s += `<line x1="${X(0)}" y1="${Y(y)}" x2="${X(g.xmax)}" y2="${Y(y)}" stroke="${i === 0 ? '#9ca3af' : '#e8e8f2'}" stroke-width="${i === 0 ? 1.5 : 1}"/>`;
+    s += `<text x="${X(0) - 7}" y="${Y(y) + 4}" text-anchor="end" class="ax">${flab(y)}</text>`;
+  }
+
+  // Droite y = kx + b
+  if (g.slope !== undefined) {
+    const b = g.intercept || 0;
+    const xEnd = Math.min(g.xmax, (g.ymax - b) / g.slope);
+    s += `<line x1="${X(0)}" y1="${Y(b)}" x2="${X(xEnd)}" y2="${Y(b + g.slope * xEnd)}" stroke="#5448c8" stroke-width="2.5"/>`;
+  }
+
+  // Courbe y = a·x²
+  if (g.curve) {
+    const a = g.curve.a;
+    let d = `M ${X(0)} ${Y(0)}`;
+    for (let i = 1; i <= 60; i++) {
+      const x = i * g.xmax / 60;
+      const y = a * x * x;
+      if (y > g.ymax + 1e-9) break;
+      d += ` L ${X(x).toFixed(1)} ${Y(y).toFixed(1)}`;
+    }
+    s += `<path d="${d}" fill="none" stroke="#5448c8" stroke-width="2.5"/>`;
+  }
+
+  // Points de mesure
+  (g.points || []).forEach(([x, y]) => {
+    s += `<circle cx="${X(x)}" cy="${Y(y)}" r="4.5" fill="#5448c8" stroke="#fff" stroke-width="1.5"/>`;
+  });
+
+  // Point de lecture avec pointillés
+  if (g.readPoint) {
+    const [px, py] = g.readPoint;
+    s += `<line x1="${X(px)}" y1="${Y(py)}" x2="${X(px)}" y2="${Y(0)}" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+    s += `<line x1="${X(px)}" y1="${Y(py)}" x2="${X(0)}" y2="${Y(py)}" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+    s += `<circle cx="${X(px)}" cy="${Y(py)}" r="5.5" fill="#d97706" stroke="#fff" stroke-width="1.5"/>`;
+    s += `<text x="${X(px) - 9}" y="${Y(py) - 9}" text-anchor="end" class="pt-lbl">A (${fv(px)} ; ${fv(py)})</text>`;
+  }
+
+  // Titres d'axes
+  s += `<text x="${W - 6}" y="${H - 6}" text-anchor="end" class="ax-t">${g.xlabel}</text>`;
+  s += `<text x="${ml}" y="14" text-anchor="start" class="ax-t">${g.ylabel}</text>`;
+
+  return `<svg viewBox="0 0 ${W} ${H}" class="graph" role="img" aria-label="Graphique : ${g.ylabel} en fonction de ${g.xlabel}">${s}</svg>`;
+}
+
+function tableHTML(t) {
+  return `
+  <div class="prop-table-wrap">
+    <table class="prop-table">
+      ${t.rows.map(r => `<tr><th>${r.label}</th>${r.vals.map(v => `<td>${v}</td>`).join('')}</tr>`).join('')}
+    </table>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// EXERCICES — DONNÉES
+// ═══════════════════════════════════════════════════════
+// kind 'num' : réponse numérique (answer, tol, unit, fmt = réponse affichée)
+// kind 'mcq' : QCM (choices, correct)
+// corr : étapes de correction (tableau de chaînes HTML)
+
+const FORMAT_HINT_STD = `Formats acceptés : <code>2,5</code> ou <code>3*10^-2</code> ou <code>3e-2</code>`;
+
+const PHASE2_EXOS = [
+  {
+    tag: 'Reconnaître — tableau',
+    kind: 'mcq',
+    table: { rows: [
+      { label: 'x', vals: ['2', '5', '8'] },
+      { label: 'y', vals: ['5', '12,5', '20'] },
+    ]},
+    q: `Les grandeurs <strong>x</strong> et <strong>y</strong> sont-elles proportionnelles ?`,
+    choices: ['Oui, elles sont proportionnelles', 'Non, elles ne sont pas proportionnelles'],
+    correct: 0,
+    hint: `Calcule le rapport y/x pour chaque colonne du tableau. Obtiens-tu toujours le même nombre ?`,
+    corr: [
+      `On calcule le rapport y/x pour chaque colonne :`,
+      `5 / 2 = <strong>2,5</strong> &nbsp;·&nbsp; 12,5 / 5 = <strong>2,5</strong> &nbsp;·&nbsp; 20 / 8 = <strong>2,5</strong>`,
+      `Le rapport est constant → x et y sont <strong>proportionnelles</strong>, avec k = 2,5.`,
+    ],
+  },
+  {
+    tag: 'Reconnaître — tableau',
+    kind: 'mcq',
+    table: { rows: [
+      { label: 'x', vals: ['1', '2', '4'] },
+      { label: 'y', vals: ['3', '5', '9'] },
+    ]},
+    q: `Les grandeurs <strong>x</strong> et <strong>y</strong> sont-elles proportionnelles ?`,
+    choices: ['Oui, elles sont proportionnelles', 'Non, elles ne sont pas proportionnelles'],
+    correct: 1,
+    hint: `Calcule le rapport y/x pour chaque colonne. Il suffit d'un seul rapport différent pour conclure.`,
+    corr: [
+      `On calcule le rapport y/x pour chaque colonne :`,
+      `3 / 1 = <strong>3</strong> &nbsp;·&nbsp; 5 / 2 = <strong>2,5</strong> &nbsp;·&nbsp; 9 / 4 = <strong>2,25</strong>`,
+      `Les rapports ne sont pas tous égaux → x et y ne sont <strong>pas proportionnelles</strong>.`,
+    ],
+  },
+  {
+    tag: 'Coefficient — tableau',
+    kind: 'num',
+    table: { rows: [
+      { label: 'x', vals: ['4', '10', '14'] },
+      { label: 'y', vals: ['10', '25', '35'] },
+    ]},
+    q: `Les grandeurs x et y sont proportionnelles. Déterminer le <strong>coefficient de proportionnalité k</strong> tel que y = k × x.`,
+    answer: 2.5, tol: 0.001, unit: '', fmt: 'k = 2,5',
+    hint: `k = y/x : choisis n'importe quelle colonne du tableau et divise y par x.`,
+    corr: [
+      `k = y / x, avec n'importe quelle colonne du tableau.`,
+      `Par exemple : k = 10 / 4 = <strong>2,5</strong>`,
+      `Vérification : 25 / 10 = 2,5 et 35 / 14 = 2,5 ✓`,
+    ],
+  },
+  {
+    tag: 'Reconnaître — graphique',
+    kind: 'mcq',
+    graph: { xmax: 6, xstep: 1, ymax: 12, ystep: 2, xlabel: 'x', ylabel: 'y', slope: 1.5, intercept: 3 },
+    q: `Ce graphique représente-t-il une situation de <strong>proportionnalité</strong> ?`,
+    choices: ['Oui : les points sont alignés, c\'est donc une proportionnalité', 'Non : ce n\'est pas une proportionnalité'],
+    correct: 1,
+    hint: `Être aligné ne suffit pas… Regarde où la droite coupe l'axe vertical.`,
+    corr: [
+      `La représentation est bien une droite, mais elle <strong>ne passe pas par l'origine</strong> : quand x = 0, y = 3 (et non 0).`,
+      `Il faut <strong>les deux conditions</strong> : points alignés <em>et</em> droite passant par l'origine.`,
+      `Ce n'est donc <strong>pas</strong> une proportionnalité (c'est une relation affine : y = 1,5x + 3).`,
+    ],
+  },
+  {
+    tag: 'Coefficient directeur — graphique',
+    kind: 'num',
+    graph: { xmax: 10, xstep: 1, ymax: 8, ystep: 1, xlabel: 'x', ylabel: 'y', slope: 0.6 },
+    q: `La droite passe par l'origine. Déterminer son <strong>coefficient directeur k</strong>.`,
+    answer: 0.6, tol: 0.07, unit: '', fmt: 'k = 0,6',
+    hint: `Choisis toi-même un point de la droite bien lisible sur le quadrillage, le plus loin possible de l'origine, puis calcule k = y / x.`,
+    corr: [
+      `On choisit un point de la droite dont les coordonnées se lisent exactement sur le quadrillage : par exemple (10 ; 6), ou (5 ; 3).`,
+      `k = y / x = 6 / 10 = <strong>0,6</strong>`,
+      `L'équation de la droite est donc y = 0,6 × x.`,
+    ],
+  },
+  {
+    tag: 'Utiliser le coefficient',
+    kind: 'num',
+    q: `Deux grandeurs x et y sont proportionnelles, avec un coefficient <strong>k = 3,2</strong>. Calculer la valeur de <strong>y</strong> lorsque <strong>x = 15</strong>.`,
+    answer: 48, tol: 0.001, unit: '', fmt: 'y = 48',
+    hint: `Si y = k × x, il suffit de remplacer k et x par leurs valeurs.`,
+    corr: [
+      `y = k × x`,
+      `y = 3,2 × 15 = <strong>48</strong>`,
+    ],
+  },
+  {
+    tag: 'Utiliser le coefficient — sens inverse',
+    kind: 'num',
+    q: `Deux grandeurs x et y sont proportionnelles, avec un coefficient <strong>k = 4,5</strong>. Calculer la valeur de <strong>x</strong> lorsque <strong>y = 36</strong>.`,
+    answer: 8, tol: 0.001, unit: '', fmt: 'x = 8',
+    hint: `y = k × x, donc x = y / k (on isole x en divisant par k).`,
+    corr: [
+      `y = k × x, donc en isolant x : x = y / k`,
+      `x = 36 / 4,5 = <strong>8</strong>`,
+      `Vérification : 4,5 × 8 = 36 ✓`,
+    ],
+  },
+];
+
+// ─── SECONDE ────────────────────────────────────────────
+const SECONDE_EXOS = [
+  {
+    tag: 'Chimie — Masse volumique',
+    kind: 'num',
+    intro: `On mesure au laboratoire la masse de différents volumes d'<strong>éthanol</strong> :`,
+    table: { rows: [
+      { label: 'V (mL)', vals: ['10', '25', '50'] },
+      { label: 'm (g)', vals: ['7,9', '19,75', '39,5'] },
+    ]},
+    q: `La masse m est proportionnelle au volume V. Déterminer le coefficient de proportionnalité. Quelle grandeur physique reconnais-tu ?`,
+    answer: 0.79, tol: 0.01, unit: 'g/mL', fmt: 'k = 0,79 g/mL',
+    hint: `k = m / V, avec n'importe quelle colonne. La grandeur « masse ÷ volume » a un nom bien connu…`,
+    corr: [
+      `k = m / V = 7,9 / 10 = <strong>0,79 g/mL</strong> (idem avec les autres colonnes : 19,75/25 = 0,79 ; 39,5/50 = 0,79)`,
+      `Ce coefficient est la <strong>masse volumique</strong> de l'éthanol : ρ = 0,79 g/mL.`,
+      `La relation m = ρ × V est une proportionnalité car ρ est constante pour un liquide donné.`,
+    ],
+  },
+  {
+    tag: 'Chimie — Concentration en masse',
+    kind: 'num',
+    intro: `On prépare des solutions sucrées de même concentration. Le graphique donne la masse de sucre dissous en fonction du volume de solution :`,
+    graph: { xmax: 2, xstep: 0.5, ymax: 50, ystep: 10, xlabel: 'V (L)', ylabel: 'm dissoute (g)', slope: 25 },
+    q: `Déterminer le <strong>coefficient directeur</strong> de la droite. C'est la concentration en masse C<sub>m</sub> de la solution.`,
+    answer: 25, tol: 0.07, unit: 'g/L', fmt: 'Cₘ = 25 g/L',
+    hint: `Choisis un point de la droite dont les coordonnées se lisent exactement sur le quadrillage, puis calcule k = y / x. L'unité : des grammes divisés par des litres.`,
+    corr: [
+      `On choisit un point bien lisible de la droite : elle passe par exemple par le point (2 ; 50).`,
+      `k = y / x = 50 / 2 = <strong>25 g/L</strong>`,
+      `Ce coefficient directeur est la <strong>concentration en masse</strong> : C<sub>m</sub> = m / V = 25 g/L. La relation m = C<sub>m</sub> × V est une proportionnalité.`,
+    ],
+  },
+  {
+    tag: 'Chimie — Concentration en masse',
+    kind: 'num',
+    intro: `On utilise la même solution sucrée que dans l'exercice précédent (C<sub>m</sub> = 25 g/L).`,
+    q: `Quelle <strong>masse de sucre</strong> est dissoute dans <strong>0,30 L</strong> de cette solution ?`,
+    answer: 7.5, tol: 0.07, unit: 'g', fmt: 'm = 7,5 g',
+    hint: `m = C<sub>m</sub> × V : le coefficient de proportionnalité permet de calculer y pour n'importe quel x.`,
+    corr: [
+      `m = C<sub>m</sub> × V`,
+      `m = 25 × 0,30 = <strong>7,5 g</strong>`,
+      `C'est tout l'intérêt du coefficient : une fois connu, il donne la masse pour <em>n'importe quel</em> volume.`,
+    ],
+  },
+  {
+    tag: 'Physique — Loi d\'Ohm',
+    kind: 'num',
+    intro: `On mesure la tension U aux bornes d'un <strong>conducteur ohmique</strong> pour différentes intensités I :`,
+    table: { rows: [
+      { label: 'I (A)', vals: ['0,10', '0,25', '0,40'] },
+      { label: 'U (V)', vals: ['2,2', '5,5', '8,8'] },
+    ]},
+    q: `La tension U est proportionnelle à l'intensité I (loi d'Ohm). Déterminer le coefficient de proportionnalité : c'est la <strong>résistance R</strong>.`,
+    answer: 22, tol: 0.01, unit: 'Ω', fmt: 'R = 22 Ω',
+    hint: `k = U / I, avec n'importe quelle colonne du tableau.`,
+    corr: [
+      `k = U / I = 2,2 / 0,10 = <strong>22 Ω</strong> (idem : 5,5/0,25 = 22 ; 8,8/0,40 = 22)`,
+      `C'est la loi d'Ohm : <strong>U = R × I</strong>, avec R = 22 Ω constante.`,
+      `Graphiquement, U en fonction de I est une droite passant par l'origine, de coefficient directeur R : c'est la <strong>caractéristique</strong> du conducteur ohmique.`,
+    ],
+  },
+  {
+    tag: 'Physique — Mouvement uniforme',
+    kind: 'num',
+    intro: `Un train roule à vitesse constante. Le graphique donne la distance parcourue en fonction de la durée du trajet :`,
+    graph: { xmax: 5, xstep: 1, ymax: 400, ystep: 50, xlabel: 't (h)', ylabel: 'd (km)', slope: 80 },
+    q: `Déterminer le coefficient directeur de la droite : c'est la <strong>vitesse</strong> du train.`,
+    answer: 80, tol: 0.07, unit: 'km/h', fmt: 'v = 80 km/h',
+    hint: `Choisis un point de la droite dont les coordonnées se lisent exactement sur le quadrillage, le plus loin possible de l'origine, puis k = y / x. L'unité : des kilomètres divisés par des heures.`,
+    corr: [
+      `On choisit un point bien lisible de la droite : elle passe par exemple par le point (5 ; 400).`,
+      `k = y / x = 400 / 5 = <strong>80 km/h</strong>`,
+      `Pour un mouvement uniforme, d = v × t : la distance est proportionnelle à la durée, et le coefficient directeur est la vitesse.`,
+    ],
+  },
+  {
+    tag: 'Bilan — Reconnaître',
+    kind: 'mcq',
+    q: `Parmi ces relations vues en Seconde, laquelle <strong>n'est pas</strong> une proportionnalité entre les deux grandeurs variables ?`,
+    choices: [
+      'm = ρ × V (masse et volume, ρ constante)',
+      'U = R × I (tension et intensité, R constante)',
+      'd = v × t (distance et durée, v constante)',
+      'θ(°F) = 1,8 × θ(°C) + 32 (conversion de températures)',
+    ],
+    correct: 3,
+    hint: `Une proportionnalité s'écrit toujours y = k × x, sans rien d'ajouté. Y a-t-il un « + » quelque part ?`,
+    corr: [
+      `Les trois premières relations sont de la forme <strong>y = k × x</strong> : ce sont des proportionnalités.`,
+      `θ(°F) = 1,8 × θ(°C) + 32 contient un terme ajouté (« + 32 ») : c'est une relation <strong>affine</strong>.`,
+      `Sa représentation est une droite qui ne passe pas par l'origine : 0 °C correspond à 32 °F, pas à 0 °F.`,
+    ],
+  },
+];
+
+// ─── PREMIÈRE SPÉ ───────────────────────────────────────
+const PREMIERE_EXOS = [
+  {
+    tag: 'Chimie — Masse molaire',
+    kind: 'num',
+    intro: `On pèse différentes quantités de matière d'une <strong>espèce chimique pure</strong> :`,
+    table: { rows: [
+      { label: 'n (mol)', vals: ['0,20', '0,50', '0,80'] },
+      { label: 'm (g)', vals: ['3,6', '9,0', '14,4'] },
+    ]},
+    q: `La masse m est proportionnelle à la quantité de matière n. Déterminer le coefficient de proportionnalité : c'est la <strong>masse molaire M</strong>. Quelle espèce peut-il s'agir ?`,
+    answer: 18, tol: 0.01, unit: 'g/mol', fmt: 'M = 18 g/mol',
+    hint: `k = m / n, avec n'importe quelle colonne. Puis cherche une molécule très courante de masse molaire égale à ce k…`,
+    corr: [
+      `k = m / n = 3,6 / 0,20 = <strong>18 g/mol</strong> (idem : 9,0/0,50 = 18 ; 14,4/0,80 = 18)`,
+      `La relation <strong>m = M × n</strong> est une proportionnalité car M est constante pour une espèce donnée.`,
+      `M = 18 g/mol correspond à l'<strong>eau</strong> H₂O : M = 2 × 1,0 + 16,0 = 18,0 g/mol.`,
+    ],
+  },
+  {
+    tag: 'Chimie — Loi de Beer-Lambert',
+    kind: 'num',
+    intro: `<strong>Dosage par étalonnage</strong> : on mesure l'absorbance A de solutions étalons de concentrations connues (même espèce colorée, même cuve). Les points obtenus sont alignés avec l'origine — c'est la loi de Beer-Lambert.`,
+    graph: { xmax: 10, xstep: 1, ymax: 1.4, ystep: 0.2, xlabel: 'C (mmol/L)', ylabel: 'Absorbance A', slope: 0.14,
+             points: [[2, 0.28], [4, 0.56], [6, 0.84], [8, 1.12]], readPoint: [10, 1.4] },
+    q: `Déterminer le <strong>coefficient directeur k</strong> de la droite d'étalonnage (A = k × C, avec C en mmol/L).`,
+    answer: 0.14, tol: 0.07, unit: 'L·mmol⁻¹', fmt: 'k = 0,14 L·mmol⁻¹',
+    hint: `k = y<sub>A</sub> / x<sub>A</sub> avec le point A (10 ; 1,4). L'absorbance n'a pas d'unité.`,
+    corr: [
+      `Le point A a pour coordonnées (10 ; 1,4).`,
+      `k = A / C = 1,4 / 10 = <strong>0,14 L·mmol⁻¹</strong>`,
+      `Loi de Beer-Lambert : A = ε × ℓ × C. À espèce et cuve fixées, ε × ℓ est constant : A est proportionnelle à C.`,
+    ],
+  },
+  {
+    tag: 'Chimie — Dosage par étalonnage',
+    kind: 'num',
+    intro: `On utilise la droite d'étalonnage précédente (k = 0,14 L·mmol⁻¹). Une solution de <strong>concentration inconnue</strong> a une absorbance <strong>A = 0,84</strong>.`,
+    q: `En déduire la <strong>concentration C</strong> de cette solution.`,
+    answer: 6, tol: 0.07, unit: 'mmol/L', fmt: 'C = 6,0 mmol/L',
+    hint: `A = k × C, donc C = A / k. C'est exactement le « sens inverse » travaillé en Phase 2.`,
+    corr: [
+      `A = k × C, donc C = A / k`,
+      `C = 0,84 / 0,14 = <strong>6,0 mmol/L</strong>`,
+      `C'est le principe du <strong>dosage par étalonnage</strong> : la droite (donc son coefficient directeur) sert à remonter à une concentration inconnue.`,
+    ],
+  },
+  {
+    tag: 'Physique — Énergie électrique',
+    kind: 'num',
+    intro: `Un radiateur électrique de <strong>puissance constante</strong> fonctionne pendant différentes durées. On relève l'énergie consommée :`,
+    table: { rows: [
+      { label: 't (h)', vals: ['0,5', '2,0', '3,5'] },
+      { label: 'E (kWh)', vals: ['0,6', '2,4', '4,2'] },
+    ]},
+    q: `L'énergie E est proportionnelle à la durée t. Déterminer le coefficient de proportionnalité : c'est la <strong>puissance P</strong> du radiateur.`,
+    answer: 1.2, tol: 0.01, unit: 'kW', fmt: 'P = 1,2 kW',
+    hint: `k = E / t, avec n'importe quelle colonne. Des kWh divisés par des heures donnent des kW.`,
+    corr: [
+      `k = E / t = 0,6 / 0,5 = <strong>1,2 kW</strong> (idem : 2,4/2,0 = 1,2 ; 4,2/3,5 = 1,2)`,
+      `La relation <strong>E = P × t</strong> est une proportionnalité car la puissance P est constante.`,
+      `Le coefficient directeur de la droite E(t) est la puissance de l'appareil.`,
+    ],
+  },
+  {
+    tag: 'Physique — Poids et masse',
+    kind: 'num',
+    intro: `On suspend différentes masses à un dynamomètre et on mesure leur poids. Le graphique obtenu est le suivant :`,
+    graph: { xmax: 5, xstep: 1, ymax: 50, ystep: 10, xlabel: 'm (kg)', ylabel: 'P (N)', slope: 9.8, readPoint: [5, 49] },
+    q: `Déterminer le coefficient directeur de la droite : c'est l'<strong>intensité de la pesanteur g</strong> sur Terre.`,
+    answer: 9.8, tol: 0.07, unit: 'N/kg', fmt: 'g = 9,8 N/kg',
+    hint: `k = y<sub>A</sub> / x<sub>A</sub> avec le point A (5 ; 49).`,
+    corr: [
+      `Le point A a pour coordonnées (5 ; 49).`,
+      `k = P / m = 49 / 5 = <strong>9,8 N/kg</strong>`,
+      `Le poids est proportionnel à la masse : <strong>P = m × g</strong>, avec g = 9,8 N/kg au voisinage de la Terre.`,
+    ],
+  },
+  {
+    tag: 'Bilan — Loi de Beer-Lambert',
+    kind: 'mcq',
+    q: `La loi de Beer-Lambert s'écrit A = ε × ℓ × C. L'absorbance A est <strong>proportionnelle</strong> à la concentration C…`,
+    choices: [
+      'Toujours, quelles que soient les conditions de mesure',
+      'Seulement si ε et ℓ sont constants : même espèce colorée, même longueur de cuve, même longueur d\'onde',
+      'Seulement si la concentration C est très grande',
+      'Jamais : la relation n\'est pas une proportionnalité',
+    ],
+    correct: 1,
+    hint: `Pour que A = k × C soit une proportionnalité, le facteur k = ε × ℓ doit être… constant.`,
+    corr: [
+      `A = (ε × ℓ) × C est de la forme y = k × x uniquement si <strong>k = ε × ℓ est constant</strong>.`,
+      `Il faut donc travailler à même espèce (ε fixé), même cuve (ℓ fixé) et même longueur d'onde — c'est le protocole du dosage par étalonnage.`,
+      `Remarque : à concentration trop élevée, la loi n'est d'ailleurs plus valable (les points ne sont plus alignés).`,
+    ],
+  },
+];
+
+// ─── TERMINALE SPÉ ──────────────────────────────────────
+const TERMINALE_EXOS = [
+  {
+    tag: 'Chimie — Conductimétrie',
+    kind: 'num',
+    intro: `<strong>Dosage par étalonnage conductimétrique</strong> : on mesure la conductivité σ de solutions étalons d'une même espèce ionique :`,
+    graph: { xmax: 10, xstep: 1, ymax: 1.2, ystep: 0.2, xlabel: 'C (mmol/L)', ylabel: 'σ (mS/cm)', slope: 0.12,
+             points: [[2, 0.24], [4, 0.48], [6, 0.72], [8, 0.96], [10, 1.2]] },
+    q: `Déterminer le <strong>coefficient directeur k</strong> de la droite d'étalonnage (σ = k × C, avec C en mmol/L).`,
+    answer: 0.12, tol: 0.07, unit: 'mS·cm⁻¹ par mmol·L⁻¹', fmt: 'k = 0,12 mS·cm⁻¹ par mmol·L⁻¹',
+    hint: `Choisis un point de la droite dont les coordonnées se lisent exactement sur le quadrillage — par exemple là où elle croise une ligne horizontale — puis k = y / x.`,
+    corr: [
+      `On choisit un point bien lisible de la droite : elle passe par exemple par (10 ; 1,2), ou par (5 ; 0,6).`,
+      `k = σ / C = 1,2 / 10 = <strong>0,12 mS·cm⁻¹ par mmol·L⁻¹</strong>`,
+      `Pour des solutions diluées, la conductivité est proportionnelle à la concentration (loi de Kohlrausch) : les points d'étalonnage sont alignés avec l'origine.`,
+    ],
+  },
+  {
+    tag: 'Chimie — Conductimétrie',
+    kind: 'num',
+    intro: `On utilise la droite d'étalonnage précédente (k = 0,12 mS·cm⁻¹ par mmol·L⁻¹). Une solution de <strong>concentration inconnue</strong> a une conductivité <strong>σ = 0,66 mS/cm</strong>.`,
+    q: `En déduire la <strong>concentration C</strong> de cette solution.`,
+    answer: 5.5, tol: 0.07, unit: 'mmol/L', fmt: 'C = 5,5 mmol/L',
+    hint: `σ = k × C, donc C = σ / k.`,
+    corr: [
+      `σ = k × C, donc C = σ / k`,
+      `C = 0,66 / 0,12 = <strong>5,5 mmol/L</strong>`,
+      `Même démarche qu'avec la loi de Beer-Lambert en Première : le coefficient directeur de la droite d'étalonnage permet de doser une solution inconnue.`,
+    ],
+  },
+  {
+    tag: 'Physique — Énergie d\'un photon',
+    kind: 'num',
+    intro: `On mesure l'énergie E de photons de différentes fréquences ν :`,
+    table: { rows: [
+      { label: 'ν (×10¹⁴ Hz)', vals: ['5,0', '6,0', '7,5'] },
+      { label: 'E (×10⁻¹⁹ J)', vals: ['3,31', '3,98', '4,97'] },
+    ]},
+    q: `L'énergie E est proportionnelle à la fréquence ν : E = k × ν. Déterminer le coefficient k (en J·s). Quelle constante fondamentale reconnais-tu ?`,
+    answer: 6.63e-34, tol: 0.02, unit: 'J·s', fmt: 'k = 6,63 × 10⁻³⁴ J·s ≈ h (constante de Planck)',
+    formatHint: `Formats acceptés : <code>6,63*10^-34</code> ou <code>6,63e-34</code>`,
+    hint: `k = E / ν avec une colonne, en gardant les puissances de 10 : (3,31 × 10⁻¹⁹) / (5,0 × 10¹⁴). Rappel : 10⁻¹⁹ / 10¹⁴ = 10⁻³³.`,
+    corr: [
+      `k = E / ν = (3,31 × 10⁻¹⁹) / (5,0 × 10¹⁴) = 0,662 × 10⁻³³ = <strong>6,62 × 10⁻³⁴ J·s</strong>`,
+      `Les autres colonnes donnent le même résultat : (3,98/6,0) et (4,97/7,5) ≈ 0,663 × 10⁻³³.`,
+      `Ce coefficient est la <strong>constante de Planck</strong> : E = h × ν, avec h = 6,63 × 10⁻³⁴ J·s.`,
+    ],
+  },
+  {
+    tag: 'Chimie — Cinétique d\'ordre 1',
+    kind: 'num',
+    intro: `Pour une réaction d'<strong>ordre 1</strong> par rapport au réactif A, on mesure la vitesse volumique de disparition de A pour différentes concentrations :`,
+    table: { rows: [
+      { label: '[A] (mmol/L)', vals: ['2,0', '5,0', '8,0'] },
+      { label: 'v (mmol·L⁻¹·s⁻¹)', vals: ['0,50', '1,25', '2,00'] },
+    ]},
+    q: `La vitesse v est proportionnelle à [A] : v = k × [A]. Déterminer la <strong>constante de vitesse k</strong>.`,
+    answer: 0.25, tol: 0.01, unit: 's⁻¹', fmt: 'k = 0,25 s⁻¹',
+    hint: `k = v / [A], avec n'importe quelle colonne du tableau.`,
+    corr: [
+      `k = v / [A] = 0,50 / 2,0 = <strong>0,25 s⁻¹</strong> (idem : 1,25/5,0 = 0,25 ; 2,00/8,0 = 0,25)`,
+      `C'est la définition d'une <strong>loi de vitesse d'ordre 1</strong> : v = k × [A], la vitesse est proportionnelle à la concentration du réactif.`,
+      `Graphiquement, v en fonction de [A] est une droite passant par l'origine, de coefficient directeur k.`,
+    ],
+  },
+  {
+    tag: 'Physique — Diffraction des ondes',
+    kind: 'mcq',
+    intro: `On éclaire des fentes calibrées de différentes largeurs a avec un même faisceau laser, et on mesure l'écart angulaire θ du faisceau diffracté :`,
+    table: { rows: [
+      { label: 'a (µm)', vals: ['100', '200', '400'] },
+      { label: 'θ (mrad)', vals: ['6,33', '3,17', '1,58'] },
+    ]},
+    q: `Quand la largeur de fente a <strong>double</strong>, comment évolue l'écart angulaire θ ? Que peut-on en conclure ?`,
+    choices: [
+      'θ double aussi : θ est proportionnelle à a',
+      'θ est divisée par 2 : θ est inversement proportionnelle à a, c\'est-à-dire proportionnelle à 1/a',
+      'θ ne change pas : θ ne dépend pas de a',
+      'θ est divisée par 4 : θ est proportionnelle à 1/a²',
+    ],
+    correct: 1,
+    hint: `Compare les colonnes a = 100 et a = 200 µm, puis a = 200 et a = 400 µm. Teste aussi le produit θ × a.`,
+    corr: [
+      `De a = 100 à a = 200 µm, θ passe de 6,33 à 3,17 mrad : elle est <strong>divisée par 2</strong> (idem de 200 à 400 µm).`,
+      `Le rapport θ/a n'est pas constant, mais le <strong>produit θ × a</strong> l'est : 100 × 6,33 ≈ 200 × 3,17 ≈ 400 × 1,58 ≈ 633.`,
+      `θ n'est donc pas proportionnelle à a mais à <strong>1/a</strong> : c'est une <strong>inverse proportionnalité</strong>, conforme à la relation θ = λ/a. Tracer θ en fonction de 1/a donnerait une droite passant par l'origine.`,
+    ],
+  },
+  {
+    tag: 'Physique — Diffraction des ondes',
+    kind: 'num',
+    intro: `On reprend les mesures de diffraction précédentes. Puisque θ = λ/a, le produit θ × a est constant et vaut λ : c'est le coefficient directeur de la droite obtenue en traçant θ en fonction de 1/a.`,
+    q: `Déterminer la <strong>longueur d'onde λ</strong> du laser, en nm. (Attention aux unités : 1 mrad = 10⁻³ rad, 1 µm = 10⁻⁶ m.)`,
+    answer: 633, tol: 0.02, unit: 'nm', fmt: 'λ = 633 nm (laser hélium-néon rouge)',
+    hint: `λ = θ × a avec n'importe quelle colonne : (6,33 × 10⁻³) × (100 × 10⁻⁶) m — puis convertis le résultat en nm (1 nm = 10⁻⁹ m).`,
+    corr: [
+      `λ = θ × a = (6,33 × 10⁻³) × (100 × 10⁻⁶) = 6,33 × 10⁻⁷ m`,
+      `6,33 × 10⁻⁷ m = <strong>633 nm</strong> (les autres colonnes donnent 634 et 632 nm : le produit est bien constant, aux arrondis de mesure près)`,
+      `C'est la longueur d'onde du <strong>laser hélium-néon</strong> rouge, retrouvée grâce au coefficient directeur de la droite θ(1/a).`,
+    ],
+  },
+  {
+    tag: 'Bilan — Reconnaître',
+    kind: 'mcq',
+    q: `Parmi ces relations rencontrées en Terminale, laquelle <strong>est</strong> une proportionnalité entre les deux grandeurs variables ?`,
+    choices: [
+      'N(t) = N₀ × e^(−λt) — décroissance radioactive',
+      'E = h × ν — énergie d\'un photon',
+      'v = √(2gh) — vitesse atteinte lors d\'une chute libre depuis la hauteur h',
+      'pH = −log C — pH d\'un acide fort en fonction de sa concentration',
+    ],
+    correct: 1,
+    hint: `Une proportionnalité s'écrit y = k × x avec k constant. Exponentielle, racine carrée et logarithme ne rentrent pas dans ce moule…`,
+    corr: [
+      `<strong>E = h × ν</strong> est de la forme y = k × x avec k = h constante : c'est une proportionnalité (droite passant par l'origine).`,
+      `N(t) = N₀ × e^(−λt) est une exponentielle décroissante, v = √(2gh) une racine carrée, pH = −log C un logarithme : leurs représentations ne sont pas des droites.`,
+      `Réflexe utile : tracer y en fonction de x et vérifier « alignés + origine » avant d'affirmer une proportionnalité.`,
+    ],
+  },
+];
+
+// ═══════════════════════════════════════════════════════
+// PAGES D'EXERCICES
+// ═══════════════════════════════════════════════════════
+
+const EXO_PAGES = {
+  p2: {
+    exos: PHASE2_EXOS,
+    labelClass: 'p2-label',
+    label: 'Phase 2 — Pratique guidée',
+    title: '7 exercices — indices disponibles',
+    intro: `Tableaux et graphiques sans contexte physique, pour installer les réflexes : tester la proportionnalité, déterminer k, l'utiliser dans les deux sens.`,
+    nav: `<button class="btn btn-lvl2" onclick="showExoPage('s2')">Réinvestir en Seconde →</button>
+          <button class="btn btn-outline" onclick="showPhase1()">← Revoir la méthode</button>`,
+  },
+  s2: {
+    exos: SECONDE_EXOS,
+    labelClass: 'lvl2-label',
+    label: 'Réinvestissement — Seconde',
+    title: 'La proportionnalité en physique-chimie de Seconde',
+    intro: `Masse volumique, concentration en masse, loi d'Ohm, mouvement uniforme : à chaque fois, le coefficient directeur <strong>est</strong> une grandeur physique.`,
+    nav: `<button class="btn btn-lvl1" onclick="showExoPage('p1e')">Situations de Première →</button>
+          <button class="btn btn-outline" onclick="showHome()">← Accueil</button>`,
+  },
+  p1e: {
+    exos: PREMIERE_EXOS,
+    labelClass: 'lvl1-label',
+    label: 'Réinvestissement — Première Spé',
+    title: 'La proportionnalité en physique-chimie de Première',
+    intro: `Masse molaire, loi de Beer-Lambert et dosage par étalonnage, énergie électrique, poids : la droite d'étalonnage devient un véritable outil de mesure.`,
+    nav: `<button class="btn btn-lvlT" onclick="showExoPage('term')">Situations de Terminale →</button>
+          <button class="btn btn-outline" onclick="showHome()">← Accueil</button>`,
+  },
+  term: {
+    exos: TERMINALE_EXOS,
+    labelClass: 'lvlT-label',
+    label: 'Réinvestissement — Terminale Spé',
+    title: 'La proportionnalité en physique-chimie de Terminale',
+    intro: `Conductimétrie, énergie d'un photon, cinétique d'ordre 1, diffraction des ondes : mêmes réflexes, notions de Terminale — jusqu'à retrouver la constante de Planck et vérifier une inverse proportionnalité.`,
+    nav: `<button class="btn btn-outline" onclick="showHome()">← Accueil</button>`,
+  },
+};
+
+function corrHTML(ex) {
+  return ex.corr.map(txt => `<div class="step"><span class="step-arrow">→</span> <span>${txt}</span></div>`).join('');
+}
+
+function exoCardHTML(ex, i, key) {
+  const pid = `${key}-${i}`;
+  const total = EXO_PAGES[key].exos.length;
+  let body = `<div class="exercise-num">Exercice ${i + 1} / ${total}</div>
+    <span class="contexte-tag">${ex.tag}</span>`;
+  if (ex.intro) body += `<div class="exo-intro">${ex.intro}</div>`;
+  if (ex.table) body += tableHTML(ex.table);
+  if (ex.graph) body += `<div class="graph-wrap">${graphSVG(ex.graph)}</div>`;
+  body += `<div class="exercise-question">${ex.q}</div>`;
+
+  if (ex.kind === 'num') {
+    body += `
+    <div class="format-hint">${ex.formatHint || FORMAT_HINT_STD}</div>
+    <div class="input-row">
+      <input class="answer-input" id="inp${pid}" inputmode="text" placeholder="Ta réponse…" autocomplete="off"
+             onkeydown="if(event.key==='Enter') checkExo('${key}',${i})">
+      ${ex.unit ? `<span class="unit-suffix">${ex.unit}</span>` : ''}
+      <button class="btn btn-primary" id="vbtn${pid}" onclick="checkExo('${key}',${i})">Vérifier</button>
+      <button class="btn btn-hint" id="hbtn${pid}" onclick="showHint('${pid}')">Indice</button>
+    </div>`;
+  } else {
+    body += `
+    <div class="mcq-options">
+      ${ex.choices.map((c, j) => `<button class="mcq-btn" id="mcq${pid}-${j}" onclick="pickMcq('${key}',${i},${j})">${c}</button>`).join('')}
+    </div>
+    <div class="input-row">
+      <button class="btn btn-hint" id="hbtn${pid}" onclick="showHint('${pid}')">Indice</button>
+    </div>`;
+  }
+
+  body += `
+    <div class="hint-box" id="hint${pid}">${ex.hint}</div>
+    <div class="feedback-box" id="fb${pid}"></div>`;
+
+  return `<div class="exercise-card" id="card${pid}">${body}</div>`;
+}
+
+function showHint(pid) {
+  const h = document.getElementById(`hint${pid}`);
+  const b = document.getElementById(`hbtn${pid}`);
+  if (h) h.classList.add('visible');
+  if (b) b.style.display = 'none';
+}
+
+function checkExo(key, i) {
+  const ex = EXO_PAGES[key].exos[i];
+  const pid = `${key}-${i}`;
+  const inp = document.getElementById(`inp${pid}`);
+  const fb  = document.getElementById(`fb${pid}`);
+  if (!inp || !fb || inp.disabled) return;
+
+  const raw    = inp.value;
+  const parsed = parseAnswer(raw);
+  const ok     = isCorrect(parsed, ex.answer, ex.tol);
+
+  inp.classList.toggle('correct',   ok);
+  inp.classList.toggle('incorrect', !ok);
+  inp.disabled = true;
+  const vbtn = document.getElementById(`vbtn${pid}`);
+  if (vbtn) vbtn.disabled = true;
+  const hbtn = document.getElementById(`hbtn${pid}`);
+  if (hbtn) hbtn.style.display = 'none';
+
+  fb.className = `feedback-box visible feedback-${ok ? 'ok' : 'err'}`;
+  if (ok) {
+    fb.innerHTML = `<strong>✓ Correct !</strong> &nbsp; ${ex.fmt}
+      <div class="corr-steps">${corrHTML(ex)}</div>`;
+  } else {
+    const yourTxt = raw.trim() ? `Ta réponse : <em>${raw}</em>` : 'Aucune réponse saisie.';
+    fb.innerHTML = `<strong>✗ Incorrect.</strong> ${yourTxt}
+      <div class="corr-steps">${corrHTML(ex)}</div>`;
+  }
+}
+
+function pickMcq(key, i, j) {
+  const ex = EXO_PAGES[key].exos[i];
+  const pid = `${key}-${i}`;
+  const card = document.getElementById(`card${pid}`);
+  if (!card || card.dataset.done) return;
+  card.dataset.done = '1';
+
+  ex.choices.forEach((_, c) => {
+    const b = document.getElementById(`mcq${pid}-${c}`);
+    if (!b) return;
+    b.disabled = true;
+    if (c === ex.correct) b.classList.add('correct');
+    else if (c === j) b.classList.add('incorrect');
+  });
+  const hbtn = document.getElementById(`hbtn${pid}`);
+  if (hbtn) hbtn.style.display = 'none';
+
+  const ok = j === ex.correct;
+  const fb = document.getElementById(`fb${pid}`);
+  fb.className = `feedback-box visible feedback-${ok ? 'ok' : 'err'}`;
+  fb.innerHTML = `<strong>${ok ? '✓ Bonne réponse !' : '✗ Incorrect.'}</strong>
+    <div class="corr-steps">${corrHTML(ex)}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// PAGES
+// ═══════════════════════════════════════════════════════
+
+const app = document.getElementById('app');
+
+function pageHeader(labelClass, label) {
+  return `
+  <button class="btn-back" onclick="showHome()">← Accueil</button>
+  <a href="../index.html" class="btn-back" style="margin-left:8px">↖ Portail</a>
+  <div class="phase-label ${labelClass}">${label}</div>`;
+}
+
+function showHome() {
+  app.innerHTML = `
+  <a href="../index.html" class="btn-back">↖ Portail</a>
+  <h1 class="home-title" style="border:none; padding:0; margin-bottom:8px">Proportionnalité de deux grandeurs</h1>
+  <p class="home-subtitle">
+    Reconnaître deux grandeurs proportionnelles, lire une droite passant par l'origine,
+    déterminer et interpréter son coefficient directeur — puis réinvestir ces réflexes
+    en physique-chimie, où le coefficient directeur est presque toujours une grandeur physique.
+  </p>
+
+  <p class="home-section">Apprendre &amp; s'entraîner</p>
+  <div class="phase-cards">
+    <div class="phase-card p1" onclick="showPhase1()">
+      <div>
+        <div class="phase-card-num">Phase 1</div>
+        <div class="phase-card-title">Modelage — Comprendre la proportionnalité</div>
+        <div class="phase-card-desc">Définition et test du rapport constant · Droite passant par l'origine · Rôle et détermination du coefficient directeur</div>
+      </div>
+      <div class="phase-card-arrow">→</div>
+    </div>
+    <div class="phase-card p2" onclick="showExoPage('p2')">
+      <div>
+        <div class="phase-card-num">Phase 2</div>
+        <div class="phase-card-title">Pratique guidée — 7 exercices avec indices</div>
+        <div class="phase-card-desc">Tableaux et graphiques · Tester, déterminer k, l'utiliser dans les deux sens</div>
+      </div>
+      <div class="phase-card-arrow">→</div>
+    </div>
+  </div>
+
+  <p class="home-section">Réinvestir en physique-chimie</p>
+  <div class="phase-cards">
+    <div class="phase-card lvl2" onclick="showExoPage('s2')">
+      <div>
+        <div class="phase-card-num">Seconde</div>
+        <div class="phase-card-title">Masse volumique · Concentration · Loi d'Ohm · Vitesse</div>
+        <div class="phase-card-desc">6 situations où le coefficient directeur est une grandeur physique de Seconde</div>
+      </div>
+      <div class="phase-card-arrow">→</div>
+    </div>
+    <div class="phase-card lvl1" onclick="showExoPage('p1e')">
+      <div>
+        <div class="phase-card-num">Première Spé</div>
+        <div class="phase-card-title">Masse molaire · Beer-Lambert · Énergie · Poids</div>
+        <div class="phase-card-desc">6 situations, dont le dosage par étalonnage : la droite devient un outil de mesure</div>
+      </div>
+      <div class="phase-card-arrow">→</div>
+    </div>
+    <div class="phase-card lvlT" onclick="showExoPage('term')">
+      <div>
+        <div class="phase-card-num">Terminale Spé</div>
+        <div class="phase-card-title">Conductimétrie · Photon · Cinétique · Diffraction</div>
+        <div class="phase-card-desc">7 situations, jusqu'à retrouver la constante de Planck et vérifier une inverse proportionnalité</div>
+      </div>
+      <div class="phase-card-arrow">→</div>
+    </div>
+  </div>`;
+  window.scrollTo(0, 0);
+}
+
+// ─── PHASE 1 — MODELAGE ─────────────────────────────────
+function showPhase1() {
+  app.innerHTML = `
+  ${pageHeader('p1-label', 'Phase 1 — Modelage')}
+  <h1>Proportionnalité, droite et coefficient directeur</h1>
+
+  <!-- ── MÉTHODE A ─────────────────────────── -->
+  <div class="technique">
+    <div class="technique-header">Méthode A — Reconnaître deux grandeurs proportionnelles</div>
+    <div class="technique-body">
+      <div class="objectif-line">
+        Deux grandeurs sont <strong>proportionnelles</strong> lorsqu'on passe de l'une à l'autre en multipliant
+        toujours par le <strong>même nombre</strong>, appelé coefficient de proportionnalité k :
+        &nbsp;<strong>y = k × x</strong>.
+      </div>
+
+      <div class="example-header">Exemple — Prix de l'essence</div>
+      <div class="example-q">Le prix payé à la pompe est-il proportionnel au volume d'essence acheté ?</div>
+      ${tableHTML({ rows: [
+        { label: 'V (L)', vals: ['5', '10', '20', '30'] },
+        { label: 'Prix (€)', vals: ['8,50', '17,00', '34,00', '51,00'] },
+      ]})}
+      <div class="bloc bloc-alg">
+        <div class="bloc-title">Démarche : le test du rapport constant</div>
+        <div class="step"><span class="step-num">1</span><span>Calculer le rapport y/x pour <em>chaque</em> colonne : 8,50/5 = 1,70 &nbsp;·&nbsp; 17/10 = 1,70 &nbsp;·&nbsp; 34/20 = 1,70 &nbsp;·&nbsp; 51/30 = 1,70</span></div>
+        <div class="step"><span class="step-num">2</span><span>Le rapport est <strong>constant</strong> → les grandeurs sont proportionnelles</span></div>
+        <div class="step"><span class="step-num">3</span><span>Ce rapport constant est le coefficient : k = 1,70 €/L (le prix d'un litre)</span></div>
+      </div>
+      <div class="bloc bloc-result">
+        <div class="bloc-title">Résultat</div>
+        <span class="formula-box">Prix = 1,70 × V</span>
+      </div>
+
+      <div class="example-header">Contre-exemple — Location de vélo</div>
+      <div class="example-q">Un loueur affiche les tarifs suivants. Prix et durée sont-ils proportionnels ?</div>
+      ${tableHTML({ rows: [
+        { label: 'Durée (h)', vals: ['1', '2', '3'] },
+        { label: 'Prix (€)', vals: ['5', '8', '11'] },
+      ]})}
+      <div class="bloc bloc-alg">
+        <div class="bloc-title">Même test</div>
+        <div class="step"><span class="step-arrow">→</span><span>5/1 = 5 &nbsp;·&nbsp; 8/2 = 4 &nbsp;·&nbsp; 11/3 ≈ 3,67 — les rapports ne sont <strong>pas égaux</strong></span></div>
+        <div class="step"><span class="step-arrow">→</span><span>Les grandeurs ne sont <strong>pas proportionnelles</strong> (il y a un forfait de départ de 2 €, puis 3 € par heure)</span></div>
+      </div>
+
+      <div class="note-box">
+        <strong>Le test :</strong> calculer y/x pour tous les couples de valeurs.
+        Rapport constant ⇔ proportionnalité, et ce rapport est le coefficient k.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MÉTHODE B ─────────────────────────── -->
+  <div class="technique">
+    <div class="technique-header">Méthode B — La représentation graphique</div>
+    <div class="technique-body">
+      <div class="objectif-line">
+        Deux grandeurs sont proportionnelles <strong>si et seulement si</strong> les points du graphique sont
+        <strong>alignés</strong> sur une droite qui <strong>passe par l'origine</strong>.
+      </div>
+
+      <div class="example-header">L'exemple de l'essence, en graphique</div>
+      <div class="graph-wrap">
+        ${graphSVG({ xmax: 20, xstep: 5, ymax: 35, ystep: 5, xlabel: 'V (L)', ylabel: 'Prix (€)', slope: 1.7, points: [[5, 8.5], [10, 17], [20, 34]] })}
+        <p class="graph-caption"><strong class="oui">✓ Proportionnalité</strong> — points alignés <em>et</em> droite passant par l'origine (0 litre → 0 €).</p>
+      </div>
+
+      <div class="example-header">Deux pièges classiques</div>
+      <div class="graph-row">
+        <div>
+          ${graphSVG({ xmax: 4, xstep: 1, ymax: 14, ystep: 2, xlabel: 'Durée (h)', ylabel: 'Prix (€)', slope: 3, intercept: 2, points: [[1, 5], [2, 8], [3, 11]] })}
+          <p class="graph-caption"><strong class="non">✗ Non proportionnel</strong> — les points sont alignés, mais la droite <em>ne passe pas par l'origine</em> (location de vélo : forfait de 2 €).</p>
+        </div>
+        <div>
+          ${graphSVG({ xmax: 4, xstep: 1, ymax: 16, ystep: 2, xlabel: 'Côté (cm)', ylabel: 'Aire (cm²)', curve: { a: 1 }, points: [[1, 1], [2, 4], [3, 9]] })}
+          <p class="graph-caption"><strong class="non">✗ Non proportionnel</strong> — la courbe passe par l'origine, mais les points <em>ne sont pas alignés</em> (aire d'un carré = côté²).</p>
+        </div>
+      </div>
+
+      <div class="note-box">
+        <strong>Les deux conditions sont obligatoires :</strong> points alignés <em>et</em> passage par l'origine.
+        Une seule des deux ne suffit jamais.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MÉTHODE C ─────────────────────────── -->
+  <div class="technique">
+    <div class="technique-header">Méthode C — Le coefficient directeur : rôle et détermination</div>
+    <div class="technique-body">
+      <div class="objectif-line">
+        La droite d'une proportionnalité a pour équation <strong>y = k × x</strong>.
+        Le nombre k est le <strong>coefficient directeur</strong> de la droite : c'est sa « pente ».
+        Il indique de combien augmente y quand x augmente de 1.
+      </div>
+
+      <div class="bloc bloc-alg">
+        <div class="bloc-title">Son rôle en physique-chimie</div>
+        <div class="step"><span class="step-arrow">→</span><span>k porte une <strong>unité</strong> : (unité de y) <em>par</em> (unité de x) — par exemple des €/L, des km/h, des g/mol…</span></div>
+        <div class="step"><span class="step-arrow">→</span><span>Cette unité révèle sa signification : le coefficient directeur <strong>est</strong> très souvent une grandeur physique (vitesse, masse volumique, résistance, concentration…)</span></div>
+        <div class="step"><span class="step-arrow">→</span><span>Une fois k connu, on calcule y pour n'importe quel x (y = k × x) ou x pour n'importe quel y (x = y / k)</span></div>
+      </div>
+
+      <div class="example-header">Exemple — Déterminer k sur un graphique</div>
+      <div class="example-q">Un mobile se déplace à vitesse constante. Déterminer le coefficient directeur de la droite ci-dessous.</div>
+      <div class="graph-wrap">
+        ${graphSVG({ xmax: 8, xstep: 1, ymax: 20, ystep: 2, xlabel: 't (s)', ylabel: 'd (m)', slope: 2.5, readPoint: [8, 20] })}
+      </div>
+      <div class="bloc bloc-alg">
+        <div class="bloc-title">Démarche pas à pas</div>
+        <div class="step"><span class="step-num">1</span><span><strong>Choisir un point</strong> A sur la droite, bien lisible sur le quadrillage et le plus loin possible de l'origine (meilleure précision de lecture)</span></div>
+        <div class="step"><span class="step-num">2</span><span><strong>Lire ses coordonnées</strong> : A (8 ; 20)</span></div>
+        <div class="step"><span class="step-num">3</span><span><strong>Calculer</strong> k = y<sub>A</sub> / x<sub>A</sub> = 20 / 8 = 2,5 — sans oublier l'unité : des mètres par seconde</span></div>
+      </div>
+      <div class="bloc bloc-result">
+        <div class="bloc-title">Résultat et interprétation</div>
+        <span class="formula-box">k = 20 / 8 = 2,5 m/s</span>
+        <p style="margin-top:10px; font-size:0.95rem">Le coefficient directeur est la <strong>vitesse</strong> du mobile : il parcourt 2,5 m chaque seconde, et d = 2,5 × t.</p>
+      </div>
+
+      <div class="note-box">
+        <strong>Pour aller plus loin (Première/Terminale) :</strong> pour une droite quelconque passant par deux points
+        A et B, le coefficient directeur se calcule par k = (y<sub>B</sub> − y<sub>A</sub>) / (x<sub>B</sub> − x<sub>A</sub>).
+        Si la droite passe par l'origine, prendre A = O(0 ; 0) redonne bien k = y<sub>B</sub> / x<sub>B</sub>.
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-bottom">
+    <button class="btn btn-p2" onclick="showExoPage('p2')">Passer à la pratique guidée →</button>
+  </div>`;
+  window.scrollTo(0, 0);
+}
+
+// ─── PAGES D'EXERCICES ──────────────────────────────────
+function showExoPage(key) {
+  const page = EXO_PAGES[key];
+  app.innerHTML = `
+  ${pageHeader(page.labelClass, page.label)}
+  <h1>${page.title}</h1>
+  <div class="page-intro">${page.intro}</div>
+  ${page.exos.map((ex, i) => exoCardHTML(ex, i, key)).join('')}
+  <div class="nav-bottom">${page.nav}</div>`;
+  window.scrollTo(0, 0);
+}
+
+// ═══════════════════════════════════════════════════════
+// DÉMARRAGE
+// ═══════════════════════════════════════════════════════
+showHome();
+</script>
+</body>
+</html>
