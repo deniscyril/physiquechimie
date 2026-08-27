@@ -1,0 +1,49 @@
+{
+  "niveau": "2nde",
+  "semaine": 1,
+  "date_generation": "2026-08-27T15:51:22.741Z",
+  "questions": [
+    {
+      "id": "2nde-maths-03",
+      "chapitre": "maths_transversales",
+      "categorie": "maths",
+      "enonce": "Écrire le nombre $6,3 \\times 10^4$ en écriture décimale."
+    },
+    {
+      "id": "2nde-maths-21",
+      "chapitre": "maths_transversales",
+      "categorie": "maths",
+      "enonce": "Deux grandeurs sont proportionnelles. Sachant que 3 unités de la première correspondent à 12 unités de la seconde, calculer combien correspondent 7 unités de la première."
+    },
+    {
+      "id": "2nde-maths-23",
+      "chapitre": "maths_transversales",
+      "categorie": "maths",
+      "enonce": "Citer les trois caractéristiques nécessaires pour définir complètement un vecteur (norme, direction, sens)."
+    },
+    {
+      "id": "2nde-maths-13",
+      "chapitre": "maths_transversales",
+      "categorie": "maths",
+      "enonce": "Dans la relation $\\rho = \\dfrac{m}{V}$, exprimer $V$ en fonction de $m$ et $\\rho$."
+    },
+    {
+      "id": "2nde-maths-27",
+      "chapitre": "maths_transversales",
+      "categorie": "maths",
+      "enonce": "Convertir 0,03 m³ en L (rappel : 1 L = 1 dm³)."
+    },
+    {
+      "id": "2nde-maths-14",
+      "chapitre": "maths_transversales",
+      "categorie": "maths",
+      "enonce": "Dans la relation $P = m \\times g$, exprimer $g$ en fonction de $P$ et $m$."
+    },
+    {
+      "id": "2nde-maths-01",
+      "chapitre": "maths_transversales",
+      "categorie": "maths",
+      "enonce": "Sans calculatrice, calculer $10^3 \\times 10^{-5}$."
+    }
+  ]
+}

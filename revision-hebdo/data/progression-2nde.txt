@@ -1,4 +1,4 @@
-[x] 01_corps_purs Corps purs et mélanges
+[ ] 01_corps_purs Corps purs et mélanges
 [ ] 02_solutions_aqueuses Solutions aqueuses
 [ ] 03_atome Structure de l'atome
 [ ] 04_configuration_electronique Configuration électronique
@@ -7,7 +7,7 @@
 [ ] 07_transformation_physique Transformations physiques
 [ ] 08_transformation_chimique Transformations chimiques
 [ ] 09_transformation_nucleaire Transformations nucléaires
-[x] 10_mouvement Mouvement et vitesse
+[ ] 10_mouvement Mouvement et vitesse
 [ ] 11_forces Les forces
 [ ] 12_principe_inertie Principe d'inertie
 [ ] 13_electricite Circuits électriques
