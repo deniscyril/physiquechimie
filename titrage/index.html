@@ -366,6 +366,11 @@ function cfg() {
   const b = m.stoichioChoice ? stoich[1] : m.b;
   return { ...m, a, b };
 }
+// Un ajout contient b « paquets » de B (b = coef. stœchiométrique du titrant),
+// de volume b × DROP_ML : concentration du titrant inchangée, et chaque ajout
+// réagit complètement avec a paquets de A avant l'équivalence.
+function bPerAdd(c) { return c.bPerDrop * c.b; }
+function dropVolume(c) { return DROP_ML * c.b; }
 function fmt(v) { return v.toFixed(1).replace('.', ','); }
 
 /* ══════════ Burette ══════════ */
@@ -527,10 +532,10 @@ function removeB(count) {
 /* ══════════ Goutte animée ══════════ */
 function pourDrop() {
   if (poured >= BURETTE_ML) { stopPouring(); return; }
-  poured = Math.min(BURETTE_ML, poured + DROP_ML);
+  const c = cfg();
+  poured = Math.min(BURETTE_ML, poured + dropVolume(c));
   updateBurette();
 
-  const c = cfg();
   const drop = document.createElementNS(SVGNS, 'circle');
   drop.setAttribute('cx', 230); drop.setAttribute('r', 5);
   drop.setAttribute('fill', c.bColor);
@@ -549,10 +554,11 @@ function pourDrop() {
 /* ══════════ Chimie d'une goutte ══════════ */
 function land() {
   const c = cfg();
-  V += DROP_ML;
-  bVersed += c.bPerDrop;
-  // le B non réagi des gouttes précédentes reste disponible (cas A + 2B)
-  let pool = bExcess + c.bPerDrop;
+  V += dropVolume(c);
+  bVersed += bPerAdd(c);
+  // chaque ajout apporte exactement b symboles de B : avant l'équivalence
+  // il réagit entièrement (pas d'accumulation parasite de B)
+  let pool = bExcess + bPerAdd(c);
   const bBefore = bExcess;
   let consumed = 0;
   while (nA >= c.a && pool >= c.b) { nA -= c.a; pool -= c.b; consumed += c.a; }
