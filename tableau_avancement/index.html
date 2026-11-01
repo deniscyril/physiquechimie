@@ -685,6 +685,16 @@ function buildLineDatasets(xs) {
   return curves.concat(dots);
 }
 
+// Échelle fixe de l'histogramme : plus grande quantité atteinte sur [0 ; xmax]
+// (réactifs à x = 0, produits à x = xmax). Elle ne dépend pas de x, pour que
+// la décroissance des réactifs soit lue sans changement d'échelle.
+function barYMax() {
+  const xmax = computeXmax();
+  return Math.max.apply(null, sp().map(function(s) {
+    return Math.max(getN(s.id, 0), getN(s.id, xmax));
+  }));
+}
+
 function rebuildCharts() {
   const xmax = computeXmax();
   const xs   = makeXs(xmax);
@@ -709,7 +719,7 @@ function rebuildCharts() {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        y: { min: 0, title: { display: true, text: 'n (mol)', color: labelColor, font: { size: 11 } }, ticks: { color: tickColor, font: { size: 11 } }, grid: { color: gridColor } },
+        y: { min: 0, suggestedMax: barYMax(), title: { display: true, text: 'n (mol)', color: labelColor, font: { size: 11 } }, ticks: { color: tickColor, font: { size: 11 } }, grid: { color: gridColor } },
         x: { ticks: { color: tickColor, font: { size: 13, weight: '600' } }, grid: { display: false } }
       },
       animation: { duration: 150 }
@@ -750,6 +760,7 @@ function updateCharts() {
   barChart.data.datasets[0].data            = sp().map(function(s) { return parseFloat(getN(s.id, xState).toFixed(3)); });
   barChart.data.datasets[0].backgroundColor = sp().map(function(s) { return s.color + 'BB'; });
   barChart.data.datasets[0].borderColor     = sp().map(function(s) { return s.color; });
+  barChart.options.scales.y.suggestedMax    = barYMax();
   barChart.update('none');
 
   lineChart.options.scales.x.max = xmax;
